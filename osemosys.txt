@@ -1,9 +1,11 @@
-# OSeMOSYS_2016_08_01
+# OSeMOSYS_2016_08_01 (improved_storage)
 # 
 # Open Source energy MOdeling SYStem
 #
-# Main changes to previous version OSeMOSYS_2015_08_27
-#		- Parameter REMinProductionTarget no more indicated by user as % of demand for fuel f, but as % of production of fuel f.
+# Main changes to previous version OSeMOSYS_2016_08_01
+#		- Removed constraints SC5_MaxChargeConstraint and SC6_MaxDischargeConstraint
+#		- Constraints SC5_WeeklyBalance, SC6_YearlyBalance, SC7_PeriodBalance, SC8_StorageMaxUpperLimit, parameter StorageTag added
+#		- Constraint SI1_StorageUpperLimit modified and SI1_StorageCapacityUpperLimit introduced
 #
 # ============================================================================
 #
@@ -93,9 +95,10 @@ param FixedCost{r in REGION, t in TECHNOLOGY, y in YEAR};
 #
 param TechnologyToStorage{r in REGION, t in TECHNOLOGY, s in STORAGE, m in MODE_OF_OPERATION};
 param TechnologyFromStorage{r in REGION, t in TECHNOLOGY, s in STORAGE, m in MODE_OF_OPERATION};
+param StorageTag{r in REGION, s in STORAGE};
+param InstalledCapacityToStoredCommodity{r in REGION, s in STORAGE};
+param StorageMaxCapacity{r in REGION, s in STORAGE, y in YEAR};
 param StorageLevelStart{r in REGION, s in STORAGE};
-param StorageMaxChargeRate{r in REGION, s in STORAGE};
-param StorageMaxDischargeRate{r in REGION, s in STORAGE};
 param MinStorageCharge{r in REGION, s in STORAGE, y in YEAR};
 param OperationalLifeStorage{r in REGION, s in STORAGE};
 param CapitalCostStorage{r in REGION, s in STORAGE, y in YEAR};
@@ -332,12 +335,15 @@ s.t. SC3_LowerLimit_EndOfDailyTimeBracketOfLastInstanceOfDayTypeInLastWeekConstr
 s.t. SC3_UpperLimit_EndOfDailyTimeBracketOfLastInstanceOfDayTypeInLastWeekConstraint{r in REGION, s in STORAGE, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, y in YEAR}:  (StorageLevelDayTypeFinish[r,s,ls,ld,y] - sum{lhlh in DAILYTIMEBRACKET:lh-lhlh<0} NetChargeWithinDay[r,s,ls,ld,lhlh,y])-StorageUpperLimit[r,s,y] <= 0;
 s.t. SC4_LowerLimit_BeginningOfDailyTimeBracketOfFirstInstanceOfDayTypeInLastWeekConstraint{r in REGION, s in STORAGE, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, y in YEAR}: 	0 <= if ld > min{ldld in DAYTYPE} min(ldld) then (StorageLevelDayTypeFinish[r,s,ls,ld-1,y]+sum{lhlh in DAILYTIMEBRACKET:lh-lhlh>0} NetChargeWithinDay[r,s,ls,ld,lhlh,y])-StorageLowerLimit[r,s,y];
 s.t. SC4_UpperLimit_BeginningOfDailyTimeBracketOfFirstInstanceOfDayTypeInLastWeekConstraint{r in REGION, s in STORAGE, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, y in YEAR}: if ld > min{ldld in DAYTYPE} min(ldld) then (StorageLevelDayTypeFinish[r,s,ls,ld-1,y]+sum{lhlh in DAILYTIMEBRACKET:lh-lhlh>0} NetChargeWithinDay[r,s,ls,ld,lhlh,y])-StorageUpperLimit[r,s,y] <= 0;										
-s.t. SC5_MaxChargeConstraint{r in REGION, s in STORAGE, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, y in YEAR}: RateOfStorageCharge[r,s,ls,ld,lh,y] <= StorageMaxChargeRate[r,s];
-s.t. SC6_MaxDischargeConstraint{r in REGION, s in STORAGE, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, y in YEAR}: RateOfStorageDischarge[r,s,ls,ld,lh,y] <= StorageMaxDischargeRate[r,s];
+s.t. SC5_WeeklyBalance{r in REGION, s in STORAGE, ls in SEASON, y in YEAR: StorageTag[r,s] = 2}: sum{ld in DAYTYPE, lh in DAILYTIMEBRACKET}NetChargeWithinDay[r,s,ls,ld,lh,y]*DaysInDayType[ls,ld,y] = 0;
+s.t. SC6_YearlyBalance{r in REGION, s in STORAGE, y in YEAR: StorageTag[r,s] =1}: sum{ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET} NetChargeWithinYear[r,s,ls,ld,lh,y] = 0;
+s.t. SC7_PeriodBalance{s in STORAGE, r in REGION}: sum{y in YEAR, l in TIMESLICE, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET} NetChargeWithinYear[r,s,ls,ld,lh,y] = 0;
+s.t. SC8_StorageMaxUpperLimit{s in STORAGE, y in YEAR, r in REGION}:  (sum{yy in YEAR: y-yy < OperationalLifeStorage[r,s] && y-yy>=0} NewStorageCapacity[r,s,yy]+ResidualStorageCapacity[r,s,y]) <= StorageMaxCapacity[r,s,y];
 #
 #########		Storage Investments				#############
 #
-s.t. SI1_StorageUpperLimit{r in REGION, s in STORAGE, y in YEAR}: AccumulatedNewStorageCapacity[r,s,y]+ResidualStorageCapacity[r,s,y] = StorageUpperLimit[r,s,y];
+s.t. SI1_StorageUpperLimit{r in REGION, s in STORAGE, y in YEAR: InstalledCapacityToStoredCommodity[r,s]=1}: AccumulatedNewStorageCapacity[r,s,y]+ResidualStorageCapacity[r,s,y] = StorageUpperLimit[r,s,y];
+s.t. SI1_StorageCapacityUpperLimit{r in REGION, s in STORAGE, y in YEAR: InstalledCapacityToStoredCommodity[r,s]<>1}: sum{t in TECHNOLOGY, m in MODE_OF_OPERATION}(AccumulatedNewCapacity[r,t,y]+ResidualCapacity[r,t,y])*InstalledCapacityToStoredCommodity[r,s]*TechnologyToStorage[r,t,s,m] = StorageUpperLimit[r,s,y];
 s.t. SI2_StorageLowerLimit{r in REGION, s in STORAGE, y in YEAR}: MinStorageCharge[r,s,y]*StorageUpperLimit[r,s,y] = StorageLowerLimit[r,s,y];
 s.t. SI3_TotalNewStorage{r in REGION, s in STORAGE, y in YEAR}: sum{yy in YEAR: y-yy < OperationalLifeStorage[r,s] && y-yy>=0} NewStorageCapacity[r,s,yy]=AccumulatedNewStorageCapacity[r,s,y];
 s.t. SI4_UndiscountedCapitalInvestmentStorage{r in REGION, s in STORAGE, y in YEAR}: CapitalCostStorage[r,s,y] * NewStorageCapacity[r,s,y] = CapitalInvestmentStorage[r,s,y];
@@ -697,5 +703,34 @@ for {r in REGION} {printf ",%s", r >> "SelectedResults.csv";
 																}
 						printf "\n" >> "SelectedResults.csv";
 											}
-					}						
+					}
+#
+###		Technology Use in each TS	###
+#
+printf "\n" >> "SelectedResults.csv";
+printf "Net Charge Within Day (Energy Units)" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+for {r in REGION} {printf ",%s", r >> "SelectedResults.csv";
+	printf "\n" >> "SelectedResults.csv";
+	for {s in STORAGE} {printf "%s", s >> "SelectedResults.csv";
+					for {ls in SEASON}{
+						for {ld in DAYTYPE}{
+							for {lh in DAILYTIMEBRACKET}{printf ",%s", lh >> "SelectedResults.csv";
+								}
+						}
+					}
+					printf "\n" >> "SelectedResults.csv";
+					for {y in YEAR } {printf "%g", y >> "SelectedResults.csv";
+						for {ls in SEASON}{
+							for {ld in DAYTYPE}{
+								for { lh in DAILYTIMEBRACKET} {
+										printf ",%g", NetChargeWithinDay[r,s,ls,ld,lh,y] >> "SelectedResults.csv";
+								}
+							}
+						}
+						printf "\n" >> "SelectedResults.csv";
+					}
+	}
+}					
 end;
