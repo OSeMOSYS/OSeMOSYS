@@ -1,0 +1,615 @@
+# OSEMOSYS 2011.11.08
+# Open Source energy Modeling SYStem
+#
+# ============================================================================
+#
+#    Copyright [2010-2011] [OSeMOSYS Forum steering committee see: www.osemosys.org]
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+# ============================================================================
+#
+#
+#  To run OSeMOSYS, enter the following line into your command prompt after replacing FILEPATH & YOURDATAFILE with your folder structure and data file name: 
+#
+#  C:\...FILEPATH...\glpsol -m C:\...FILEPATH...\OSeMOSYS_2011_11_08.txt -d C:\...FILEPATH...\YOURDATAFILE.txt -o C:\...FILEPATH...\Results.txt
+#
+#              			#########################################
+#########################		Model Definition				#############
+#              			#########################################
+#
+###############
+#    Sets     #
+############### 
+# 
+set YEAR;
+set TECHNOLOGY;
+set TIMESLICE;
+set FUEL;
+set EMISSION;
+set MODE_OF_OPERATION;
+set REGION;
+set BOUNDARY_INSTANCES;
+set STORAGE;
+#
+#####################
+#    Parameters     #
+#####################
+#	
+########			Global 						#############
+#
+param YearSplit{y in YEAR,l in TIMESLICE};
+param DiscountRate{t in TECHNOLOGY, r in REGION};
+#
+########			Demands 					#############
+#
+param SpecifiedAnnualDemand{y in YEAR,f in FUEL, r in REGION}; 
+param SpecifiedDemandProfile{y in YEAR, l in TIMESLICE, f in FUEL, r in REGION};
+param AccumulatedAnnualDemand{y in YEAR, f in FUEL, r in REGION};
+#
+#########			Performance					#############
+#
+param CapacityToActivityUnit{t in TECHNOLOGY, r in REGION};
+param TechWithCapacityNeededToMeetPeakTS{t in TECHNOLOGY, r in REGION};
+param CapacityFactor{y in YEAR, t in TECHNOLOGY, r in REGION};
+param AvailabilityFactor{y in YEAR, t in TECHNOLOGY, r in REGION};
+param OperationalLife{t in TECHNOLOGY, r in REGION};
+param ResidualCapacity{y in YEAR, t in TECHNOLOGY, r in REGION};
+param SalvageFactor{y in YEAR, t in TECHNOLOGY, r in REGION};
+param InputActivityRatio{y in YEAR, t in TECHNOLOGY, f in FUEL, m in MODE_OF_OPERATION, r in REGION};
+param OutputActivityRatio{y in YEAR, t in TECHNOLOGY, f in FUEL, m in MODE_OF_OPERATION, r in REGION};
+#
+#########			Technology Costs			#############
+#
+param CapitalCost{y in YEAR, t in TECHNOLOGY, r in REGION};
+param VariableCost{y in YEAR, t in TECHNOLOGY, m in MODE_OF_OPERATION, r in REGION};
+param FixedCost{y in YEAR, t in TECHNOLOGY, r in REGION};
+#
+#########			Storage Parameters		    #############
+# 
+param StorageInflectionTimes{y in YEAR, l in TIMESLICE, b in BOUNDARY_INSTANCES};
+param TechnologyToStorage{t in TECHNOLOGY, m in MODE_OF_OPERATION, s in STORAGE, r in REGION};
+param TechnologyFromStorage{t in TECHNOLOGY, m in MODE_OF_OPERATION, s in STORAGE, r in REGION};
+param StorageUpperLimit{s in STORAGE, r in REGION};
+param StorageLowerLimit{s in STORAGE, r in REGION};
+#
+#########			Capacity Constraints		#############
+#
+param TotalAnnualMaxCapacity{y in YEAR, t in TECHNOLOGY, r in REGION};
+param TotalAnnualMinCapacity{y in YEAR, t in TECHNOLOGY, r in REGION};
+#
+#########			Investment Constraints		#############
+#
+param TotalAnnualMaxCapacityInvestment{y in YEAR, t in TECHNOLOGY, r in REGION};
+param TotalAnnualMinCapacityInvestment{y in YEAR, t in TECHNOLOGY, r in REGION};
+#
+#########			Activity Constraints		#############
+#
+param TotalTechnologyAnnualActivityUpperLimit{y in YEAR, t in TECHNOLOGY, r in REGION};
+param TotalTechnologyAnnualActivityLowerLimit{y in YEAR, t in TECHNOLOGY, r in REGION};
+param TotalTechnologyModelPeriodActivityUpperLimit{t in TECHNOLOGY, r in REGION};
+param TotalTechnologyModelPeriodActivityLowerLimit{t in TECHNOLOGY, r in REGION};
+#
+#########			Reserve Margin				############# 
+#
+param ReserveMarginTagTechnology{y in YEAR,t in TECHNOLOGY, r in REGION}; 
+param ReserveMarginTagFuel{y in YEAR,f in FUEL, r in REGION};
+param ReserveMargin{y in YEAR, r in REGION};
+#
+#########			RE Generation Target		############# 
+#
+param RETagTechnology{y in YEAR,t in TECHNOLOGY, r in REGION};
+param RETagFuel{y in YEAR,f in FUEL, r in REGION}; 
+param REMinProductionTarget{y in YEAR, r in REGION};
+#
+#########			Emissions & Penalties		#############
+#
+param EmissionActivityRatio{y in YEAR, t in TECHNOLOGY, e in EMISSION, m in MODE_OF_OPERATION, r in REGION};
+param EmissionsPenalty{y in YEAR, e in EMISSION, r in REGION};
+param AnnualExogenousEmission{y in YEAR, e in EMISSION, r in REGION};
+param AnnualEmissionLimit{y in YEAR, e in EMISSION, r in REGION};
+param ModelPeriodExogenousEmission{e in EMISSION, r in REGION};
+param ModelPeriodEmissionLimit{e in EMISSION, r in REGION};
+#
+######################
+#   Model Variables  #
+######################
+#
+########			Demands 					#############
+#
+var RateOfDemand{y in YEAR,l in TIMESLICE, f in FUEL, r in REGION}>= 0;
+var Demand{y in YEAR,l in TIMESLICE, f in FUEL, r in REGION}>= 0;
+#
+#########		    Capacity Variables 			############# 
+#
+var NewCapacity{y in YEAR, t in TECHNOLOGY, r in REGION} >= 0;
+var AccumulatedNewCapacity{y in YEAR, t in TECHNOLOGY, r in REGION} >= 0;
+var TotalCapacityAnnual{y in YEAR, t in TECHNOLOGY, r in REGION}>= 0;
+#
+#########		    Activity Variables 			#############
+#
+var RateOfActivity{y in YEAR, l in TIMESLICE, t in TECHNOLOGY, m in MODE_OF_OPERATION, r in REGION} >= 0; 
+var RateOfTotalActivity{y in YEAR, l in TIMESLICE, t in TECHNOLOGY, r in REGION} >= 0;
+var TotalTechnologyAnnualActivity{y in YEAR, t in TECHNOLOGY, r in REGION} >= 0;
+var TotalAnnualTechnologyActivityByMode{y in YEAR, t in TECHNOLOGY,m in MODE_OF_OPERATION,r in REGION}>=0;
+var RateOfProductionByTechnologyByMode{y in YEAR, l in TIMESLICE, t in TECHNOLOGY,m in MODE_OF_OPERATION,f in FUEL,r in REGION}>= 0;
+var RateOfProductionByTechnology{y in YEAR, l in TIMESLICE, t in TECHNOLOGY,f in FUEL, r in REGION}>= 0;
+var ProductionByTechnology{y in YEAR, l in TIMESLICE, t in TECHNOLOGY,f in FUEL, r in REGION}>= 0;
+var ProductionByTechnologyAnnual{y in YEAR, t in TECHNOLOGY, f in FUEL, r in REGION}>= 0;
+var RateOfProduction{y in YEAR, l in TIMESLICE, f in FUEL, r in REGION} >= 0;
+var Production{y in YEAR, l in TIMESLICE, f in FUEL, r in REGION} >= 0;
+var RateOfUseByTechnologyByMode{y in YEAR, l in TIMESLICE, t in TECHNOLOGY,m in MODE_OF_OPERATION,f in FUEL,r in REGION}>= 0;
+var RateOfUseByTechnology{y in YEAR, l in TIMESLICE, t in TECHNOLOGY, f in FUEL, r in REGION} >= 0;
+var UseByTechnologyAnnual{y in YEAR, t in TECHNOLOGY,f in FUEL, r in REGION}>= 0;
+var RateOfUse{y in YEAR, l in TIMESLICE, f in FUEL, r in REGION}>= 0;
+var UseByTechnology{y in YEAR, l in TIMESLICE, t in TECHNOLOGY,f in FUEL, r in REGION}>= 0;
+var Use{y in YEAR, l in TIMESLICE, f in FUEL, r in REGION}>= 0;
+#
+var ProductionAnnual{y in YEAR, f in FUEL, r in REGION}>= 0;
+var UseAnnual{y in YEAR, f in FUEL, r in REGION}>= 0;
+#
+#########		    Costing Variables 			#############
+#
+var CapitalInvestment{y in YEAR, t in TECHNOLOGY, r in REGION}>= 0;
+var DiscountedCapitalInvestment{y in YEAR, t in TECHNOLOGY, r in REGION}>= 0;
+#
+var SalvageValue{y in YEAR, t in TECHNOLOGY, r in REGION}>= 0;
+var DiscountedSalvageValue{y in YEAR, t in TECHNOLOGY, r in REGION}>= 0;
+var OperatingCost{y in YEAR, t in TECHNOLOGY, r in REGION}>= 0;
+var DiscountedOperatingCost{y in YEAR, t in TECHNOLOGY, r in REGION}>= 0;
+#
+var AnnualVariableOperatingCost{y in YEAR,t in TECHNOLOGY, r in REGION}>= 0;
+var AnnualFixedOperatingCost{y in YEAR,t in TECHNOLOGY, r in REGION}>= 0;
+var VariableOperatingCost{y in YEAR, l in TIMESLICE, t in TECHNOLOGY, r in REGION}>= 0;
+#
+var TotalDiscountedCost{y in YEAR, t in TECHNOLOGY, r in REGION}>= 0;
+#
+var ModelPeriodCostByRegion {r in REGION} >= 0;
+#
+#########		Storage Variables 				#############
+#
+var NetStorageCharge{s in STORAGE, y in YEAR, l in TIMESLICE, r in REGION};
+var StorageLevel{s in STORAGE, b in BOUNDARY_INSTANCES, r in REGION};
+var StorageCharge{s in STORAGE, y in YEAR, l in TIMESLICE, r in REGION};
+var StorageDischarge{s in STORAGE, y in YEAR, l in TIMESLICE, r in REGION};
+#
+#########			Reserve Margin				#############
+#
+var TotalCapacityInReserveMargin{y in YEAR, r in REGION}>= 0;
+var DemandNeedingReserveMargin{y in YEAR,l in TIMESLICE, r in REGION}>= 0;
+#
+#########			RE Gen Target				#############
+#
+var TotalGenerationByRETechnologies{y in YEAR, r in REGION};
+var TotalREProductionAnnual{y in YEAR, r in REGION};
+var RETotalDemandOfTargetFuelAnnual{y in YEAR, r in REGION};
+#
+var TotalTechnologyModelPeriodActivity{t in TECHNOLOGY, r in REGION};
+#
+#########			Emissions					#############
+#
+var AnnualTechnologyEmissionByMode{y in YEAR, t in TECHNOLOGY, e in EMISSION, m in MODE_OF_OPERATION, r in REGION}>= 0;
+var AnnualTechnologyEmission{y in YEAR, t in TECHNOLOGY, e in EMISSION, r in REGION}>= 0;
+var AnnualTechnologyEmissionPenaltyByEmission{y in YEAR, t in TECHNOLOGY, e in EMISSION, r in REGION}>= 0;
+var AnnualTechnologyEmissionsPenalty{y in YEAR, t in TECHNOLOGY, r in REGION}>= 0;
+var DiscountedTechnologyEmissionsPenalty{y in YEAR, t in TECHNOLOGY, r in REGION}>= 0;
+var AnnualEmissions{y in YEAR, e in EMISSION, r in REGION}>= 0;
+var EmissionsProduction{y in YEAR, t in TECHNOLOGY, e in EMISSION, m in MODE_OF_OPERATION, r in REGION};
+var ModelPeriodEmissions{e in EMISSION, r in REGION}>= 0;
+#
+######################
+# Objective Function #
+######################
+#
+minimize cost: sum{y in YEAR, t in TECHNOLOGY, r in REGION} TotalDiscountedCost[y,t,r];
+#
+#####################
+# Constraints       #
+#####################
+#
+s.t. EQ_SpecifiedDemand{y in YEAR,l in TIMESLICE, f in FUEL, r in REGION}: SpecifiedAnnualDemand[y,f,r]*SpecifiedDemandProfile[y,l,f,r] / YearSplit[y,l]=RateOfDemand[y,l,f,r];
+#
+################		Storage			#############
+#
+s.t. S1_StorageCharge{s in STORAGE, y in YEAR, l in TIMESLICE, r in REGION}: sum{t in TECHNOLOGY, m in MODE_OF_OPERATION} RateOfActivity[y,l,t,m,r] * TechnologyToStorage[t,m,s,r] * YearSplit[y,l] = StorageCharge[s,y,l,r];
+s.t. S2_StorageDischarge{s in STORAGE, y in YEAR, l in TIMESLICE, r in REGION}: sum{t in TECHNOLOGY, m in MODE_OF_OPERATION} RateOfActivity[y,l,t,m,r] * TechnologyFromStorage[t,m,s,r] * YearSplit[y,l] = StorageDischarge[s,y,l,r];
+s.t. S3_NetStorageCharge{s in STORAGE, y in YEAR, l in TIMESLICE, r in REGION}: NetStorageCharge[s,y,l,r] = StorageCharge[s,y,l,r] - StorageDischarge[s,y,l,r];
+s.t. S4_StorageLevelAtInflection{b in BOUNDARY_INSTANCES,s in STORAGE,r in REGION}: sum{l in TIMESLICE, y in YEAR} NetStorageCharge[s,y,l,r]/YearSplit[y,l]*StorageInflectionTimes[y,l,b] = StorageLevel[s,b,r];
+s.t. S5_StorageLowerLimit{b in BOUNDARY_INSTANCES, s in STORAGE,r in REGION}: StorageLevel[s,b,r] >= StorageLowerLimit[s,r];
+s.t. S6_StorageUpperLimit{b in BOUNDARY_INSTANCES, s in STORAGE,r in REGION}: StorageLevel[s,b,r] <= StorageUpperLimit[s,r];
+#
+#########       	Capacity Adequacy A	     	#############
+#
+s.t. CAa1_TotalNewCapacity{y in YEAR, t in TECHNOLOGY, r in REGION}:AccumulatedNewCapacity[y,t,r] = sum{yy in YEAR: y-yy < OperationalLife[t,r] && y-yy>=0} NewCapacity[yy,t,r];
+s.t. CAa2_TotalAnnualCapacity{y in YEAR, t in TECHNOLOGY, r in REGION}: AccumulatedNewCapacity[y,t,r]+ ResidualCapacity[y,t,r] = TotalCapacityAnnual[y,t,r];
+s.t. CAa3_TotalActivityOfEachTechnology{y in YEAR, t in TECHNOLOGY, l in TIMESLICE,r in REGION}: sum{m in MODE_OF_OPERATION} RateOfActivity[y,l,t,m,r] = RateOfTotalActivity[y,l,t,r];
+s.t. CAa4_Constraint_Capacity{y in YEAR, l in TIMESLICE, t in TECHNOLOGY, r in REGION: TechWithCapacityNeededToMeetPeakTS[t,r]<>0}: RateOfTotalActivity[y,l,t,r] <= TotalCapacityAnnual[y,t,r] * CapacityFactor[y,t,r]*CapacityToActivityUnit[t,r];
+# Note that the PlannedMaintenance equation below ensures that all other technologies have a capacity great enough to at least meet the annual average.
+#
+#########       	Capacity Adequacy B		 	#############
+#
+s.t. CAb1_PlannedMaintenance{y in YEAR, t in TECHNOLOGY, r in REGION}: sum{l in TIMESLICE} RateOfTotalActivity[y,l,t,r]*YearSplit[y,l] <= TotalCapacityAnnual[y,t,r]*CapacityFactor[y,t,r]* AvailabilityFactor[y,t,r]*CapacityToActivityUnit[t,r];
+#
+#########	        Energy Balance A    	 	#############
+#
+s.t. EBa1_RateOfFuelProduction1{y in YEAR, l in TIMESLICE, f in FUEL, t in TECHNOLOGY, m in MODE_OF_OPERATION, r in REGION}:  RateOfActivity[y,l,t,m,r]*OutputActivityRatio[y,t,f,m,r]  = RateOfProductionByTechnologyByMode[y,l,t,m,f,r];
+s.t. EBa2_RateOfFuelProduction2{y in YEAR, l in TIMESLICE, f in FUEL, t in TECHNOLOGY, r in REGION}: sum{m in MODE_OF_OPERATION} RateOfProductionByTechnologyByMode[y,l,t,m,f,r] = RateOfProductionByTechnology[y,l,t,f,r] ;
+s.t. EBa3_RateOfFuelProduction3{y in YEAR, l in TIMESLICE, f in FUEL, r in REGION}: sum{t in TECHNOLOGY} RateOfProductionByTechnology[y,l,t,f,r]  =  RateOfProduction[y,l,f,r];
+s.t. EBa4_RateOfFuelUse1{y in YEAR, l in TIMESLICE, f in FUEL, t in TECHNOLOGY, m in MODE_OF_OPERATION, r in REGION}: RateOfActivity[y,l,t,m,r]*InputActivityRatio[y,t,f,m,r]  = RateOfUseByTechnologyByMode[y,l,t,m,f,r];
+s.t. EBa5_RateOfFuelUse2{y in YEAR, l in TIMESLICE, f in FUEL, t in TECHNOLOGY, r in REGION}: sum{m in MODE_OF_OPERATION} RateOfUseByTechnologyByMode[y,l,t,m,f,r] = RateOfUseByTechnology[y,l,t,f,r];
+s.t. EBa6_RateOfFuelUse3{y in YEAR, l in TIMESLICE, f in FUEL, r in REGION}: sum{t in TECHNOLOGY} RateOfUseByTechnology[y,l,t,f,r]  = RateOfUse[y,l,f,r];
+s.t. EBa7_EnergyBalanceEachTS1{y in YEAR,l in TIMESLICE, f in FUEL, r in REGION}: RateOfProduction[y,l,f,r]*YearSplit[y,l] = Production[y,l,f,r];
+s.t. EBa8_EnergyBalanceEachTS2{y in YEAR,l in TIMESLICE, f in FUEL, r in REGION}: RateOfUse[y,l,f,r]*YearSplit[y,l] = Use[y,l,f,r];
+s.t. EBa9_EnergyBalanceEachTS3{y in YEAR,l in TIMESLICE, f in FUEL, r in REGION}: RateOfDemand[y,l,f,r]*YearSplit[y,l] = Demand[y,l,f,r];
+s.t. EBa10_EnergyBalanceEachTS4{y in YEAR,l in TIMESLICE, f in FUEL, r in REGION}: Production[y,l,f,r] >= Demand[y,l,f,r] + Use[y,l,f,r];
+#
+#########        	Energy Balance B		 	#############
+#
+s.t. EBb1_EnergyBalanceEachYear1{y in YEAR, f in FUEL, r in REGION}: sum{l in TIMESLICE} Production[y,l,f,r] = ProductionAnnual[y,f,r];
+s.t. EBb2_EnergyBalanceEachYear2{y in YEAR, f in FUEL, r in REGION}: sum{l in TIMESLICE} Use[y,l,f,r] = UseAnnual[y,f,r];
+s.t. EBb3_EnergyBalanceEachYear3{y in YEAR, f in FUEL, r in REGION}: ProductionAnnual[y,f,r] >= UseAnnual[y,f,r] + AccumulatedAnnualDemand[y,f,r];
+#
+#########        	Accounting Technology Production/Use	#############
+#
+s.t. Acc1_FuelProductionByTechnology{y in YEAR, l in TIMESLICE, t in TECHNOLOGY, f in FUEL, r in REGION}: RateOfProductionByTechnology[y,l,t,f,r] * YearSplit[y,l] = ProductionByTechnology[y,l,t,f,r];
+s.t. Acc2_FuelUseByTechnology{y in YEAR, l in TIMESLICE, t in TECHNOLOGY, f in FUEL, r in REGION}: RateOfUseByTechnology[y,l,t,f,r] * YearSplit[y,l] = UseByTechnology[y,l,t,f,r];
+s.t. Acc3_AverageAnnualRateOfActivity{y in YEAR,t in TECHNOLOGY, m in MODE_OF_OPERATION, r in REGION}: sum{l in TIMESLICE} RateOfActivity[y,l,t,m,r]*YearSplit[y,l] = TotalAnnualTechnologyActivityByMode[y,t,m,r];
+s.t. Acc4_ModelPeriodCostByRegion{r in REGION}:sum{y in YEAR, t in TECHNOLOGY}TotalDiscountedCost[y,t,r]=ModelPeriodCostByRegion[r];
+#
+#########       	Captial Costs 		     	#############
+#
+s.t. CC1_UndiscountedCapitalInvestment{y in YEAR, t in TECHNOLOGY, r in REGION}: CapitalCost[y,t,r] * NewCapacity[y,t,r] = CapitalInvestment[y,t,r];
+s.t. CC2_DiscountingCapitalInvestment{y in YEAR, t in TECHNOLOGY, r in REGION}: CapitalInvestment[y,t,r]/((1+DiscountRate[t,r])^(y-min{yy in YEAR} min(yy))) = DiscountedCapitalInvestment[y,t,r];
+#
+#########           Salvage Value            	#############
+#
+s.t. SV1_SalvageValueAtEndOfPeriod1{y in YEAR, t in TECHNOLOGY, r in REGION: (y + OperationalLife[t,r]-1) > (max{yy in YEAR} max(yy)) && DiscountRate[t,r]>0}: SalvageValue[y,t,r] = CapitalCost[y,t,r]*NewCapacity[y,t,r]*(1-(((1+DiscountRate[t,r])^(max{yy in YEAR} max(yy) - y+1)-1)/((1+DiscountRate[t,r])^OperationalLife[t,r]-1)));
+s.t. SV2_SalvageValueAtEndOfPeriod2{y in YEAR, t in TECHNOLOGY, r in REGION: (y + OperationalLife[t,r]-1) > (max{yy in YEAR} max(yy)) && DiscountRate[t,r]=0}: SalvageValue[y,t,r] = CapitalCost[y,t,r]*NewCapacity[y,t,r]*(1-(max{yy in YEAR} max(yy) - y+1)/OperationalLife[t,r]);
+s.t. SV3_SalvageValueAtEndOfPeriod3{y in YEAR, t in TECHNOLOGY, r in REGION: (y + OperationalLife[t,r]-1) <= (max{yy in YEAR} max(yy))}: SalvageValue[y,t,r] = 0;
+s.t. SV4_SalvageValueDiscountedToStartYear{y in YEAR, t in TECHNOLOGY, r in REGION}: DiscountedSalvageValue[y,t,r] = SalvageValue[y,t,r]/((1+DiscountRate[t,r])^(1+max{yy in YEAR} max(yy)-min{yy in YEAR} min(yy)));
+#
+#########        	Operating Costs 		 	#############
+#
+s.t. OC1_OperatingCostsVariable{y in YEAR,l in TIMESLICE, t in TECHNOLOGY, r in REGION}: sum{m in MODE_OF_OPERATION} TotalAnnualTechnologyActivityByMode[y,t,m,r]*VariableCost[y,t,m,r] = AnnualVariableOperatingCost[y,t,r];
+s.t. OC2_OperatingCostsFixedAnnual{y in YEAR,t in TECHNOLOGY, r in REGION}: TotalCapacityAnnual[y,t,r]*FixedCost[y,t,r] = AnnualFixedOperatingCost[y,t,r];
+s.t. OC3_OperatingCostsTotalAnnual{y in YEAR,t in TECHNOLOGY,r in REGION}: AnnualFixedOperatingCost[y,t,r]+AnnualVariableOperatingCost[y,t,r] = OperatingCost[y,t,r];
+s.t. OC4_DiscountedOperatingCostsTotalAnnual{y in YEAR, t in TECHNOLOGY, r in REGION}: OperatingCost[y,t,r]/((1+DiscountRate[t,r])^(y-min{yy in YEAR} min(yy)+0.5)) = DiscountedOperatingCost[y,t,r];
+#
+#########       	Total Discounted Costs	 	#############
+#
+s.t. TDC1_TotalDiscountedCostByTechnology{y in YEAR, t in TECHNOLOGY, r in REGION}: DiscountedOperatingCost[y,t,r]+DiscountedCapitalInvestment[y,t,r]+DiscountedTechnologyEmissionsPenalty[y,t,r]-DiscountedSalvageValue[y,t,r] = TotalDiscountedCost[y,t,r];
+#
+#########      		Total Capacity Constraints 	##############
+#
+s.t. TCC1_TotalAnnualMaxCapacityConstraint{y in YEAR, t in TECHNOLOGY,r in REGION: TotalAnnualMaxCapacity[y,t,r]<9999 }: TotalCapacityAnnual[y,t,r] <= TotalAnnualMaxCapacity[y,t,r];
+s.t. TCC2_TotalAnnualMinCapacityConstraint{y in YEAR, t in TECHNOLOGY,r in REGION: TotalAnnualMinCapacity[y,t,r]>0}: TotalCapacityAnnual[y,t,r] >= TotalAnnualMinCapacity[y,t,r];
+#
+#########    		New Capacity Constraints  	##############
+#
+s.t. NCC1_TotalAnnualMaxNewCapacityConstraint{y in YEAR, t in TECHNOLOGY, r in REGION: TotalAnnualMaxCapacityInvestment[y,t,r]<9999}: NewCapacity[y,t,r] <= TotalAnnualMaxCapacityInvestment[y,t,r];
+s.t. NCC2_TotalAnnualMinNewCapacityConstraint{y in YEAR, t in TECHNOLOGY, r in REGION: TotalAnnualMinCapacityInvestment[y,t,r]>0}: NewCapacity[y,t,r] >= TotalAnnualMinCapacityInvestment[y,t,r];
+#
+#########   		Annual Activity Constraints	##############
+#
+s.t. AAC1_TotalAnnualTechnologyActivity{y in YEAR, t in TECHNOLOGY, r in REGION}: sum{l in TIMESLICE} RateOfTotalActivity[y,l,t,r]*YearSplit[y,l] = TotalTechnologyAnnualActivity[y,t,r];
+s.t. AAC2_TotalAnnualTechnologyActivityUpperLimit{y in YEAR, t in TECHNOLOGY, r in REGION:TotalTechnologyAnnualActivityUpperLimit[y,t,r]<9999}: TotalTechnologyAnnualActivity[y,t,r] <= TotalTechnologyAnnualActivityUpperLimit[y,t,r] ;
+s.t. AAC3_TotalAnnualTechnologyActivityLowerLimit{y in YEAR, t in TECHNOLOGY, r in REGION: TotalTechnologyAnnualActivityLowerLimit[y,t,r]>0}: TotalTechnologyAnnualActivity[y,t,r] >= TotalTechnologyAnnualActivityLowerLimit[y,t,r] ;
+#
+#########    		Total Activity Constraints 	##############
+#
+s.t. TAC1_TotalModelHorizenTechnologyActivity{t in TECHNOLOGY, r in REGION}: sum{y in YEAR} TotalTechnologyAnnualActivity[y,t,r] = TotalTechnologyModelPeriodActivity[t,r];
+s.t. TAC2_TotalModelHorizenTechnologyActivityUpperLimit{y in YEAR, t in TECHNOLOGY, r in REGION:TotalTechnologyModelPeriodActivityUpperLimit[t,r]<9999}: TotalTechnologyModelPeriodActivity[t,r] <= TotalTechnologyModelPeriodActivityUpperLimit[t,r] ;
+s.t. TAC3_TotalModelHorizenTechnologyActivityLowerLimit{y in YEAR, t in TECHNOLOGY, r in REGION: TotalTechnologyModelPeriodActivityLowerLimit[t,r]>0}: TotalTechnologyModelPeriodActivity[t,r] >= TotalTechnologyModelPeriodActivityLowerLimit[t,r] ;
+#
+#########   		Reserve Margin Constraint	############## NTS: Should change demand for production
+#
+s.t. RM1_ReserveMargin_TechologiesIncluded_In_Activity_Units{y in YEAR, l in TIMESLICE, r in REGION}: sum {t in TECHNOLOGY} TotalCapacityAnnual[y,t,r] *ReserveMarginTagTechnology[y,t,r] * CapacityToActivityUnit[t,r]	 = 	TotalCapacityInReserveMargin[y,r];
+s.t. RM2_ReserveMargin_FuelsIncluded{y in YEAR, l in TIMESLICE, r in REGION}: sum {f in FUEL} RateOfProduction[y,l,f,r] * ReserveMarginTagFuel[y,f,r] = DemandNeedingReserveMargin[y,l,r];
+s.t. RM3_ReserveMargin_Constraint{y in YEAR, l in TIMESLICE, r in REGION}: DemandNeedingReserveMargin[y,l,r] * ReserveMargin[y,r]<= TotalCapacityInReserveMargin[y,r];
+#
+#########   		RE Production Target		############## NTS: Should change demand for production
+#
+s.t. RE1_FuelProductionByTechnologyAnnual{y in YEAR, t in TECHNOLOGY, f in FUEL, r in REGION}: sum{l in TIMESLICE} ProductionByTechnology[y,l,t,f,r] = ProductionByTechnologyAnnual[y,t,f,r];
+s.t. RE2_TechIncluded{y in YEAR, r in REGION}: sum{t in TECHNOLOGY, f in FUEL} ProductionByTechnologyAnnual[y,t,f,r]*RETagTechnology[y,t,r] = TotalREProductionAnnual[y,r];
+s.t. RE3_FuelIncluded{y in YEAR, r in REGION}: sum{l in TIMESLICE, f in FUEL} RateOfDemand[y,l,f,r]*YearSplit[y,l]*RETagFuel[y,f,r] = RETotalDemandOfTargetFuelAnnual[y,r]; 
+s.t. RE4_EnergyConstraint{y in YEAR, r in REGION}:REMinProductionTarget[y,r]*RETotalDemandOfTargetFuelAnnual[y,r] <= TotalREProductionAnnual[y,r];
+s.t. RE5_FuelUseByTechnologyAnnual{y in YEAR, t in TECHNOLOGY, f in FUEL, r in REGION}: sum{l in TIMESLICE} RateOfUseByTechnology[y,l,t,f,r]*YearSplit[y,l] = UseByTechnologyAnnual[y,t,f,r];
+#
+#########   		Emissions Accounting		##############
+#
+s.t. E1_AnnualEmissionProductionByMode{y in YEAR, t in TECHNOLOGY, e in EMISSION, m in MODE_OF_OPERATION, r in REGION:EmissionActivityRatio[y,t,e,m,r]<>0}: EmissionActivityRatio[y,t,e,m,r]*TotalAnnualTechnologyActivityByMode[y,t,m,r]=AnnualTechnologyEmissionByMode[y,t,e,m,r];
+s.t. E2_AnnualEmissionProduction{y in YEAR, t in TECHNOLOGY, e in EMISSION, r in REGION}: sum{m in MODE_OF_OPERATION} AnnualTechnologyEmissionByMode[y,t,e,m,r] = AnnualTechnologyEmission[y,t,e,r];
+s.t. E3_EmissionsPenaltyByTechAndEmission{y in YEAR, t in TECHNOLOGY, e in EMISSION, r in REGION}: AnnualTechnologyEmission[y,t,e,r]*EmissionsPenalty[y,e,r] = AnnualTechnologyEmissionPenaltyByEmission[y,t,e,r];
+s.t. E4_EmissionsPenaltyByTechnology{y in YEAR, t in TECHNOLOGY, r in REGION}: sum{e in EMISSION} AnnualTechnologyEmissionPenaltyByEmission[y,t,e,r] = AnnualTechnologyEmissionsPenalty[y,t,r];
+s.t. E5_DiscountedEmissionsPenaltyByTechnology{y in YEAR, t in TECHNOLOGY, r in REGION}: AnnualTechnologyEmissionsPenalty[y,t,r]/((1+DiscountRate[t,r])^(y-min{yy in YEAR} min(yy)+0.5)) = DiscountedTechnologyEmissionsPenalty[y,t,r];
+s.t. E6_EmissionsAccounting1{y in YEAR, e in EMISSION, r in REGION}: sum{t in TECHNOLOGY} AnnualTechnologyEmission[y,t,e,r] = AnnualEmissions[y,e,r];
+s.t. E7_EmissionsAccounting2{e in EMISSION, r in REGION}: sum{y in YEAR} AnnualEmissions[y,e,r] = ModelPeriodEmissions[e,r]- ModelPeriodExogenousEmission[e,r];
+s.t. E8_AnnualEmissionsLimit{y in YEAR, e in EMISSION, r in REGION}: AnnualEmissions[y,e,r]+AnnualExogenousEmission[y,e,r] <= AnnualEmissionLimit[y,e,r];
+s.t. E9_ModelPeriodEmissionsLimit{e in EMISSION, r in REGION}: ModelPeriodEmissions[e,r] <= ModelPeriodEmissionLimit[e,r] ;
+#
+###########################################################################################
+#
+solve;
+#
+#########################################################################################################
+#																										#
+# 	Summary results tables below are printed to a comma-separated file called "SelectedResults.csv"		#
+#	For a full set of results please see "Results.txt"													#
+#	If you don't want these printed, please comment-out or delete them.									#
+#																										#
+#########################################################################################################
+#
+#
+####	Summary results 	###
+#
+#		Total costs and emissions by region
+#
+printf "\n" > "SelectedResults.csv";
+printf "Summary" >> "SelectedResults.csv";
+for {r in REGION} 	{printf ",%s", r >> "SelectedResults.csv";
+					}
+printf "\n" >> "SelectedResults.csv";
+printf "Emissions" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+for {r in REGION} 	{
+					for {e in EMISSION} 	{
+											printf ",%s", e >> "SelectedResults.csv";
+											printf ",%g", ModelPeriodEmissions[e,r] >> "SelectedResults.csv";
+											printf "\n" >> "SelectedResults.csv";
+											}
+					}
+printf "\n" >> "SelectedResults.csv";
+printf "Cost" >> "SelectedResults.csv";
+for {r in REGION} {printf ",%g", ModelPeriodCostByRegion[r] >> "SelectedResults.csv";
+}
+printf "\n" >> "SelectedResults.csv";
+#
+### 	Time Independent demand	###
+#
+printf "\n" >> "SelectedResults.csv";
+printf "TID Demand" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+	for {r in REGION} 	{printf ",%s", r >> "SelectedResults.csv";
+						printf "\n" >> "SelectedResults.csv";
+						for {f in FUEL} {printf "\n" >> "SelectedResults.csv";
+										printf ",%s", f >> "SelectedResults.csv";
+										printf "\n" >> "SelectedResults.csv";
+										for {y in YEAR } 	{
+															printf "%g", y >> "SelectedResults.csv";
+															printf ",%g", AccumulatedAnnualDemand[y,f,r] >> "SelectedResults.csv";
+															printf "\n" >> "SelectedResults.csv";
+															}
+											}
+						}
+#
+### 	Time Dependent demand	###
+#
+printf "\n" >> "SelectedResults.csv";
+printf "Time Dependent Demand (Energy Units)" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+	for {r in REGION} {printf ",%s", r >> "SelectedResults.csv";
+						printf "\n" >> "SelectedResults.csv";
+						for {f in FUEL} {printf ",%s", f >> "SelectedResults.csv";
+										printf "\n" >> "SelectedResults.csv";
+										for {l in TIMESLICE}	{
+																printf ",%s", l >> "SelectedResults.csv";
+																}
+										printf "\n" >> "SelectedResults.csv";
+										for {y in YEAR } 	{
+															printf "%g", y >> "SelectedResults.csv";
+															for { l in TIMESLICE} 	{
+																					printf ",%g", RateOfDemand[y,l,f,r]*YearSplit[y,l] >> "SelectedResults.csv";
+																					}
+															printf "\n" >> "SelectedResults.csv";
+															}
+										}
+						}
+#
+### 	Time Dependent production ###
+#
+printf "\n" >> "SelectedResults.csv";
+printf "Time Dependent Production (Energy Units) Test" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+	for {r in REGION} {printf ",%s", r >> "SelectedResults.csv";
+						printf "\n" >> "SelectedResults.csv";
+						for {f in FUEL} {printf ",%s", f >> "SelectedResults.csv";
+										printf "\n" >> "SelectedResults.csv";
+										for {l in TIMESLICE}	{
+																printf ",%s", l >> "SelectedResults.csv";
+																}
+										printf "\n" >> "SelectedResults.csv";
+										for {y in YEAR } 	{
+															printf "%g", y >> "SelectedResults.csv";
+															for { l in TIMESLICE} 	{
+																					printf ",%g", Production[y,l,f,r] >> "SelectedResults.csv";
+																					}
+															printf "\n" >> "SelectedResults.csv";
+															}
+										}
+						}
+#
+####	Total Annual Capacity	###
+#
+printf "TotalAnnualCapacity (Capacity Units)" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+for {t in TECHNOLOGY} {printf ",%s", t >> "SelectedResults.csv";}
+printf "\n" >> "SelectedResults.csv";
+for {r in REGION}	{
+		for { y in YEAR } {
+							printf "%g", y >> "SelectedResults.csv";
+							for { t in TECHNOLOGY } {
+													printf ",%g", TotalCapacityAnnual[y,t,r] >> "SelectedResults.csv";
+													}
+							printf "\n" >> "SelectedResults.csv";
+							}
+					}
+#
+####	New Annual Capacity	###
+#
+printf "\n" >> "SelectedResults.csv";
+printf "NewCapacity (Capacity Units )" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+for {t in TECHNOLOGY} 	{printf ",%s", t >> "SelectedResults.csv";}
+printf "\n" >> "SelectedResults.csv";
+for {r in REGION}	{
+					for { y in YEAR } 	{
+										printf "%g", y >> "SelectedResults.csv";
+										for { t in TECHNOLOGY } 	{
+																	printf ",%g", NewCapacity[y,t,r] >> "SelectedResults.csv";
+																	}
+										printf "\n" >> "SelectedResults.csv";
+										}
+					}
+#
+### Annual Production ###
+#
+printf "\n" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+printf "Annual Production (Energy Units)" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+for {r in REGION} 	{printf ",%s", r >> "SelectedResults.csv";
+					printf "\n" >> "SelectedResults.csv";
+					for {t in TECHNOLOGY} 	{printf "%s", t >> "SelectedResults.csv";
+											for {f in FUEL}{printf",%s",f >> "SelectedResults.csv";
+															}
+											printf "\n" >> "SelectedResults.csv";
+											for {y in YEAR } 	{
+																printf "%g", y >> "SelectedResults.csv";
+																for {f in FUEL}{
+																				printf ",%g", ProductionByTechnologyAnnual[y,t,f,r] >> "SelectedResults.csv";
+																				}
+																printf "\n" >> "SelectedResults.csv";
+																}
+						printf "\n" >> "SelectedResults.csv";
+											}
+					}
+#
+### Annual Use ###
+#
+printf "Annual Use (Energy Units)" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+for {r in REGION} {printf ",%s", r >> "SelectedResults.csv";
+					printf "\n" >> "SelectedResults.csv";
+					for {t in TECHNOLOGY} 	{printf "%s", t >> "SelectedResults.csv";
+											for {f in FUEL}{printf",%s",f >> "SelectedResults.csv";
+															}
+											printf "\n" >> "SelectedResults.csv";
+											for {y in YEAR } 	{
+																printf "%g", y >> "SelectedResults.csv";
+																for {f in FUEL}{
+																				printf ",%g", UseByTechnologyAnnual[y,t,f,r] >> "SelectedResults.csv";
+																				}
+																printf "\n" >> "SelectedResults.csv";
+																}
+						printf "\n" >> "SelectedResults.csv";
+											}
+					}
+#
+###		Technology Production in each TS ###
+#
+printf "\n" >> "SelectedResults.csv";
+printf "ProductionByTechnology (Energy Units)" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+for {r in REGION} {printf ",%s", r >> "SelectedResults.csv";
+	printf "\n" >> "SelectedResults.csv";
+	for {t in TECHNOLOGY} {printf "%s", t >> "SelectedResults.csv";
+					for {f in FUEL}{printf",%s",f >> "SelectedResults.csv";
+						for {l in TIMESLICE}{
+							printf ",%s", l >> "SelectedResults.csv";
+						}
+					}
+					printf "\n" >> "SelectedResults.csv";
+					for {y in YEAR } {
+						printf "%g", y >> "SelectedResults.csv";
+						for {f in FUEL}{printf "," >> "SelectedResults.csv";
+							for { l in TIMESLICE} {
+										printf ",%g", ProductionByTechnology[y,l,t,f,r] >> "SelectedResults.csv";
+								}
+						}
+						printf "\n" >> "SelectedResults.csv";
+					}
+	}
+}
+#
+###		Technology Use in each TS	###
+#
+printf "\n" >> "SelectedResults.csv";
+printf "Use By Technology (Energy Units)" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+for {r in REGION} {printf ",%s", r >> "SelectedResults.csv";
+	printf "\n" >> "SelectedResults.csv";
+	for {t in TECHNOLOGY} {printf "%s", t >> "SelectedResults.csv";
+					for {f in FUEL}{printf",%s",f >> "SelectedResults.csv";
+						for {l in TIMESLICE}{
+							printf ",%s", l >> "SelectedResults.csv";
+						}
+					}
+					printf "\n" >> "SelectedResults.csv";
+					for {y in YEAR } {
+						printf "%g", y >> "SelectedResults.csv";
+						for {f in FUEL}{printf "," >> "SelectedResults.csv";
+							for { l in TIMESLICE} {
+										printf ",%g", UseByTechnology[y,l,t,f,r] >> "SelectedResults.csv";
+								}
+						}
+						printf "\n" >> "SelectedResults.csv";
+					}
+	}
+}
+#
+###		Total Annual Emissions	###
+#
+printf "\n" >> "SelectedResults.csv";
+printf "Annual Emissions (Emissions Units)" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+	for {r in REGION} 	{printf ",%s", r >> "SelectedResults.csv";
+						printf "\n" >> "SelectedResults.csv";
+						for {e in EMISSION} 	{printf ",%s", e >> "SelectedResults.csv";
+												printf "\n" >> "SelectedResults.csv";
+												printf "\n" >> "SelectedResults.csv";
+												for {y in YEAR } 	{
+																	printf "%g", y >> "SelectedResults.csv";
+																	printf ",%g", AnnualEmissions[y,e,r]>> "SelectedResults.csv";
+																	printf "\n" >> "SelectedResults.csv";
+																	}
+												}
+						}
+#
+### Annual Emissions by Technology ###
+#
+printf "\n" >> "SelectedResults.csv";
+printf "Annual Emissions by Technology (Emissions Units)" >> "SelectedResults.csv";
+printf "\n" >> "SelectedResults.csv";
+for {r in REGION} {printf ",%s", r >> "SelectedResults.csv";
+					printf "\n" >> "SelectedResults.csv";
+					for {t in TECHNOLOGY} 	{printf "%s", t >> "SelectedResults.csv";
+											for {e in EMISSION}{printf",%s",e >> "SelectedResults.csv";
+															}
+											printf "\n" >> "SelectedResults.csv";
+											for {y in YEAR } 	{
+																printf "%g", y >> "SelectedResults.csv";
+																for {e in EMISSION}{
+																				printf ",%g", AnnualTechnologyEmission[y,t,e,r] >> "SelectedResults.csv";
+																				}
+																printf "\n" >> "SelectedResults.csv";
+																}
+						printf "\n" >> "SelectedResults.csv";
+											}
+					}						
+end;		
+																																																																																																																																																																																																																																								
