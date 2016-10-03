@@ -1,12 +1,9 @@
-# OSeMOSYS_2015_08_27
+# OSeMOSYS_2016_08_01
 # 
 # Open Source energy MOdeling SYStem
 #
-# Main changes to previous version OSeMOSYS_2013_05_10
-#		- Removed the parameter TechWithCapacityNeededToMeetPeakTS from constraint CAa4_Constraint_Capacity
-#		- Fixed a bug related to using CapacityOfOneTechnologyUnit in constraint CAa5_TotalNewCapacity
-#		- Fixed a bug in the storage equations which caused an error if more than one day type was used 
-#		- DiscountRate is no longer technology-specific. Therefore, DiscountRateStorage is now replaced by DiscountRate.
+# Main changes to previous version OSeMOSYS_2015_08_27
+#		- Parameter REMinProductionTarget no more indicated by user as % of demand for fuel f, but as % of production of fuel f.
 #
 # ============================================================================
 #
@@ -27,7 +24,7 @@
 #
 #  To run OSeMOSYS, enter the following line into your command prompt after replacing FILEPATH & YOURDATAFILE with your folder structure and data file name: 
 #
-#  C:\...FILEPATH...\glpsol -m C:\...FILEPATH...\OSeMOSYS_2015_08_27.txt -d C:\...FILEPATH...\YOURDATAFILE.txt -o C:\...FILEPATH...\Results.txt
+#  C:\...FILEPATH...\glpsol -m C:\...FILEPATH...\OSeMOSYS_2016_08_01.txt -d C:\...FILEPATH...\YOURDATAFILE.txt -o C:\...FILEPATH...\Results.txt
 #
 #  Alternatively, install GUSEK (http://gusek.sourceforge.net/gusek.html) and run the model within this integrated development environment (IDE). 
 #  To do so, open the .dat file and select "Use External .dat file" from the Options menu. Then change to the model file and select the "Go" icon or press F5.
@@ -231,7 +228,7 @@ var DemandNeedingReserveMargin{r in REGION,l in TIMESLICE, y in YEAR}>= 0;
 #########			RE Gen Target				#############
 #
 var TotalREProductionAnnual{r in REGION, y in YEAR};
-var RETotalDemandOfTargetFuelAnnual{r in REGION, y in YEAR};
+var RETotalProductionOfTargetFuelAnnual{r in REGION, y in YEAR};
 #
 var TotalTechnologyModelPeriodActivity{r in REGION, t in TECHNOLOGY};
 #
@@ -407,8 +404,8 @@ s.t. RM3_ReserveMargin_Constraint{r in REGION, l in TIMESLICE, y in YEAR}: Deman
 #
 s.t. RE1_FuelProductionByTechnologyAnnual{r in REGION, t in TECHNOLOGY, f in FUEL, y in YEAR}: sum{l in TIMESLICE} ProductionByTechnology[r,l,t,f,y] = ProductionByTechnologyAnnual[r,t,f,y];
 s.t. RE2_TechIncluded{r in REGION, y in YEAR}: sum{t in TECHNOLOGY, f in FUEL} ProductionByTechnologyAnnual[r,t,f,y]*RETagTechnology[r,t,y] = TotalREProductionAnnual[r,y];
-s.t. RE3_FuelIncluded{r in REGION, y in YEAR}: sum{l in TIMESLICE, f in FUEL} RateOfDemand[r,l,f,y]*YearSplit[l,y]*RETagFuel[r,f,y] = RETotalDemandOfTargetFuelAnnual[r,y]; 
-s.t. RE4_EnergyConstraint{r in REGION, y in YEAR}:REMinProductionTarget[r,y]*RETotalDemandOfTargetFuelAnnual[r,y] <= TotalREProductionAnnual[r,y];
+s.t. RE3_FuelIncluded{r in REGION, y in YEAR}: sum{l in TIMESLICE, f in FUEL} RateOfProduction[r,l,f,y]*YearSplit[l,y]*RETagFuel[r,f,y] = RETotalProductionOfTargetFuelAnnual[r,y]; 
+s.t. RE4_EnergyConstraint{r in REGION, y in YEAR}:REMinProductionTarget[r,y]*RETotalProductionOfTargetFuelAnnual[r,y] <= TotalREProductionAnnual[r,y];
 s.t. RE5_FuelUseByTechnologyAnnual{r in REGION, t in TECHNOLOGY, f in FUEL, y in YEAR}: sum{l in TIMESLICE} RateOfUseByTechnology[r,l,t,f,y]*YearSplit[l,y] = UseByTechnologyAnnual[r,t,f,y];
 #
 #########   		Emissions Accounting		##############
