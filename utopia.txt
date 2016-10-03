@@ -1,7 +1,7 @@
 #
 #	To run the model, copy and paste the following line into the command prompt, after replacing ...FILEPATH... with your folder structure.
 #
-#   C:\...FILEPATH...\glpsol -m C:\...FILEPATH...\OSeMOSYS_2013_03_14.mod -d C:\...FILEPATH...\UTOPIA_2013_03_14.dat -o C:\...FILEPATH...\UTOPIA-Results.txt                           		
+#   C:\...FILEPATH...\glpsol -m C:\...FILEPATH...\OSeMOSYS_2013_04_30.mod -d C:\...FILEPATH...\UTOPIA_2013_04_30.dat -o C:\...FILEPATH...\UTOPIA-Results.txt                           		
 #
 #  Alternatively, install GUSEK (http://gusek.sourceforge.net/gusek.html) and run the model within this integrated development environment (IDE). 
 #  To do so, open the .dat file within GUSEK and select "Use External .dat file" from the Options menu. Then go to the .mod file and select the "Go" icon or press F5.
@@ -1057,53 +1057,53 @@ param Conversionlh default 0 :=
 # The length of one time bracket in one specific day as a fraction of the year, e.g., when distinguishing between days and night: 12h/(24h*365d)																											
 param DaySplit default 0.00137 :=;	
 #
-# TechnologyToStorage{r in REGION, t in TECHNOLOGY, m in MODE_OF_OPERATION, s in STORAGE}	
+# TechnologyToStorage{t in TECHNOLOGY, m in MODE_OF_OPERATION, s in STORAGE, r in REGION}	
 param	TechnologyToStorage	default	0	:=																				
 	[*,2,*,UTOPIA]		:	DAM	:=																			
 	E51			1	;																			
 #
-# TechnologyFromStorage{r in REGION, t in TECHNOLOGY, m in MODE_OF_OPERATION, s in STORAGE}																									
+# TechnologyFromStorage{t in TECHNOLOGY, m in MODE_OF_OPERATION, s in STORAGE, r in REGION}																									
 param	TechnologyFromStorage	default	0	:=																				
 	[*,1,*,UTOPIA]		:	DAM	:=																			
 	E51			1	;																			
 #																										
-# StorageLevelStart{r in REGION, s in STORAGE}																											
+# StorageLevelStart{s in STORAGE, r in REGION}																											
 # At beginning of first year. Attention: if zero, OSeMOSYS will use the first time slices in the entire first day type in the entire first season to fill the storage. 																											
 # To avoid OSeMOSYS taking a whole part of a season to fill up the storage, and to avoid defining smaller seasons, set it to zero, run the model, and check the StorageLevelYearStart 																											
 # variable of the following year and use a similar value for StorageLevelStart. Alternatively, model a few years before the first year of your interest.																											
 param StorageLevelStart default 999:=																											
 ;																											
-# DaysInDayType{ls in SEASON, ld in DAYTYPE, y in YEAR};																											
+# DaysInDayType{y in YEAR, ls in SEASON, ld in DAYTYPE};																											
 # Number of days for each day type within a week, i.e., out of 7 																											
 param DaysInDayType default 7:=																											
 ;																											
-# StorageMaxChargeRate{r in REGION, s in STORAGE}; Unit: GW																											
+# StorageMaxChargeRate{s in STORAGE, r in REGION}; Unit: GW																											
 param StorageMaxChargeRate default 99:=																											
 ;																											
-# StorageMaxDischargeRate{r in REGION, s in STORAGE}; Unit: GW																											
+# StorageMaxDischargeRate{s in STORAGE, r in REGION}; Unit: GW																											
 param StorageMaxDischargeRate default 99:=																											
 ;																											
-# MinStorageCharge{r in REGION, s in STORAGE, y in YEAR}; Unit: fraction of MaxStorageCharge, i.e., between 0.00 and 0.99																											
+# MinStorageCharge{s in STORAGE, y in YEAR, r in REGION}; Unit: fraction of MaxStorageCharge, i.e., between 0.00 and 0.99																											
 param MinStorageCharge default 0. := 																											
 ;																											
-# OperationalLifeStorage{r in REGION, s in STORAGE, y in YEAR}; Unit: years																											
+# OperationalLifeStorage{s in STORAGE, y in YEAR, r in REGION}; Unit: years																											
 param OperationalLifeStorage default			99	:=																							
 ;																											
-# CapitalCostStorage{r in REGION, s in STORAGE, y in YEAR}; Unit: USD/GWa																											
+# CapitalCostStorage{s in STORAGE, y in YEAR, r in REGION}; Unit: USD/GWa																											
 param CapitalCostStorage default 			0	:=																							
 ;																											
-# DiscountRateStorage{r in REGION, s in STORAGE}; Unit: fraction																											
+# DiscountRateStorage{s in STORAGE, r in REGION}; Unit: fraction																											
 param DiscountRateStorage default			0	:=																							
 ;																											
-# ResidualStorageCapacity{r in REGION, s in STORAGE, y in YEAR}; 
+# ResidualStorageCapacity{s in STORAGE, y in YEAR, r in REGION}; 
 # Storage capacity which is available from before the modelling period, or which is know to become available in a specific year. Unit: GWa																											
 param ResidualStorageCapacity default			999	:=																							
 ;
-# CapacityOfOneTechnologyUnit{r in REGION, t in TECHNOLOGY, y in YEAR}; Unit: GW
+# CapacityOfOneTechnologyUnit{y in YEAR, t in TECHNOLOGY, r in REGION}; Unit: GW
 # Defines the minimum size of one capacity addition. If set to zero, no mixed integer linear programming (MILP) is used and computational time will decrease.																		
 param CapacityOfOneTechnologyUnit default	0	:=	;
 #
-# TradeRoute{r in REGION, rr in REGION, f in FUEL, y in YEAR}
+# TradeRoute{y in YEAR, f in FUEL, r in REGION, rr in REGION}
 # Defines which region r is linked with which region rr in order to enable or disable trading of a specific fuel. Unit: Fraction, either 1 or 0
 # 1 defines a trade link and 0 ensuring that no trade occurs. Values inbetween are not allowed. If r is linked to rr, rr has also to be linked with r.
 # I.e., for one specific year and fuel, this parameter is entered as a symmetric matrix (with a diagonal of zeros).
