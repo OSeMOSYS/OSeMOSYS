@@ -1,7 +1,7 @@
 #
 #	To run the model, copy and paste the following line into the command prompt, after replacing ...FILEPATH... with your folder structure.
 #
-#   C:\...FILEPATH...\glpsol -m C:\...FILEPATH...\OSeMOSYS_2012_06_01_BETA.mod -d C:\...FILEPATH...\UTOPIA_2012_06_01_BETA.dat -o C:\...FILEPATH...\UTOPIA-Results.txt                           		
+#   C:\...FILEPATH...\glpsol -m C:\...FILEPATH...\OSeMOSYS_2013_03_14.mod -d C:\...FILEPATH...\UTOPIA_2013_03_14.dat -o C:\...FILEPATH...\UTOPIA-Results.txt                           		
 #
 #  Alternatively, install GUSEK (http://gusek.sourceforge.net/gusek.html) and run the model within this integrated development environment (IDE). 
 #  To do so, open the .dat file within GUSEK and select "Use External .dat file" from the Options menu. Then go to the .mod file and select the "Go" icon or press F5.
@@ -10,7 +10,7 @@
 #	Energy and demands in PJ/a																							
 #	Power plants in GW																							
 #	Investment and Fixed O&M Costs: Power plant: Million $ / GW (//$/kW)																							
-#	Investment  and Fixed O&M Costs Costs: Other plant costs: Million $/PJ/a																							
+#	Other plant costs: Million $/PJ/a																							
 #	Variable O&M (& Import) Costs: Million $ / PJ (//$/GJ)																							
 #
 #****************************************																																
@@ -28,7 +28,7 @@ set	MODE_OF_OPERATION	:=	1 2	;
 set	REGION	:=	UTOPIA	;
 #																		
 #  SEASON (Use consecutive numbers only, i.e, 1,2,3,4!, e.g., 1 = winter, 2 = spring, 3 = summer, 4 = autumn. The seasons with the higher number follow those with lower numbers.) 
-#  Note: in the UTOPIA case, energy is not stored from one season to another. Rather, the available storage capacity is assumed to be infinite. Therefore, it can be assumed that the intermediate season is between winter and summer without any consequences for the model results (and not both, between winter and summer, and between summer and winter).
+#  Note: in the UTOPIA case, energy is not stored from one season to another. Rather, the available capacity is assumed to be infinite. Therefore, it can be assumed that the intermediate season is between winter and summer without any consequences for the model results (and not both, between winter and summer, and between summer and winter).
 set SEASON	:=	1	2	3;
 #
 #  DAYTYPE (Use consecutive numbers only, i.e, 1,2,3,4!, e.g., 1 = weekdays, 2 = weekends. The weekdays with the higher numbers follow those with lower numbers.)
@@ -40,6 +40,9 @@ set DAILYTIMEBRACKET	:=	1	2;
 set	STORAGE	:=	DAM	;																				
 #
 param DiscountRate default 0.05 :=;
+#
+# DepreciationMethod; equal to 1 for Sinking Fund and 2 for Straight Line Depreciation
+param DepreciationMethod default 1 :=;
 #																								
 param	YearSplit:	ID	IN	SD	SN	WD	WN	:=																
 1990		0.1667	0.0833	0.1667	0.0833	0.3333	0.1667																	
@@ -671,31 +674,6 @@ param	ResidualCapacity default	0	:=
 2009					0.2		0	0.1	0.5	0.3			0	1.3		0	0									
 2010					0.15	0	0.1	0.5	0.2			0	0		0	0	;								
 #																								
-param	SalvageFactor		default	0	:=																			
-[*,*,UTOPIA]		:	E01	E21	E31	E51	E70	RHE	RHO	RL1	SRE	TXD	TXE	TXG :=
-1990			0.7	0.7	0.99	0.99	0.7	0.46	0.46	0	0.83	0	0	0
-1991			0.73	0.73	0.99	0.99	0.73	0.5	0.5	0	0.84	0	0	0
-1992			0.75	0.75	0.99	0.99	0.75	0.54	0.54	0	0.85	0	0	0
-1993			0.77	0.77	0.99	0.99	0.77	0.58	0.58	0	0.87	0	0	0
-1994			0.79	0.79	0.99	0.99	0.79	0.61	0.61	0	0.88	0	0	0
-1995			0.8	0.8	0.99	0.99	0.8	0.64	0.64	0	0.89	0	0	0
-1996			0.82	0.82	0.99	0.99	0.82	0.68	0.68	0	0.9	0	0	0
-1997			0.84	0.84	0.99	0.99	0.84	0.71	0.71	0	0.91	0.09	0.09	0.09
-1998			0.85	0.85	0.99	0.99	0.85	0.73	0.73	0	0.92	0.18	0.18	0.18
-1999			0.87	0.87	0.99	0.99	0.87	0.76	0.76	0	0.92	0.26	0.26	0.26
-2000			0.88	0.88	0.99	0.99	0.88	0.79	0.79	0	0.93	0.34	0.34	0.34
-2001			0.9	0.9	0.999	0.999	0.9	0.81	0.81	0	0.94	0.42	0.42	0.42
-2002			0.91	0.91	0.999	0.999	0.91	0.83	0.83	0.12	0.95	0.49	0.49	0.49
-2003			0.92	0.92	0.999	0.999	0.92	0.86	0.86	0.24	0.95	0.56	0.56	0.56
-2004			0.93	0.93	0.999	0.999	0.93	0.88	0.88	0.35	0.96	0.62	0.62	0.62
-2005			0.94	0.94	0.999	0.999	0.94	0.9	0.9	0.46	0.97	0.68	0.68	0.68
-2006			0.95	0.95	0.999	0.999	0.95	0.92	0.92	0.56	0.97	0.74	0.74	0.74
-2007			0.96	0.96	0.999	0.999	0.96	0.94	0.94	0.66	0.98	0.8	0.8	0.8
-2008			0.97	0.97	0.999	0.999	0.97	0.95	0.95	0.75	0.98	0.85	0.85	0.85
-2009			0.98	0.98	0.999	0.999	0.98	0.97	0.97	0.84	0.99	0.9	0.9	0.9
-2010			0.99	0.99	0.999	0.999	0.99	0.98	0.98	0.92	0.999	0.95	0.95	0.95;
-								
-#																								
 param	AvailabilityFactor	default	1	:=																				
 [*,*,UTOPIA]		:	RHE	RHO	RL1	TXD	TXE	TXG	:=															
 1990			1	1	1	1	1	1																
@@ -1079,53 +1057,53 @@ param Conversionlh default 0 :=
 # The length of one time bracket in one specific day as a fraction of the year, e.g., when distinguishing between days and night: 12h/(24h*365d)																											
 param DaySplit default 0.00137 :=;	
 #
-# TechnologyToStorage{t in TECHNOLOGY, m in MODE_OF_OPERATION, s in STORAGE, r in REGION}	
+# TechnologyToStorage{r in REGION, t in TECHNOLOGY, m in MODE_OF_OPERATION, s in STORAGE}	
 param	TechnologyToStorage	default	0	:=																				
 	[*,2,*,UTOPIA]		:	DAM	:=																			
 	E51			1	;																			
 #
-# TechnologyFromStorage{t in TECHNOLOGY, m in MODE_OF_OPERATION, s in STORAGE, r in REGION}																									
+# TechnologyFromStorage{r in REGION, t in TECHNOLOGY, m in MODE_OF_OPERATION, s in STORAGE}																									
 param	TechnologyFromStorage	default	0	:=																				
 	[*,1,*,UTOPIA]		:	DAM	:=																			
 	E51			1	;																			
 #																										
-# StorageLevelStart{s in STORAGE, r in REGION}																											
+# StorageLevelStart{r in REGION, s in STORAGE}																											
 # At beginning of first year. Attention: if zero, OSeMOSYS will use the first time slices in the entire first day type in the entire first season to fill the storage. 																											
 # To avoid OSeMOSYS taking a whole part of a season to fill up the storage, and to avoid defining smaller seasons, set it to zero, run the model, and check the StorageLevelYearStart 																											
 # variable of the following year and use a similar value for StorageLevelStart. Alternatively, model a few years before the first year of your interest.																											
 param StorageLevelStart default 999:=																											
 ;																											
-# DaysInDayType{y in YEAR, ls in SEASON, ld in DAYTYPE};																											
+# DaysInDayType{ls in SEASON, ld in DAYTYPE, y in YEAR};																											
 # Number of days for each day type within a week, i.e., out of 7 																											
 param DaysInDayType default 7:=																											
 ;																											
-# StorageMaxChargeRate{s in STORAGE, r in REGION}; Unit: GW																											
+# StorageMaxChargeRate{r in REGION, s in STORAGE}; Unit: GW																											
 param StorageMaxChargeRate default 99:=																											
 ;																											
-# StorageMaxDischargeRate{s in STORAGE, r in REGION}; Unit: GW																											
+# StorageMaxDischargeRate{r in REGION, s in STORAGE}; Unit: GW																											
 param StorageMaxDischargeRate default 99:=																											
 ;																											
-# MinStorageCharge{s in STORAGE, y in YEAR, r in REGION}; Unit: fraction of MaxStorageCharge, i.e., between 0.00 and 0.99																											
+# MinStorageCharge{r in REGION, s in STORAGE, y in YEAR}; Unit: fraction of MaxStorageCharge, i.e., between 0.00 and 0.99																											
 param MinStorageCharge default 0. := 																											
 ;																											
-# OperationalLifeStorage{s in STORAGE, y in YEAR, r in REGION}; Unit: years																											
+# OperationalLifeStorage{r in REGION, s in STORAGE, y in YEAR}; Unit: years																											
 param OperationalLifeStorage default			99	:=																							
 ;																											
-# CapitalCostStorage{s in STORAGE, y in YEAR, r in REGION}; Unit: USD/GWa																											
+# CapitalCostStorage{r in REGION, s in STORAGE, y in YEAR}; Unit: USD/GWa																											
 param CapitalCostStorage default 			0	:=																							
 ;																											
-# DiscountRateStorage{s in STORAGE, r in REGION}; Unit: fraction																											
+# DiscountRateStorage{r in REGION, s in STORAGE}; Unit: fraction																											
 param DiscountRateStorage default			0	:=																							
 ;																											
-# ResidualStorageCapacity{s in STORAGE, y in YEAR, r in REGION}; 
+# ResidualStorageCapacity{r in REGION, s in STORAGE, y in YEAR}; 
 # Storage capacity which is available from before the modelling period, or which is know to become available in a specific year. Unit: GWa																											
 param ResidualStorageCapacity default			999	:=																							
 ;
-# CapacityOfOneTechnologyUnit{y in YEAR, t in TECHNOLOGY, r in REGION}; Unit: GW
+# CapacityOfOneTechnologyUnit{r in REGION, t in TECHNOLOGY, y in YEAR}; Unit: GW
 # Defines the minimum size of one capacity addition. If set to zero, no mixed integer linear programming (MILP) is used and computational time will decrease.																		
 param CapacityOfOneTechnologyUnit default	0	:=	;
 #
-# TradeRoute{y in YEAR, f in FUEL, r in REGION, rr in REGION}
+# TradeRoute{r in REGION, rr in REGION, f in FUEL, y in YEAR}
 # Defines which region r is linked with which region rr in order to enable or disable trading of a specific fuel. Unit: Fraction, either 1 or 0
 # 1 defines a trade link and 0 ensuring that no trade occurs. Values inbetween are not allowed. If r is linked to rr, rr has also to be linked with r.
 # I.e., for one specific year and fuel, this parameter is entered as a symmetric matrix (with a diagonal of zeros).
