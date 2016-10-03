@@ -1,12 +1,13 @@
 #
 #	To run the model, copy and paste the following line into the command prompt, after replacing ...FILEPATH... with your folder structure.
 #
-#   C:\...FILEPATH...\glpsol -m C:\...FILEPATH...\OSeMOSYS_2013_05_10.mod -d C:\...FILEPATH...\UTOPIA_2013_05_10.dat -o C:\...FILEPATH...\UTOPIA-Results.txt                           		
+#   C:\...FILEPATH...\glpsol -m C:\...FILEPATH...\OSeMOSYS_2016_08_01.txt -d C:\...FILEPATH...\UTOPIA_2016_08_01.txt -o C:\...FILEPATH...\UTOPIA-Results.txt                           		
 #
 #  Alternatively, install GUSEK (http://gusek.sourceforge.net/gusek.html) and run the model within this integrated development environment (IDE). 
 #  To do so, open the .dat file within GUSEK and select "Use External .dat file" from the Options menu. Then go to the .mod file and select the "Go" icon or press F5.
 #
-#	Based on UTOPIA version 5: BASE - Utopia Base Model																							
+#	Based on UTOPIA version 5: BASE - Utopia Base Model	
+#	The following are DEFAULT units, but they can be changed by users to their comfort. When doing so, users are advised to check the consistency of their choices though.																					
 #	Energy and demands in PJ/a																							
 #	Power plants in GW																							
 #	Investment and Fixed O&M Costs: Power plant: Million $ / GW (//$/kW)																							
@@ -20,8 +21,42 @@ param	ModelPeriodExogenousEmission	default	0		:=	;
 param	ModelPeriodEmissionLimit		default	9999	:=	;
 #****************************************																							
 set	EMISSION			:=	CO2	NOX	;																			
-set	TECHNOLOGY			:=	E01	E21	E31	E51	E70	IMPDSL1	IMPGSL1	IMPHCO1	IMPOIL1	IMPURN1	RHE	RHO	RL1	SRE	TXD	TXE	TXG	RIV	RHu RLu TXu	;			
-set	FUEL				:=	CSV	DSL	ELC	GSL	HCO	HYD	LTH	OIL	URN	RH	RL	TX	;									
+set	TECHNOLOGY			:=	E01	E21	E31	E51	E70	IMPDSL1	IMPGSL1	IMPHCO1	IMPOIL1	IMPURN1	RHE	RHO	RL1	SRE	TXD	TXE	TXG	RIV	RHu RLu TXu	;	
+# Summary of Set: TECHNOLOGY
+# E01 = Coal fuelled power plant
+# E21 = Nuclear power plant
+# E31 = Hydro power plant
+# E51 = Consumes and generates electricity
+# E70 = Diesel fuelled power plant
+# IMPDSL1 = Diesel supply
+# IMPGSL1 = Gasoline supply
+# IMPHCO1 = Coal supply
+# IMPOIL1 = Crude oil supply
+# IMPURN1 = Uranium supply
+# RHE = Residential electricity heating consuming electricity
+# RL1 = Residential lighting consuming electricity
+# SRE = Refinery
+# TXD = Transport in passenger km consuming diesel
+# TXE = Transport in passenger km consuming electricity
+# TXG = Transport in passenger km consuming gasoline
+# RIV = River to supply hydro power plants
+# RHu = Unmet heating demand
+# RLu = Unmet lighting demand
+# TXu = Unmet transport demand
+#	
+set	FUEL				:=	DSL	ELC	GSL	HCO	HYD	OIL	URN	RH	RL	TX	;	
+# Summary of Set: FUEL
+# DSL = Diesel
+# ELC = Electricity
+# GSL = Gasoline
+# HCO = Coal
+# HYD = Hydro
+# OIL = Oil
+# URN = Uranium
+# RH = Heating demand
+# RL = Lighting demand
+# TX = Transport demand
+#									
 set	YEAR				:=	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	;
 set	TIMESLICE			:=	ID	IN	SD	SN	WD	WN	;															
 set	MODE_OF_OPERATION	:=	1 2	;																				
@@ -44,7 +79,9 @@ param DiscountRate default 0.05 :=;
 # DepreciationMethod; equal to 1 for Sinking Fund and 2 for Straight Line Depreciation
 param DepreciationMethod default 1 :=;
 
-#																								
+#
+# YearSplit{l in TIMESLICE, y in YEAR}  Units: Fraction of 8760 hours
+# The fraction of the year in each time slice.
 param	YearSplit	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 ID						0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	
 IN						0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	
@@ -53,18 +90,24 @@ SN						0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.0833	0.
 WD						0.3333	0.3333	0.3333	0.3333	0.3333	0.3333	0.3333	0.3333	0.3333	0.3333	0.3333	0.3333	0.3333	0.3333	0.3333	0.3333	0.3333	0.3333	0.3333	0.3333	0.3333	
 WN						0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	0.1667	;
 																								
-#																								
+#
+# AccumulatedAnnualDemand{r in REGION, f in FUEL, y in YEAR}  Units: PJ
+# This type of demand can be satisfied at any time of the year, as long as the total is met.
 param	AccumulatedAnnualDemand	default	0	:=																				
 	[UTOPIA,*,*]:		1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 TX						5.2		5.46	5.72	5.98	6.24	6.5		6.76	7.02	7.28	7.54	7.8		8.189	8.578	8.967	9.356	9.745	10.134	10.523	10.912	11.301	11.69	;
 																								
-#																								
+#
+# SpecifiedAnnualDemand{r in REGION, f in FUEL, y in YEAR}  Units: PJ
+# The annual requirement for each output fuel.
 param	SpecifiedAnnualDemand	default	0	:=																				
 	[UTOPIA,*,*]	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 RH						25.2	26.46	27.72	28.98	30.24	31.5	32.76	34.02	35.28	36.54	37.8	39.69	41.58	43.47	45.36	47.25	49.14	51.03	52.92	54.81	56.7	
 RL						5.6		5.88	6.16	6.44	6.72	7		7.28	7.56	7.84	8.12	8.4		8.82	9.24	9.66	10.08	10.5	10.92	11.34	11.76	12.18	12.6	;
 																								
-#																								
+#
+# SpecifiedDemandProfile{r in REGION, l in TIMESLICE, f in FUEL, y in YEAR} Units: Fraction
+# Indicates the proportion of energy demand required in each time slice. For each year the sum must be equal to 1.
 param	SpecifiedDemandProfile	default	0	:=																				
 	[UTOPIA,RH,*,*]	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 ID						0.12	0.12	0.12	0.12	0.12	0.12	0.12	0.12	0.12	0.12	0.12	0.12	0.12	0.12	0.12	0.12	0.12	0.12	0.12	0.12	0.12	
@@ -82,15 +125,21 @@ SN						0.05	0.05	0.05	0.05	0.05	0.05	0.05	0.05	0.05	0.05	0.05	0.05	0.05	0.05	0.
 WD						0.5		0.5		0.5		0.5		0.5		0.5		0.5		0.5		0.5		0.5		0.5		0.5		0.5		0.5		0.5		0.5		0.5		0.5		0.5		0.5		0.5	
 WN						0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		;
 																								
-#																								
+#
+# CapacityToActivityUnit{r in REGION, t in TECHNOLOGY};  Units: PJ/GW-YR
+# Thus here we use a factor of 31.536, which is the level of energy production in PJ produced from 1 GW operating for 1 year (1GW * 8760 * 3600 / 10^6)
 param	CapacityToActivityUnit	default	1	:	E01		E21		E31		E51		E70		:=														
-UTOPIA											31.56	31.56	31.56	31.56	31.56	;														
+UTOPIA											31.536	31.536	31.536	31.536	31.536	;														
 																								
-#																								
+#
+# TechWithCapacityNeededToMeetPeakTS{r in Region, t in Technology}  Units: 1=yes, 0=no
+# Flags the technologies that can be used to meet the peak demand for the fuel they produce.
 param	TechWithCapacityNeededToMeetPeakTS	default	0	:	E01	E21	E31	E51	E70	:=														
 UTOPIA														1	1	1	1	1	;														
 																	
-#																								
+#
+# InputActivityRatio{r in REGION, t in TECHNOLOGY, f in FUEL, m in MODE_OF_OPERATION, y in YEAR}  Units: Ratio
+# The input (use) of fuel per unit of activity for each technology.
 param	InputActivityRatio	default	0	:=																				
 	[UTOPIA,*,DSL,1,*]	:	1990			1991			1992			1993			1994			1995			1996			1997			1998			1999			2000			2001			2002			2003			2004			2005			2006			2007			2008			2009			2010	:=
 E70							3.4				3.4				3.4				3.4				3.4				3.4				3.4				3.4				3.4				3.4				3.4				3.4				3.4				3.4				3.4				3.4				3.4				3.4				3.4				3.4				3.4		
@@ -120,7 +169,10 @@ E21							1		1		1		1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
 	[UTOPIA,*,ELC,2,*]	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 E51							1.3889	1.3889	1.3889	1.3889	1.3889	1.3889	1.3889	1.3889	1.3889	1.3889	1.3889	1.3889	1.3889	1.3889	1.3889	1.3889	1.3889	1.3889	1.3889	1.3889	1.3889	;
 																								
-# 																								
+# 
+# OutputActivityRatio{r in Region, t in Technology, f in Fuel, m in ModeOfOperation, y in Year}  Units: Ratio
+# Ratio of output to activity.
+# Should be 1 for power plants/electricity, 1 for supply technologies and their respective fuels and zero for rest.
 param	OutputActivityRatio	default	0	:=																				
 	[UTOPIA,*,RH,1,*]	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 RHE							1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1	
@@ -164,7 +216,9 @@ IMPOIL1						1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1
 	[UTOPIA,*,URN,1,*]	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 IMPURN1						1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		;
 																								
-#																								
+#	
+# FixedCost{r in Region, t in Technology, y in Year} Units: M€/GW of Capacity
+# The annual cost per unit of capacity of a technology.
 param	FixedCost	default	0	:=																				
 	[UTOPIA,*,*]	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 E01						40		40		40		40		40		40		40		40		40		40		40		40		40		40		40		40		40		40		40		40		40	
@@ -178,7 +232,9 @@ TXD						52		52		52		52		52		52		52		52		52		52		52		52		52		52		52		52		52		52	
 TXE						100		100		100		100		100		100		100		100		100		100		100		100		100		100		100		100		100		100		100		100		100	
 TXG						48		48		48		48		48		48		48		48		48		48		48		48		48		48		48		48		48		48		48		48		48		;
 																								
-#																								
+#	
+# CapitalCost{r in Region, t in Technology, y in Year} Units: M€/GW Capacity
+# Total capital cost (including interest paid during construction)per unit of capacity for new capacity additions
 param	CapitalCost	default	0	:=																				
 	[UTOPIA,*,*]	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 E01						1400	1390	1380	1370	1360	1350	1340	1330	1320	1310	1300	1290	1280	1270	1260	1250	1240	1230	1220	1210	1200	
@@ -203,7 +259,10 @@ RHu						0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0
 RLu						0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0	
 TXu						0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0	;
 																								
-#																								
+#
+# VariableCost{r in Region, t in Technology, m in ModeOfOperation, y in Year} Units: Million €/PJ = €/GJ
+# Cost per unit of activity of the technology
+# This variable records both the nonfuel O&M costs of processes and fuel costs of each fuel supplied to those processes.
 param	VariableCost	default	0.00001	:=																				
 	[UTOPIA,*,1,*]	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 E01						0.3		0.3		0.3		0.3		0.3		0.3		0.3		0.3		0.3		0.3		0.3		0.3		0.3		0.3		0.3		0.3		0.3		0.3		0.3		0.3		0.3	
@@ -219,7 +278,9 @@ RHu 					99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999
 RLu 					99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	
 TXu						99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	99999	;
 																								
-#																								
+#	
+# ResidualCapacity{r in Region, t in Technology, y in Year} Units: GW
+# The capacity left over from periods prior to the modeling period.
 param	ResidualCapacity 	default	0	:=																				
 	[UTOPIA,*,*]	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 E01						0.5		0.5		0.5		0.4		0.4		0.4		0.4		0.4		0.4		0.3		0.32	0.3		0.3		0.3		0.3		0.2		0.2		0.2		0.2		0.2		0.15	
@@ -233,7 +294,9 @@ RL1						5.6		5		4.5		3.9		3.4		2.8		2.2		1.7		1.1		0.6		0		0		0		0		0		0		0		0	
 TXD						0.6		0.6		0.5		0.5		0.4		0.4		0.4		0.3		0.3		0.2		0.2		0.2		0.2		0.1		0.1		0.1		0.1		0.1		0		0		0		;
 
 																								
-#																								
+#
+# AvailabilityFactor{r in Region, t in Technology, y in Year} Units: Fraction of Hours in Year
+# Maximum time technology may run for the whole year. Often used to simulate planned outages. OSeMOSYS will choose when to run or not run.
 param	AvailabilityFactor	default	1	:=																				
 	[UTOPIA,*,*]	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 RHE						1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1	
@@ -243,7 +306,9 @@ TXD						1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1
 TXE						1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1	
 TXG						1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1	;
 																								
-#																								
+#	
+# CapacityFactor{r in Region, t in Technology, l in TIMESLICE, y in Year} Units: Fraction of Hours in Year
+# Indicates the maximum time technology may run in a given time slice.
 param	CapacityFactor	default	1	:=																				
 	[UTOPIA,E01,*,*]	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 ID							0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8	
@@ -285,7 +350,9 @@ SN							0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0
 WD							0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		
 WN							0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		0.8		;
 																								
-#																								
+#
+# EmissionActivityRatio{r in Region, t in Technology, e in Emission, m in ModeOfOperation, y in Year}  Units: Tonnes/PJ Output
+# Emissions factor per unit of activity.
 param	EmissionActivityRatio	default	0	:=																				
 	[UTOPIA,*,CO2,1,*]	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 IMPDSL1						0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	
@@ -297,22 +364,30 @@ IMPOIL1						0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0.075	0
 TXD							1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1	
 TXG							1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1	;
 																								
-#																								
+#	
+# EmissionsPenalty{r in Region, e in Emission, y in Year} Units: Million $/Tonne of Pollutant
+# Externality cost per unit of emission
 param	EmissionsPenalty			:=																				
 	[UTOPIA,*,*]	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 CO2						0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0	
 NOX						0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		0		;
 																								
-#																								
+#	
+# ReserveMarginTagFuel{r in Region,f in Fuel, y in Year} Units: 1=yes, 0=no
+# Indicates if the output fuel has a reserve margin associated with it
 param	ReserveMarginTagFuel	default	0	:=																				
 	[UTOPIA,*,*]	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 ELC						1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1	;
 																								
-#																								
+#	
+# ReserveMargin{r in Region, y in Year} Units: Ratio (Installed/Peak)
+# The reserve (installed) capacity required relative to the peak demand for the specified fuel.
 param	ReserveMargin	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 UTOPIA						1.18	1.18	1.18	1.18	1.18	1.18	1.18	1.18	1.18	1.18	1.18	1.18	1.18	1.18	1.18	1.18	1.18	1.18	1.18	1.18	1.18	;
 																								
-#																								
+#
+# ReserveMarginTagTechnology{r in Region,t in Technology, y in Year} Units: fraction
+# Amount the technology contributes to the reserve margin 1=100%  0.2=20%.
 param	ReserveMarginTagTechnology	default	0	:=																				
 	[UTOPIA,*,*]	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 E01						1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1	
@@ -321,11 +396,15 @@ E31						1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1
 E51						1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1	
 E70						1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1		1	;
 																								
-#																								
+#
+# param OperationalLife{r in Region, t in Technology};  Units: years
+# Operational lifespan of a process in years.
 param	OperationalLife	default	1	:	E01	E21	E31	E51	E70	RHE	RHO	RL1	SRE	TXD	TXE	TXG	:=							
 UTOPIA									40	40	100	100	40	30	30	10	50	15	15	15	;							
 																								
-#																								
+#
+# TotalAnnualMaxCapacity{r in Region, t in Technology, y in Year} Units: GW
+# Maximum total (residual and new) capacity each year.
 param	TotalAnnualMaxCapacity	default	99999	:=																				
 	[UTOPIA,*,*]	:	1990		1991		1992		1993		1994		1995		1996		1997		1998		1999		2000		2001		2002		2003		2004		2005		2006		2007		2008		2009		2010		:=
 E31						0.1301		0.1401		0.1401		0.1501		0.1501		0.1501		0.1601		0.1601		0.1601		0.1601		0.1701		0.201		0.201		0.201		0.201		0.201		0.201		0.201		0.201		0.201		0.2101	
@@ -334,29 +413,49 @@ RHE						0			0			0			0			0			0			0			0			0			0			999999999	999999999	999999999	9
 SRE						0.1001		0.1001		0.1001		0.1001		0.1001		0.1001		0.1001		0.1001		0.1001		0.1001		999999999	999999999	999999999	999999999	999999999	999999999	999999999	999999999	999999999	999999999	999999999	
 TXE						0			0.4			0.8			1.2			1.6			2			2.4			2.8			3.2			3.6			4			4.6			5.2			5.8			6.4			7			7.6			8.2			8.8			9.4			10			;
 																								
-#																								
+#
+# TotalAnnualMinCapacity{r in Region, t in Technology, y in Year} Units: GW
+# Minimum total (residual and new) capacity each year.
 param	TotalAnnualMinCapacity	default	0	:=																				
 	[UTOPIA,*,*]	:	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	:=
 E31						0.13	0.14	0.14	0.15	0.15	0.15	0.16	0.16	0.16	0.16	0.17	0.2		0.2		0.2		0.2		0.2		0.2		0.2		0.2		0.2		0.21	
 SRE						0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		0.1		0		0		0		0		0		0		0		0		0		0		0		;
 
-#																								
+#
+# TotalAnnualMaxCapacityInvestment{r in Region, t in Technology, y in Year} Units: GW
+# Maximum new capacity each year.  Use this to stop OSeMOSYS investing in existing technologies.
 param	TotalAnnualMaxCapacityInvestment	default	99999	:=	;																			
-#																								
+#	
+# TotalAnnualMinCapacityInvestment{r in Region, t in Technology, y in Year} Units: GW
+# Minimum new capacity each year.
 param	TotalAnnualMinCapacityInvestment	default	0	:=	;																			
-#																								
+#
+# param TotalTechnologyAnnualActivityUpperLimit{r in Region, t in Technology, y in Year} Units: PJ
+# Maximum amount of activity that a technology can perform each year.
 param	TotalTechnologyAnnualActivityUpperLimit	default	99999	:=	;																			
-#																								
+#
+# TotalTechnologyAnnualActivityLowerLimit{r in Region, t in Technology, y in Year} Units: PJ
+# Minimum activity that a technology can perform each year.
 param	TotalTechnologyAnnualActivityLowerLimit	default	0	:=	;																			
-#																								
+#
+# TotalTechnologyModelPeriodActivityUpperLimit{r in Region, t in Technology} Units: PJ
+# Maximum level of activity by a technology over the whole model period.
 param	TotalTechnologyModelPeriodActivityUpperLimit	default	99999	:=	;																			
-#																								
+#
+# TotalTechnologyModelPeriodActivityLowerLimit{r in Region, t in Technology} Units: PJ
+# Minimum level of activity by a technology over the whole model period.
 param	TotalTechnologyModelPeriodActivityLowerLimit	default	0	:=	;																			
-#																								
+#
+# RETagTechnology{r in Region, t in Technology, y in Year} Units: 1=yes, 0=no
+# Flags technologies that are allowed to contribute to the renewable capacity of the system.
 param	RETagTechnology	default	0	:=	;																			
-#																								
+#
+# RETagFuel{r in Region,f in Fuel, y in Year} Units: 1=yes, 0=no
+# The fuels for which there is a renewable target.
 param	RETagFuel	default	0	:=	;																			
-#																								
+#
+# REMinProductionTarget{r in Region, y in Year}  Units: Fraction
+# What fraction of the fuels (tagged in the RETagFuel parameter) must come from the Renewable technologies (tagged in the RETagTechnology parameter)
 param	REMinProductionTarget	default	0	:=	;																			
 #																								
 # Conversionls{l in TIMESLICE, ls in SEASON}																											
@@ -429,9 +528,6 @@ param OperationalLifeStorage default			99	:=
 # CapitalCostStorage{r in REGION, s in STORAGE, y in YEAR}; Unit: USD/GWa																											
 param CapitalCostStorage default 			0	:=																							
 ;																											
-# DiscountRateStorage{r in REGION, s in STORAGE}; Unit: fraction																											
-param DiscountRateStorage default			0	:=																							
-;																											
 # ResidualStorageCapacity{r in REGION, s in STORAGE, y in YEAR}; 
 # Storage capacity which is available from before the modelling period, or which is know to become available in a specific year. Unit: GWa																											
 param ResidualStorageCapacity default			999	:=																							
@@ -446,4 +542,4 @@ param CapacityOfOneTechnologyUnit default	0	:=	;
 # I.e., for one specific year and fuel, this parameter is entered as a symmetric matrix (with a diagonal of zeros).
 param TradeRoute default	0 :=
 ;																											
-end;																								
+end;			
