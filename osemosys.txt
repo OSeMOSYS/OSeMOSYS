@@ -1,14 +1,10 @@
-# OSeMOSYS_2013_03_14
+# OSeMOSYS_2013_04_30
 #
 # Open Source energy MOdeling SYStem
 #
-# Main changes to previous version OSeMOSYS_2012_06_01_BETA
-#		- Introduced the option to choose between sinking fund and straight line depreciation
-#		- Removed parameter SalvageFactor, which was not used by the model
-#		- Fixed a bug which caused an out-of-bounds error if more than one day type was used
-#		- Included table statements immediately before the objective function and after the solve statement
-#			to demonstrate how parameters can be imported and exported. The table statements are commented out, 
-#			and just serve as examples.  
+# Main changes to previous version OSeMOSYS_2013_03_14
+#		- Bug fix which occured when additions of concrete blocks of capacity were to be considered, i.e., 
+#			if the parameter CapacityOfOneTechnologyUnit was chosen to be unequal to zero
 #
 # ============================================================================
 #
@@ -29,7 +25,7 @@
 #
 #  To run OSeMOSYS, enter the following line into your command prompt after replacing FILEPATH & YOURDATAFILE with your folder structure and data file name: 
 #
-#  C:\...FILEPATH...\glpsol -m C:\...FILEPATH...\OSeMOSYS_2013_03_14.mod -d C:\...FILEPATH...\YOURDATAFILE.dat -o C:\...FILEPATH...\Results.txt
+#  C:\...FILEPATH...\glpsol -m C:\...FILEPATH...\OSeMOSYS_2013_04_30.mod -d C:\...FILEPATH...\YOURDATAFILE.dat -o C:\...FILEPATH...\Results.txt
 #
 #  Alternatively, install GUSEK (http://gusek.sourceforge.net/gusek.html) and run the model within this integrated development environment (IDE). 
 #  To do so, open the .dat file and select "Use External .dat file" from the Options menu. Then change to the model file and select the "Go" icon or press F5.
@@ -73,7 +69,7 @@ param DepreciationMethod{r in REGION};
 #
 ########			Demands 					#############
 #
-param SpecifiedAnnualDemand{y in YEAR, f in FUEL, r in REGION}; 
+param SpecifiedAnnualDemand{y in YEAR,f in FUEL, r in REGION}; 
 param SpecifiedDemandProfile{y in YEAR, l in TIMESLICE, f in FUEL, r in REGION};
 param AccumulatedAnnualDemand{y in YEAR, f in FUEL, r in REGION};
 #
@@ -261,16 +257,15 @@ minimize cost: sum{y in YEAR, r in REGION} TotalDiscountedCost[y,r];
 # Constraints       #
 #####################
 #
-s.t. EQ_SpecifiedDemand{y in YEAR, l in TIMESLICE, f in FUEL, r in REGION}: SpecifiedAnnualDemand[y,f,r]*SpecifiedDemandProfile[y,l,f,r] / YearSplit[y,l]=RateOfDemand[y,l,f,r];
+s.t. EQ_SpecifiedDemand{y in YEAR,l in TIMESLICE, f in FUEL, r in REGION}: SpecifiedAnnualDemand[y,f,r]*SpecifiedDemandProfile[y,l,f,r] / YearSplit[y,l]=RateOfDemand[y,l,f,r];
 #
 #########       	Capacity Adequacy A	     	#############
 #
-s.t. CAa1_TotalNewCapacity{y in YEAR, t in TECHNOLOGY, r in REGION}:AccumulatedNewCapacity[y,t,r] = sum{yy in YEAR: y-yy < OperationalLife[t,r] && y-yy>=0} 
-								if CapacityOfOneTechnologyUnit[y,t,r]=0 then NewCapacity[yy,t,r]
-								else CapacityOfOneTechnologyUnit[yy,t,r]*NumberOfNewTechnologyUnits[yy,t,r];
+s.t. CAa1_TotalNewCapacity{r in REGION, t in TECHNOLOGY, y in YEAR}: AccumulatedNewCapacity[y,t,r] = sum{yy in YEAR: y-yy < OperationalLife[t,r] && y-yy>=0} NewCapacity[yy,t,r];
 s.t. CAa2_TotalAnnualCapacity{y in YEAR, t in TECHNOLOGY, r in REGION}: AccumulatedNewCapacity[y,t,r]+ ResidualCapacity[y,t,r] = TotalCapacityAnnual[y,t,r];
 s.t. CAa3_TotalActivityOfEachTechnology{y in YEAR, t in TECHNOLOGY, l in TIMESLICE,r in REGION}: sum{m in MODE_OF_OPERATION} RateOfActivity[y,l,t,m,r] = RateOfTotalActivity[y,l,t,r];
 s.t. CAa4_Constraint_Capacity{y in YEAR, l in TIMESLICE, t in TECHNOLOGY, r in REGION: TechWithCapacityNeededToMeetPeakTS[t,r]<>0}: RateOfTotalActivity[y,l,t,r] <= TotalCapacityAnnual[y,t,r]*CapacityFactor[y,t,l,r]*CapacityToActivityUnit[t,r];
+s.t. CAa5_TotalNewCapacity{r in REGION, t in TECHNOLOGY, y in YEAR: CapacityOfOneTechnologyUnit[y,t,r]<>0}: CapacityOfOneTechnologyUnit[y,t,r]*NumberOfNewTechnologyUnits[y,t,r] = NewCapacity[y,t,r];
 #
 # Note that the PlannedMaintenance equation below ensures that all other technologies have a capacity great enough to at least meet the annual average.
 #
@@ -363,7 +358,7 @@ s.t. CC2_DiscountingCapitalInvestment{y in YEAR, t in TECHNOLOGY, r in REGION}: 
 #########           Salvage Value            	#############
 #
 s.t. SV1_SalvageValueAtEndOfPeriod1{y in YEAR, t in TECHNOLOGY, r in REGION: DepreciationMethod[r]=1 && (y + OperationalLife[t,r]-1) > (max{yy in YEAR} max(yy)) && DiscountRate[t,r]>0}: SalvageValue[y,t,r] = CapitalCost[y,t,r]*NewCapacity[y,t,r]*(1-(((1+DiscountRate[t,r])^(max{yy in YEAR} max(yy) - y+1)-1)/((1+DiscountRate[t,r])^OperationalLife[t,r]-1)));
-s.t. SV2_SalvageValueAtEndOfPeriod2{y in YEAR, t in TECHNOLOGY, r in REGION: (DepreciationMethod[r]=1 && (y + OperationalLife[t,r]-1) > (max{yy in YEAR} max(yy)) && DiscountRate[t,r]=0) || (DepreciationMethod[r]=2 && (y + OperationalLife[t,r]-1) > (max{yy in YEAR} max(yy)))}: SalvageValue[y,t,r] = CapitalCost[y,t,r]*NewCapacity[y,t,r]*(1-(max{yy in YEAR} max(yy) - y+1)/OperationalLife[t,r]);
+s.t. SV2_SalvageValueAtEndOfPeriod2{y in YEAR, t in TECHNOLOGY, r in REGION: (DepreciationMethod[r]=1 && (y + OperationalLife[t,r]-1) > (max{yy in YEAR} max(yy)) && DiscountRate[t,r]=0) || (DepreciationMethod[r]=2 && (y + OperationalLife[t,r]-1) > (max{yy in YEAR} max(yy)))}: SalvageValue[y,t,r] = CapitalCost[y,t,r]*NewCapacity[y,t,r]*(1-(max{yy in YEAR} max(yy) - y + 1)/OperationalLife[t,r]);
 s.t. SV3_SalvageValueAtEndOfPeriod3{y in YEAR, t in TECHNOLOGY, r in REGION: (y + OperationalLife[t,r]-1) <= (max{yy in YEAR} max(yy))}: SalvageValue[y,t,r] = 0;
 s.t. SV4_SalvageValueDiscountedToStartYear{y in YEAR, t in TECHNOLOGY, r in REGION}: DiscountedSalvageValue[y,t,r] = SalvageValue[y,t,r]/((1+DiscountRate[t,r])^(1+max{yy in YEAR} max(yy)-min{yy in YEAR} min(yy)));
 #
@@ -439,12 +434,14 @@ solve;
 #																										#
 #########################################################################################################
 #
+#########   		Exporting Tables		##############
+#
 #	table result{(f,t) in s} OUT "...": f~FROM, t~TO, x[f,t]~FLOW;
 #	table result{y in YEAR, r in REGION} OUT "CSV" "Output.csv": y~YEARS, r~REGION, TotalDiscountedCost[y,r];
 #
-####	Summary results 	###
+#########			Summary results 		##############
 #
-###		Total costs and emissions by region	###
+#		Total costs and emissions by region
 #
 printf "\n" > "SelectedResults.csv";
 printf "Summary" >> "SelectedResults.csv";
