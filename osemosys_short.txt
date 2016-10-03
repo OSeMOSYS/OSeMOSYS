@@ -2,7 +2,7 @@
 #
 # Open Source energy MOdeling SYStem
 #
-# Main changes to previous version OSeMOSYS_2016_08_01_short
+# Main changes to previous version OSeMOSYS_2015_08_27_short
 #       - Parameter REMinProductionTarget no more indicated by user as % of demand for fuel f, but as % of production of fuel f.
 #		- Fixed bugs in storage equations.
 #
