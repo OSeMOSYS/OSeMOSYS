@@ -39,7 +39,7 @@ The following steps must be followed when running the simulations:
 - **Close all the running applications before starting the simulation.**
 
 - For comparability of results, use [**GLPK v4.55**](https://sourceforge.net/projects/winglpk/files/winglpk/GLPK-4.55/winglpk-4.55.zip/download) as a solver;
-- As a model, use the version of OSeMOSYS provided in the section &#39;Datasets&#39; ( **osemosys\_modelfile.tx** t).
+- As a model, use the version of OSeMOSYS provided in the section &#39;Datasets&#39; ( **osemosys\_modelfile.txt** ).
 - For the simulation, you are provided with the datafiles of two case studies: 1) **utopia.txt** - A small and fast test case study you may use to perform quick tests when changing the code 2) **country\_casestudy.txt** - representing a real 3-countries case study developed at KTH-dESA. The final results you deliver must be from this case study, for us to be able to verify the performance improvement. Links to both files are in section &#39;Datasets&#39;.
 - Add the command to print the output .txt file and call it: **results\_countrycasestudy.txt**.
 - During the computation, record from the command prompt the matrix generation time, the original and pre-solved LP matrix dimension (rows, columns and number of non-zeros), the optimisation time and the memory used.
