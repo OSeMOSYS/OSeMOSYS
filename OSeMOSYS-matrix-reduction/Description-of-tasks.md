@@ -49,7 +49,7 @@ The following steps must be followed when running the simulations:
 
 Notice that in the constraint equations the set of Technologies is indexed as **&#39;t&#39;** , the one of Fuels as **&#39;f&#39;**. The user-specified connections between them are defined through the parameters **InputActivityRatio** and **OutputActivityRatio** in the datafiles of the case studies. Find more information about these parameters in the [user manual](http://users.osemosys.org/uploads/1/8/5/0/18504136/new-website_osemosys_manual_-_working_with_text_files_-_2015-11-05.pdf).
 
-**4) Write Change Log -  **Write a Change Log for your code modification. The Change Log must be written as a .doc/.docx file. It must be formatted in the same way as the [Change Log](http://users.osemosys.org/uploads/1/8/5/0/18504136/change_log_2016_08_01.pdf) available on OSeMOSYS website and contain the following information:
+**4) Write Change Log -** Write a Change Log for your code modification. The Change Log must be written as a .doc/.docx file. It must be formatted in the same way as the [Change Log](http://users.osemosys.org/uploads/1/8/5/0/18504136/change_log_2016_08_01.pdf) available on OSeMOSYS website and contain the following information:
 
 - Name of the new version of the code;
 - Name of the author(s);
@@ -58,7 +58,6 @@ Notice that in the constraint equations the set of Technologies is indexed as **
 
 **5) Write readme file.** This must include:
 
-1.
   1. instructions on how the new code works (including description in English and algebraic formulation) and how to use it;
   2. the times needed to generate the LP matrix and to solve the optimisation;
   3. the original and pre-solved LP matrix dimension (rows, columns and number of non-zeros);
