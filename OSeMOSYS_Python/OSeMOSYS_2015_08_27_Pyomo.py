@@ -44,12 +44,12 @@ from pyomo.core import *
 from pyomo.opt import SolverFactory
 
 model = AbstractModel()
-#
-#
+
+
 ###############
 #    Sets     #
 ############### 
-#
+
 model.YEAR = Set()
 model.TECHNOLOGY = Set()
 model.TIMESLICE = Set()
@@ -62,13 +62,13 @@ model.DAYTYPE = Set()
 model.DAILYTIMEBRACKET = Set()
 model.FLEXIBLEDEMANDTYPE = Set()
 model.STORAGE = Set()
-#
+
 #####################
 #    Parameters     #
 #####################
-#	
+
 ########			Global 						#############
-#
+
 model.YearSplit = Param(model.TIMESLICE, model.YEAR)
 model.DiscountRate = Param(model.REGION, default=0.05)
 model.DaySplit = Param(model.DAILYTIMEBRACKET, model.YEAR, default=0.00137)
@@ -78,15 +78,15 @@ model.Conversionlh = Param(model.TIMESLICE, model.DAILYTIMEBRACKET, default=0)
 model.DaysInDayType = Param(model.SEASON, model.DAYTYPE, model.YEAR, default=7)
 model.TradeRoute = Param(model.REGION, model.REGION, model.FUEL, model.YEAR, default=0)
 model.DepreciationMethod = Param(model.REGION, default=1)
-#
+
 ########			Demands 					#############
-#
+
 model.SpecifiedAnnualDemand = Param(model.REGION, model.FUEL, model.YEAR, default=0)
 model.SpecifiedDemandProfile = Param(model.REGION, model.FUEL, model.TIMESLICE, model.YEAR, default=0)
 model.AccumulatedAnnualDemand = Param(model.REGION, model.FUEL, model.YEAR, default=0)
-#
+
 #########			Performance					#############
-#
+
 model.CapacityToActivityUnit = Param(model.REGION, model.TECHNOLOGY, default=1)
 model.CapacityFactor = Param(model.REGION, model.TECHNOLOGY, model.TIMESLICE, model.YEAR, default=1)
 model.AvailabilityFactor = Param(model.REGION, model.TECHNOLOGY, model.YEAR, default=1)
@@ -94,15 +94,15 @@ model.OperationalLife = Param(model.REGION, model.TECHNOLOGY, default=1)
 model.ResidualCapacity = Param(model.REGION, model.TECHNOLOGY, model.YEAR, default=0)
 model.InputActivityRatio = Param(model.REGION, model.TECHNOLOGY, model.FUEL, model.MODE_OF_OPERATION, model.YEAR, default=0)
 model.OutputActivityRatio = Param(model.REGION, model.TECHNOLOGY, model.FUEL, model.MODE_OF_OPERATION, model.YEAR, default=0)
-#
+
 #########			Technology Costs			#############
-#
+
 model.CapitalCost = Param(model.REGION, model.TECHNOLOGY, model.YEAR, default=0)
 model.VariableCost = Param(model.REGION, model.TECHNOLOGY, model.MODE_OF_OPERATION, model.YEAR, default=0.00001)
 model.FixedCost = Param(model.REGION, model.TECHNOLOGY, model.YEAR, default=0)
-#
+
 #########           		Storage                 		#############
-#
+
 model.TechnologyToStorage = Param(model.REGION, model.TECHNOLOGY, model.STORAGE, model.MODE_OF_OPERATION, default=0)
 model.TechnologyFromStorage = Param(model.REGION, model.TECHNOLOGY, model.STORAGE, model.MODE_OF_OPERATION, default=0)
 model.StorageLevelStart = Param(model.REGION, model.STORAGE, default=999)
@@ -112,57 +112,57 @@ model.MinStorageCharge = Param(model.REGION, model.STORAGE, model.YEAR, default=
 model.OperationalLifeStorage = Param(model.REGION, model.STORAGE, default=99)
 model.CapitalCostStorage = Param(model.REGION, model.STORAGE, model.YEAR, default=0)
 model.ResidualStorageCapacity = Param(model.REGION, model.STORAGE, model.YEAR, default=0)
-#
+
 #########			Capacity Constraints		#############
-#
+
 model.CapacityOfOneTechnologyUnit = Param(model.REGION, model.TECHNOLOGY, model.YEAR, default=0)
 model.TotalAnnualMaxCapacity = Param(model.REGION, model.TECHNOLOGY, model.YEAR, default=99999)
 model.TotalAnnualMinCapacity = Param(model.REGION, model.TECHNOLOGY, model.YEAR, default=0)
-#
+
 #########			Investment Constraints		#############
-#
+
 model.TotalAnnualMaxCapacityInvestment = Param(model.REGION, model.TECHNOLOGY, model.YEAR, default=99999)
 model.TotalAnnualMinCapacityInvestment = Param(model.REGION, model.TECHNOLOGY, model.YEAR, default=0)
-#
+
 #########			Activity Constraints		#############
-#
+
 model.TotalTechnologyAnnualActivityUpperLimit = Param(model.REGION, model.TECHNOLOGY, model.YEAR, default=99999)
 model.TotalTechnologyAnnualActivityLowerLimit = Param(model.REGION, model.TECHNOLOGY, model.YEAR, default=0)
 model.TotalTechnologyModelPeriodActivityUpperLimit = Param(model.REGION, model.TECHNOLOGY, default=99999)
 model.TotalTechnologyModelPeriodActivityLowerLimit = Param(model.REGION, model.TECHNOLOGY, default=0)
-#
+
 #########			Reserve Margin				############# 
-#
+
 model.ReserveMarginTagTechnology = Param(model.REGION, model.TECHNOLOGY, model.YEAR, default=0)
 model.ReserveMarginTagFuel = Param(model.REGION, model.FUEL, model.YEAR, default=0)
 model.ReserveMargin = Param(model.REGION, model.YEAR, default=1)
-#
+
 #########			RE Generation Target		############# 
-#
+
 model.RETagTechnology = Param(model.REGION, model.TECHNOLOGY, model.YEAR, default=0)
 model.RETagFuel = Param(model.REGION, model.FUEL, model.YEAR, default=0)
 model.REMinProductionTarget = Param(model.REGION, model.YEAR, default=0)
-#
+
 #########			Emissions & Penalties		#############
-#
+
 model.EmissionActivityRatio = Param(model.REGION, model.TECHNOLOGY, model.EMISSION, model.MODE_OF_OPERATION, model.YEAR, default=0)
 model.EmissionsPenalty = Param(model.REGION, model.EMISSION, model.YEAR, default=0)
 model.AnnualExogenousEmission = Param(model.REGION, model.EMISSION, model.YEAR, default=0)
 model.AnnualEmissionLimit = Param(model.REGION, model.EMISSION, model.YEAR, default=99999)
 model.ModelPeriodExogenousEmission = Param(model.REGION, model.EMISSION, default=0)
 model.ModelPeriodEmissionLimit = Param(model.REGION, model.EMISSION, default=99999)
-#
+
 ######################
 #   Model Variables  #
 ######################
-#
+
 ########			Demands 					#############
-#
+
 model.RateOfDemand = Var(model.REGION, model.TIMESLICE, model.FUEL, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.Demand = Var(model.REGION, model.TIMESLICE, model.FUEL, model.YEAR, domain=NonNegativeReals, initialize=0.0)
-#
+
 ########     		Storage                 		#############
-#
+
 model.RateOfStorageCharge = Var(model.REGION, model.STORAGE, model.SEASON, model.DAYTYPE, model.DAILYTIMEBRACKET, model.YEAR, initialize=0.0)
 model.RateOfStorageDischarge = Var(model.REGION, model.STORAGE, model.SEASON, model.DAYTYPE, model.DAILYTIMEBRACKET, model.YEAR, initialize=0.0)
 model.NetChargeWithinYear = Var(model.REGION, model.STORAGE, model.SEASON, model.DAYTYPE, model.DAILYTIMEBRACKET, model.YEAR, initialize=0.0)
@@ -181,16 +181,16 @@ model.DiscountedCapitalInvestmentStorage = Var(model.REGION, model.STORAGE, mode
 model.SalvageValueStorage = Var(model.REGION, model.STORAGE, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.DiscountedSalvageValueStorage = Var(model.REGION, model.STORAGE, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.TotalDiscountedStorageCost = Var(model.REGION, model.STORAGE, model.YEAR, domain=NonNegativeReals, initialize=0.0)
-#
+
 #########		    Capacity Variables 			############# 
-#
+
 model.NumberOfNewTechnologyUnits = Var(model.REGION, model.TECHNOLOGY, model.YEAR, domain=NonNegativeIntegers, initialize=0)
 model.NewCapacity = Var(model.REGION, model.TECHNOLOGY, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.AccumulatedNewCapacity = Var(model.REGION, model.TECHNOLOGY, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.TotalCapacityAnnual = Var(model.REGION, model.TECHNOLOGY, model.YEAR, domain=NonNegativeReals, initialize=0.0)
-#
+
 #########		    Activity Variables 			#############
-#
+
 model.RateOfActivity = Var(model.REGION, model.TIMESLICE, model.TECHNOLOGY, model.MODE_OF_OPERATION, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.RateOfTotalActivity = Var(model.REGION, model.TECHNOLOGY, model.TIMESLICE, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.TotalTechnologyAnnualActivity = Var(model.REGION, model.TECHNOLOGY, model.YEAR, domain=NonNegativeReals, initialize=0.0)
@@ -209,44 +209,44 @@ model.UseByTechnology = Var(model.REGION, model.TIMESLICE, model.TECHNOLOGY, mod
 model.Use = Var(model.REGION, model.TIMESLICE, model.FUEL, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.Trade = Var(model.REGION, model.REGION, model.TIMESLICE, model.FUEL, model.YEAR, initialize=0.0)
 model.TradeAnnual = Var(model.REGION, model.REGION, model.FUEL, model.YEAR, initialize=0.0)
-#
+
 model.ProductionAnnual = Var(model.REGION, model.FUEL, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.UseAnnual = Var(model.REGION, model.FUEL, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 
-#
+
 #########		    Costing Variables 			#############
-#
+
 model.CapitalInvestment = Var(model.REGION, model.TECHNOLOGY, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.DiscountedCapitalInvestment = Var(model.REGION, model.TECHNOLOGY, model.YEAR, domain=NonNegativeReals, initialize=0.0)
-#
+
 model.SalvageValue = Var(model.REGION, model.TECHNOLOGY, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.DiscountedSalvageValue = Var(model.REGION, model.TECHNOLOGY, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.OperatingCost = Var(model.REGION, model.TECHNOLOGY, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.DiscountedOperatingCost = Var(model.REGION, model.TECHNOLOGY, model.YEAR, domain=NonNegativeReals, initialize=0.0)
-#
+
 model.AnnualVariableOperatingCost = Var(model.REGION, model.TECHNOLOGY, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.AnnualFixedOperatingCost = Var(model.REGION, model.TECHNOLOGY, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.VariableOperatingCost = Var(model.REGION, model.TECHNOLOGY, model.TIMESLICE, model.YEAR, domain=NonNegativeReals, initialize=0.0)
-#
+
 model.TotalDiscountedCostByTechnology = Var(model.REGION, model.TECHNOLOGY, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.TotalDiscountedCost = Var(model.REGION, model.YEAR, domain=NonNegativeReals, initialize=0.0)
-#
+
 model.ModelPeriodCostByRegion = Var(model.REGION, domain=NonNegativeReals, initialize=0.0)
-#
+
 #########			Reserve Margin				#############
-#
+
 model.TotalCapacityInReserveMargin = Var(model.REGION, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.DemandNeedingReserveMargin = Var(model.REGION,model.TIMESLICE, model.YEAR, domain=NonNegativeReals, initialize=0.0)
-#
+
 #########			RE Gen Target				#############
-#
+
 model.TotalREProductionAnnual = Var(model.REGION, model.YEAR, initialize=0.0)
 model.RETotalDemandOfTargetFuelAnnual = Var(model.REGION, model.YEAR, initialize=0.0)
-#
+
 model.TotalTechnologyModelPeriodActivity = Var(model.REGION, model.TECHNOLOGY, initialize=0.0)
-#
+
 #########			Emissions					#############
-#
+
 model.AnnualTechnologyEmissionByMode = Var(model.REGION, model.TECHNOLOGY, model.EMISSION, model.MODE_OF_OPERATION, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.AnnualTechnologyEmission = Var(model.REGION, model.TECHNOLOGY, model.EMISSION, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.AnnualTechnologyEmissionPenaltyByEmission = Var(model.REGION, model.TECHNOLOGY, model.EMISSION, model.YEAR, domain=NonNegativeReals, initialize=0.0)
@@ -254,30 +254,30 @@ model.AnnualTechnologyEmissionsPenalty = Var(model.REGION, model.TECHNOLOGY, mod
 model.DiscountedTechnologyEmissionsPenalty = Var(model.REGION, model.TECHNOLOGY, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.AnnualEmissions = Var(model.REGION, model.EMISSION, model.YEAR, domain=NonNegativeReals, initialize=0.0)
 model.ModelPeriodEmissions = Var(model.REGION, model.EMISSION, domain=NonNegativeReals, initialize=0.0)
-#
-#
+
+
 ######################
 # Objective Function #
 ######################
-#
+
 
 def ObjectiveFunction_rule(model):
 	return sum(model.ModelPeriodCostByRegion[r] for r in model.REGION)
 model.OBJ = Objective(rule=ObjectiveFunction_rule, sense=minimize)
 
-#
+
 #####################
 # Constraints       #
 #####################
-#
+
 
 def SpecifiedDemand_rule(model,r,f,l,y):
 	return model.SpecifiedAnnualDemand[r,f,y]*model.SpecifiedDemandProfile[r,f,l,y]/model.YearSplit[l,y] == model.RateOfDemand[r,l,f,y]
 model.SpecifiedDemand = Constraint(model.REGION, model.FUEL, model.TIMESLICE, model.YEAR, rule=SpecifiedDemand_rule)
 
-#
+
 #########       	Capacity Adequacy A	     	#############
-#
+
 	
 def TotalNewCapacity_1_rule(model,r,t,y):
 	return model.AccumulatedNewCapacity[r,t,y] == sum(model.NewCapacity[r,t,yy] for yy in model.YEAR if ((y-yy < model.OperationalLife[r,t]) and (y-yy >= 0)))
@@ -302,17 +302,17 @@ model.ConstraintCapacity = Constraint(model.REGION, model.TIMESLICE, model.TECHN
 		# Constraint.Skip
 # model.TotalNewCapacity_2 = Constraint(model.REGION, model.TECHNOLOGY, model.YEAR, rule=TotalNewCapacity_2_rule)
 
-#
+
 #########       	Capacity Adequacy B		 	#############
-#
+
 
 def PlannedMaintenance_rule(model,r,t,y):
 	return sum(model.RateOfTotalActivity[r,t,l,y]*model.YearSplit[l,y] for l in model.TIMESLICE) <= sum(model.TotalCapacityAnnual[r,t,y]*model.CapacityFactor[r,t,l,y]*model.YearSplit[l,y] for l in model.TIMESLICE)*model.AvailabilityFactor[r,t,y]*model.CapacityToActivityUnit[r,t]
 model.PlannedMaintenance = Constraint(model.REGION, model.TECHNOLOGY, model.YEAR, rule=PlannedMaintenance_rule)
 
-#
+
 #########	        Energy Balance A    	 	#############
-#
+
 
 def RateOfFuelProduction1_rule(model,r,l,f,t,m,y):
 	if model.OutputActivityRatio[r,t,f,m,y] != 0:
@@ -380,9 +380,9 @@ def EnergyBalanceEachTS5_rule(model,r,l,f,y):
 	return model.Production[r,l,f,y] >= model.Demand[r,l,f,y] + model.Use[r,l,f,y] + sum(model.Trade[r,rr,l,f,y]*model.TradeRoute[r,rr,f,y] for rr in model.REGION)
 model.EnergyBalanceEachTS5 = Constraint(model.REGION, model.TIMESLICE, model.FUEL, model.YEAR, rule=EnergyBalanceEachTS5_rule)
 
-#
+
 #########        	Energy Balance B		 	#############
-#
+
 
 def EnergyBalanceEachYear1_rule(model,r,f,y):
 	return sum(model.Production[r,l,f,y] for l in model.TIMESLICE) == model.ProductionAnnual[r,f,y]
@@ -400,9 +400,9 @@ def EnergyBalanceEachYear4_rule(model,r,f,y):
 	return model.ProductionAnnual[r,f,y] >= model.UseAnnual[r,f,y] + sum(model.TradeAnnual[r,rr,f,y]*model.TradeRoute[r,rr,f,y] for rr in model.REGION) + model.AccumulatedAnnualDemand[r,f,y]
 model.EnergyBalanceEachYear4 = Constraint(model.REGION, model.FUEL, model.YEAR, rule=EnergyBalanceEachYear4_rule)
 
-#
+
 #########        	Accounting Technology Production/Use	#############
-#
+
 	
 def FuelProductionByTechnology_rule(model,r,l,t,f,y):
 	return model.RateOfProductionByTechnology[r,l,t,f,y]*model.YearSplit[l,y] == model.ProductionByTechnology[r,l,t,f,y]
@@ -424,9 +424,9 @@ model.ModelPeriodCostByRegion_constraint = Constraint(model.REGION, rule=ModelPe
 	# return model.ModelPeriodCost == sum(model.ModelPeriodCostByRegion[r] for r in model.REGION)
 # model.ModelPeriodCost_Constraint = Constraint(rule=ModelPeriodCost_rule)
 
-#
+
 #########       	Capital Costs 		     	#############
-#
+
 
 def UndiscountedCapitalInvestment_rule(model,r,t,y):
 	return model.CapitalCost[r,t,y]*model.NewCapacity[r,t,y] == model.CapitalInvestment[r,t,y]
@@ -436,9 +436,9 @@ def DiscountedCapitalInvestment_rule(model,r,t,y):
 	return model.CapitalInvestment[r,t,y]/((1+model.DiscountRate[r])**(y-min(model.YEAR))) == model.DiscountedCapitalInvestment[r,t,y]
 model.DiscountedCapitalInvestment_constraint = Constraint(model.REGION, model.TECHNOLOGY, model.YEAR, rule=DiscountedCapitalInvestment_rule)
 
-#
+
 #########        	Operating Costs 		 	#############
-#
+
 
 def OperatingCostsVariable_rule(model,r,t,l,y):
 	return sum(model.TotalAnnualTechnologyActivityByMode[r,t,m,y]*model.VariableCost[r,t,m,y] for m in model.MODE_OF_OPERATION) == model.AnnualVariableOperatingCost[r,t,y]
@@ -456,9 +456,9 @@ def DiscountedOperatingCostsTotalAnnual_rule(model,r,t,y):
 	return model.OperatingCost[r,t,y]/((1+model.DiscountRate[r])**(y-min(model.YEAR) + 0.5)) == model.DiscountedOperatingCost[r,t,y]
 model.DiscountedOperatingCostsTotalAnnual = Constraint(model.REGION, model.TECHNOLOGY, model.YEAR, rule=DiscountedOperatingCostsTotalAnnual_rule)
 
-#
+
 #########       	Total Discounted Costs	 	#############
-#
+
 
 def TotalDiscountedCostByTechnology_rule(model,r,t,y):
 	return model.DiscountedOperatingCost[r,t,y] + model.DiscountedCapitalInvestment[r,t,y] + model.DiscountedTechnologyEmissionsPenalty[r,t,y] - model.DiscountedSalvageValue[r,t,y] == model.TotalDiscountedCostByTechnology[r,t,y]
@@ -472,9 +472,9 @@ def TotalDiscountedCost_rule(model,r,y):
 	return sum(model.TotalDiscountedCostByTechnology[r,t,y] for t in model.TECHNOLOGY) == model.TotalDiscountedCost[r,y]
 model.TotalDiscountedCost_constraint = Constraint(model.REGION, model.YEAR, rule=TotalDiscountedCost_rule)
 
-#
+
 #########      		Total Capacity Constraints 	##############
-#
+
 def TotalAnnualMaxCapacityConstraint_rule(model,r,t,y): 
 	return model.TotalCapacityAnnual[r,t,y] <= model.TotalAnnualMaxCapacity[r,t,y]
 model.TotalAnnualMaxCapacityConstraint = Constraint(model.REGION, model.TECHNOLOGY, model.YEAR, rule=TotalAnnualMaxCapacityConstraint_rule)
@@ -483,9 +483,9 @@ def TotalAnnualMinCapacityConstraint_rule(model,r,t,y):
 	return model.TotalCapacityAnnual[r,t,y] >= model.TotalAnnualMinCapacity[r,t,y]
 model.TotalAnnualMinCapacityConstraint = Constraint(model.REGION, model.TECHNOLOGY, model.YEAR, rule=TotalAnnualMinCapacityConstraint_rule)           
 										 
-#
+
 #########           Salvage Value            	#############
-#
+
 def SalvageValueAtEndOfPeriod1_rule(model,r,t,y): 
 	if model.DepreciationMethod[r] == 1 and ((y + model.OperationalLife[r,t]-1) > max(model.YEAR)) and model.DiscountRate[r]>0: 
 		return model.SalvageValue[r,t,y] == model.CapitalCost[r,t,y]*model.NewCapacity[r,t,y]*(1-(((1+model.DiscountRate[r])**(max(model.YEAR)- y+1)-1)/((1+model.DiscountRate[r])**model.OperationalLife[r,t]-1)))
@@ -499,9 +499,9 @@ def SalvageValueDiscountedToStartYear_rule(model,r,t,y):
 	return model.DiscountedSalvageValue[r,t,y] == model.SalvageValue[r,t,y]/((1+model.DiscountRate[r])**(1+max(model.YEAR)-min(model.YEAR)))
 model.SalvageValueDiscountedToStartYear = Constraint(model.REGION, model.TECHNOLOGY, model.YEAR, rule=SalvageValueDiscountedToStartYear_rule)
 
-#
+
 #########    		New Capacity Constraints  	##############
-#
+
 def TotalAnnualMaxNewCapacityConstraint_rule(model,r,t,y): 
 	return model.NewCapacity[r,t,y] <= model.TotalAnnualMaxCapacityInvestment[r,t,y]
 model.TotalAnnualMaxNewCapacityConstraint = Constraint(model.REGION, model.TECHNOLOGY, model.YEAR, rule=TotalAnnualMaxNewCapacityConstraint_rule)
@@ -510,9 +510,9 @@ def TotalAnnualMinNewCapacityConstraint_rule(model,r,t,y):
 	return model.NewCapacity[r,t,y] >= model.TotalAnnualMinCapacityInvestment[r,t,y]
 model.TotalAnnualMinNewCapacityConstraint = Constraint(model.REGION, model.TECHNOLOGY, model.YEAR, rule=TotalAnnualMinNewCapacityConstraint_rule)       
 
-#
+
 #########   		Annual Activity Constraints	##############
-#
+
 def TotalAnnualTechnologyActivity_rule(model,r,t,y):
 	return sum(model.RateOfTotalActivity[r,t,l,y]*model.YearSplit[l,y] for l in model.TIMESLICE) == model.TotalTechnologyAnnualActivity[r,t,y]
 model.TotalAnnualTechnologyActivity = Constraint(model.REGION, model.TECHNOLOGY, model.YEAR, rule=TotalAnnualTechnologyActivity_rule)
@@ -525,9 +525,9 @@ def TotalAnnualTechnologyActivityLowerLimit_rule(model,r,t,y):
 	return model.TotalTechnologyAnnualActivity[r,t,y] >= model.TotalTechnologyAnnualActivityLowerLimit[r,t,y]
 model.TotalAnnualTechnologyActivityLowerlimit = Constraint(model.REGION, model.TECHNOLOGY, model.YEAR, rule=TotalAnnualTechnologyActivityLowerLimit_rule)
 
-#
+
 #########    		Total Activity Constraints 	##############
-#
+
 def TotalModelHorizonTechnologyActivity_rule(model,r,t):
 	return sum(model.TotalTechnologyAnnualActivity[r,t,y] for y in model.YEAR) == model.TotalTechnologyModelPeriodActivity[r,t]
 model.TotalModelHorizonTechnologyActivity = Constraint(model.REGION, model.TECHNOLOGY, rule=TotalModelHorizonTechnologyActivity_rule)
@@ -540,9 +540,9 @@ def TotalModelHorizonTechnologyActivityLowerLimit_rule(model,r,t):
 	return model.TotalTechnologyModelPeriodActivity[r,t] >= model.TotalTechnologyModelPeriodActivityLowerLimit[r,t]
 model.TotalModelHorizonTechnologyActivityLowerLimit = Constraint(model.REGION, model.TECHNOLOGY, rule=TotalModelHorizonTechnologyActivityLowerLimit_rule)
 
-#
+
 #########   		Emissions Accounting		##############
-#
+
 
 def AnnualEmissionProductionByMode_rule(model,r,t,e,m,y):
 	if model.EmissionActivityRatio[r,t,e,m,y] != 0:
@@ -583,9 +583,9 @@ def ModelPeriodEmissionsLimit_rule(model,r,e):
 	return model.ModelPeriodEmissions[r,e] <= model.ModelPeriodEmissionLimit[r,e]
 model.ModelPeriodEmissionsLimit = Constraint(model.REGION, model.EMISSION, rule=ModelPeriodEmissionsLimit_rule)
 
-#
+
 #########   		Reserve Margin Constraint	############## NTS: Should change demand for production
-#
+
 def ReserveMargin_TechnologiesIncluded_rule(model,r,l,y):
 	return (sum((model.TotalAnnualCapacity[r,t,y]*model.ReserveMarginTagTechnology[r,t,y]*model.CapacityToActivityUnit[r,t]) for t in model.TECHNOLOGY) == model.TotalCapacityInReserveMargin[r,y])
 ReserveMargin_TechnologiesIncluded = Constraint(model.REGION, model.TIMESLICE, model.YEAR, rule=ReserveMargin_TechnologiesIncluded_rule)
