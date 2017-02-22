@@ -1,4 +1,4 @@
-![SE4ALL logo](https://github.com/KTH-dESA/OSeMOSYS/blob/master/OSeMOSYS-matrix-reduction/SE4ALL.png "")
+![SE4ALL logo](https://github.com/KTH-dESA/OSeMOSYS/blob/master/Matrix_reduction_challenge/SE4ALL.png "")
 
 [**Back to the challenge page**](http://bit.ly/2erQwcY)
 
