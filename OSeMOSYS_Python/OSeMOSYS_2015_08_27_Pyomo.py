@@ -42,6 +42,7 @@ from __future__ import division
 from pyomo.environ import *
 from pyomo.core import *
 from pyomo.opt import SolverFactory
+import os
 
 model = AbstractModel()
 
@@ -605,7 +606,7 @@ ReserveMarginConstraint = Constraint(model.REGION, model.TIMESLICE, model.YEAR, 
 
 opt = SolverFactory('cplex')
 
-instance = model.create_instance('OSeMOSYS_2015_08_27_Pyomo.dat')
+instance = model.create_instance(os.getcwd() + '\UTOPIA_2015_08_27.dat')
 results = opt.solve(instance)
 # results.write()
 #model.solutions.load_from(results)
