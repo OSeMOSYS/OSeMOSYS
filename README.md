@@ -1,3 +1,8 @@
+# OSeMOSYS for Cascaded Hydro
+This fork contains an updated OSeMOSYS.txt for GNU MathProg that allows for modelling of cascaded hydro facilities in OSeMOSYS.  The code is based on the original storage code in OSeMOSYS and has been developed by Taco Niet with the 2060 Project (https://onlineacademiccommunity.uvic.ca/2060project/).
+
+The same terms, conditions and license for OSeMOSYS applies to this derivative work.
+
 # Background
 OSeMOSYS is a full-fledged systems optimization model for long-run energy planning. Unlike long established energy systems models, such as MARKAL/TIMES (ETSAP, 2010), MESSAGE (IAEA, 2010), PRIMES (NTUA, 2010), EFOM (Van der Voort, 1982) and POLES (Enerdata, 2010), OSeMOSYS potentially requires a less significant learning curve and time commitment to build and operate. Additionally, by not using proprietary software or commercial programming languages and solvers, OSeMOSYS requires no upfront financial investment. These two advantages extend the availability of energy modeling to large communities of students, business analysts, government specialists, and developing countries energy researchers.
 
