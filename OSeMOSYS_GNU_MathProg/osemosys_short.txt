@@ -50,6 +50,8 @@ set DAYTYPE;
 set DAILYTIMEBRACKET;
 set FLEXIBLEDEMANDTYPE;
 set STORAGE;
+# Hydro Related Sets
+set RESERVOIR;
 #
 #####################
 #    Parameters     #
@@ -140,6 +142,22 @@ param AnnualExogenousEmission{r in REGION, e in EMISSION, y in YEAR};
 param AnnualEmissionLimit{r in REGION, e in EMISSION, y in YEAR};
 param ModelPeriodExogenousEmission{r in REGION, e in EMISSION};
 param ModelPeriodEmissionLimit{r in REGION, e in EMISSION};
+#
+#########			Hydro System Specification 	############
+#
+param RhoWater;
+param Gravity;
+param FlowUnittoYearConversion;
+param WattsToModelUnits;
+param HydroTurbineEfficiency;
+param TechnologyFromHydro{r in REGION, t in TECHNOLOGY, m in MODE_OF_OPERATION, v in RESERVOIR};
+param ReservoirMaxDischargeRate{v in RESERVOIR};
+param ReservoirMinDischargeRate{v in RESERVOIR};
+param ReservoirHead{v in RESERVOIR};
+param ReservoirExternalInflow{r in REGION, ls in SEASON, y in YEAR, v in RESERVOIR};
+param ReservoirLevelStart{r in REGION, v in RESERVOIR};
+param ReservoirLiveStorageVolume{v in RESERVOIR};
+param DownstreamReservoirTag{v in RESERVOIR, vv in RESERVOIR};
 #
 ######################
 #   Model Variables  #
@@ -238,6 +256,23 @@ var ModelPeriodEmissions{r in REGION, e in EMISSION}>= 0;
 #var AnnualTechnologyEmissionPenaltyByEmission{r in REGION, t in TECHNOLOGY, e in EMISSION, y in YEAR}>= 0;
 #var AnnualTechnologyEmissionsPenalty{r in REGION, t in TECHNOLOGY, y in YEAR}>= 0;
 #var AnnualEmissions{r in REGION, e in EMISSION, y in YEAR}>= 0;
+#
+################## Hydro System Variables   ###############
+#
+var RateOfReservoirDischarge{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET ,r in REGION} >= 0;
+var RateOfReservoirSpillage{y in YEAR, l in TIMESLICE, v in RESERVOIR, r in REGION} >= 0;
+var RateOfReservoirSpillageExpanded{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET ,r in REGION} >= 0;
+var RateOfExternalReservoirFilling{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET ,r in REGION} >= 0;
+var FlowBetweenReservoirs{v in RESERVOIR, vv in RESERVOIR, y in YEAR, ls in SEASON,ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION};
+var RateOfReservoirFilling{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET ,r in REGION} >= 0;
+var RateOfReservoirEmptying{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET ,r in REGION} >= 0;
+var NetReservoirWithinYear{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET ,r in REGION};
+var NetReservoirWithinDay{v in RESERVOIR,y in YEAR,ls in SEASON,ld in DAYTYPE,lh in DAILYTIMEBRACKET,r in REGION};
+var ReservoirLevelYearStart{v in RESERVOIR,y in YEAR,r in REGION} >= 0;
+var ReservoirLevelYearFinish{v in RESERVOIR,y in YEAR,r in REGION} >= 0;
+var ReservoirLevelSeasonStart{v in RESERVOIR,y in YEAR,ls in SEASON,r in REGION} >= 0;
+var ReservoirLevelDayTypeStart{v in RESERVOIR,y in YEAR,ls in SEASON,ld in DAYTYPE,r in REGION} >= 0;
+var ReservoirLevelDayTypeFinish{v in RESERVOIR,y in YEAR,ls in SEASON,ld in DAYTYPE,r in REGION} >= 0;
 #
 #        table data IN "CSV" "data.csv": s <- [FROM,TO], d~DISTANCE, c~COST;
 #        table capacity IN "CSV" "SpecifiedAnnualDemand.csv": [YEAR, FUEL, REGION], SpecifiedAnnualDemand~ColumnNameInCSVSheet;
@@ -416,6 +451,55 @@ s.t. E9_ModelPeriodEmissionsLimit{r in REGION, e in EMISSION}:  sum{l in TIMESLI
 #s.t. E4_EmissionsPenaltyByTechnology{r in REGION, t in TECHNOLOGY, y in YEAR}: sum{e in EMISSION, l in TIMESLICE, m in MODE_OF_OPERATION} EmissionActivityRatio[r,t,e,m,y]*RateOfActivity[r,l,t,m,y]*YearSplit[l,y]*EmissionsPenalty[r,e,y] = AnnualTechnologyEmissionsPenalty[r,t,y];
 #s.t. E6_EmissionsAccounting1{r in REGION, e in EMISSION, y in YEAR}: sum{l in TIMESLICE, t in TECHNOLOGY, m in MODE_OF_OPERATION: EmissionActivityRatio[r,t,e,m,y]<>0} EmissionActivityRatio[r,t,e,m,y]*RateOfActivity[r,l,t,m,y]*YearSplit[l,y] = AnnualEmissions[r,e,y];
 #s.t. E7_EmissionsAccounting2{r in REGION, e in EMISSION}: sum{l in TIMESLICE, t in TECHNOLOGY, m in MODE_OF_OPERATION, y in YEAR: EmissionActivityRatio[r,t,e,m,y]<>0} EmissionActivityRatio[r,t,e,m,y]*RateOfActivity[r,l,t,m,y]*YearSplit[l,y] + ModelPeriodExogenousEmission[r,e] = ModelPeriodEmissions[r,e];
+#
+#########        	Hydro Facility Equations			#############
+#
+s.t. Hy1_RateOfReservoirDischarge{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}: sum{t in TECHNOLOGY, m in MODE_OF_OPERATION, l in TIMESLICE:TechnologyFromHydro[r,t,m,v]>0} RateOfActivity[r,l,t,m,y] * TechnologyFromHydro[r,t,m,v] * Conversionls[l,ls] * Conversionld[l,ld] * Conversionlh[l,lh] / RhoWater / Gravity / HydroTurbineEfficiency / ReservoirHead[v] / WattsToModelUnits / CapacityToActivityUnit[r, t] = RateOfReservoirDischarge[v,y,ls,ld,lh,r];
+s.t. Hy2a_RateOfExternalReservoirFilling{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}: 
+	sum{l in TIMESLICE} ReservoirExternalInflow[r, ls ,y, v] *Conversionls[l,ls] * Conversionld[l,ld] * Conversionlh[l,lh]
+	= RateOfExternalReservoirFilling[v,y,ls,ld,lh,r];
+s.t. Hy2b_FlowBetweenReservoirs{v in RESERVOIR, vv in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}:  FlowBetweenReservoirs[v,vv,y,ls,ld,lh,r] = -FlowBetweenReservoirs[vv,v,y,ls,ld,lh,r];
+s.t. Hy2v_RateOfReservoirFilling{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}: RateOfReservoirFilling[v,y,ls,ld,lh,r] = RateOfExternalReservoirFilling[v,y,ls,ld,lh,r] + sum{vv in RESERVOIR} FlowBetweenReservoirs[v,vv,y,ls,ld,lh,r]*DownstreamReservoirTag[v,vv];
+s.t. Hy2d_RateOfReservoirEmptying{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}: RateOfReservoirEmptying[v,y,ls,ld,lh,r] = RateOfReservoirDischarge[v,y,ls,ld,lh,r] + RateOfReservoirSpillageExpanded[v,y,ls,ld,lh,r];
+s.t. Hy2d2_Spillage{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}: sum{l in TIMESLICE:Conversionls[l,ls]>0&&Conversionld[l,ld]>0&&Conversionlh[l,lh]>0} RateOfReservoirSpillage[y, l, v, r] *Conversionls[l,ls] * Conversionld[l,ld] * Conversionlh[l,lh] = RateOfReservoirSpillageExpanded[v,y,ls,ld,lh,r];
+s.t. Hy2e_EmptyingFlowCriteria{v in RESERVOIR, vv in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}:
+	if DownstreamReservoirTag[vv,v] = 1 then FlowBetweenReservoirs[vv,v,y,ls,ld,lh,r]*DownstreamReservoirTag[vv,v]
+	else RateOfReservoirEmptying[v,y,ls,ld,lh,r]
+	= RateOfReservoirEmptying[v,y,ls,ld,lh,r];
+s.t. Hy3_NetReservoirWithinYear{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}: sum{l in TIMESLICE:Conversionls[l,ls]>0&&Conversionld[l,ld]>0&&Conversionlh[l,lh]>0}  (RateOfReservoirFilling[v,y,ls,ld,lh,r] - RateOfReservoirEmptying[v,y,ls,ld,lh,r]) * FlowUnittoYearConversion * YearSplit[l,y] *Conversionls[l,ls] * Conversionld[l,ld] * Conversionlh[l,lh] = NetReservoirWithinYear[v,y,ls,ld,lh,r];
+s.t. Hy4_NetReservoirWithinDay{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}: (RateOfReservoirFilling[v,y,ls,ld,lh,r] - RateOfReservoirEmptying[v,y,ls,ld,lh,r]) * FlowUnittoYearConversion * DaySplit[lh,ls] = NetReservoirWithinDay[v,y,ls,ld,lh,r];
+s.t. Hy5_and_Hy6_ReservoirLevelYearStart{v in RESERVOIR, y in YEAR, r in REGION}: if y = min{yy in YEAR} min(yy) then ReservoirLevelStart[r,v] 
+	else ReservoirLevelYearStart[v,y-1,r] + sum{ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET} NetReservoirWithinYear[v,y-1,ls,ld,lh,r]
+	= ReservoirLevelYearStart[v,y,r];
+s.t. Hy7_and_Hy8_ReservoirLevelYearFinish{v in RESERVOIR, y in YEAR, r in REGION}:  if y < max{yy in YEAR} max(yy) then ReservoirLevelYearStart[v,y+1,r]
+	else ReservoirLevelYearStart[v,y,r] + sum{ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET} NetReservoirWithinYear[v,y,ls,ld,lh,r] 
+	= ReservoirLevelYearFinish[v,y,r];
+s.t. Hy9_and_Hy10_ReservoirLevelSeasonStart{v in RESERVOIR, y in YEAR, ls in SEASON, r in REGION}: if ls = min{lsls in SEASON} min(lsls) then ReservoirLevelYearStart[v,y,r] 
+	else ReservoirLevelSeasonStart[v,y,ls-1,r] + sum{ld in DAYTYPE, lh in DAILYTIMEBRACKET} NetReservoirWithinYear[v,y,ls-1,ld,lh,r] 
+	= ReservoirLevelSeasonStart[v,y,ls,r];
+s.t. Hy11_and_Hy12_ReservoirLevelDayTypeStart{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, r in REGION}: if ld = min{ldld in DAYTYPE} min(ldld) then ReservoirLevelSeasonStart[v,y,ls,r] 
+	else ReservoirLevelDayTypeStart[v,y,ls,ld-1,r] + sum{lh in DAILYTIMEBRACKET} NetReservoirWithinDay[v,y,ls,ld-1,lh,r] * DaysInDayType[ls,ld-1,y]
+	= ReservoirLevelDayTypeStart[v,y,ls,ld,r];
+s.t. Hy13_and_Hy14_and_Hy15_ReservoirLevelDayTypeFinish{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, r in REGION}:	if ls = max{lsls in SEASON} max(lsls) && ld = max{ldld in DAYTYPE} max(ldld) then ReservoirLevelYearFinish[v,y,r] 
+	else if ld = max{ldld in DAYTYPE} max(ldld) then ReservoirLevelSeasonStart[v,y,ls+1,r]
+	else ReservoirLevelDayTypeFinish[v,y,ls,ld+1,r] - sum{lh in DAILYTIMEBRACKET} NetReservoirWithinDay[v,y,ls,ld+1,lh,r] * DaysInDayType[ls,ld+1,y]
+	= ReservoirLevelDayTypeFinish[v,y,ls,ld,r];
+#
+#########		Hydro Facility Constraints		#############
+#
+s.t. HyC1_LowerLimit_BeginningOfDailyTimeBracketOfFirstInstanceOfDayTypeInFirstWeekConstraint{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}: 0 <= (ReservoirLevelDayTypeStart[v,y,ls,ld,r]+sum{lhlh in DAILYTIMEBRACKET:lh-lhlh>0} NetReservoirWithinDay[v,y,ls,ld,lhlh,r]);
+s.t. HyC1_UpperLimit_BeginningOfDailyTimeBracketOfFirstInstanceOfDayTypeInFirstWeekConstraint{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}: (ReservoirLevelDayTypeStart[v,y,ls,ld,r]+sum{lhlh in DAILYTIMEBRACKET:lh-lhlh>0} NetReservoirWithinDay[v,y,ls,ld,lhlh,r])-ReservoirLiveStorageVolume[v] <= 0;
+s.t. HyC2_LowerLimit_EndOfDailyTimeBracketOfLastInstanceOfDayTypeInFirstWeekConstraint{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}: 0 <= if ld > min{ldld in DAYTYPE} min(ldld) then (ReservoirLevelDayTypeStart[v,y,ls,ld,r]-sum{lhlh in DAILYTIMEBRACKET:lh-lhlh<0} NetReservoirWithinDay[v,y,ls,ld-1,lhlh,r]);
+s.t. HyC2_UpperLimit_EndOfDailyTimeBracketOfLastInstanceOfDayTypeInFirstWeekConstraint{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}: if ld > min{ldld in DAYTYPE} min(ldld) then (ReservoirLevelDayTypeStart[v,y,ls,ld,r]-sum{lhlh in DAILYTIMEBRACKET:lh-lhlh<0} NetReservoirWithinDay[v,y,ls,ld-1,lhlh,r])-ReservoirLiveStorageVolume[v] <= 0;
+s.t. HyC3_LowerLimit_EndOfDailyTimeBracketOfLastInstanceOfDayTypeInLastWeekConstraint{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}:  0 <= (ReservoirLevelDayTypeFinish[v,y,ls,ld,r] - sum{lhlh in DAILYTIMEBRACKET:lh-lhlh<0} NetReservoirWithinDay[v,y,ls,ld,lhlh,r]);
+s.t. HyC3_UpperLimit_EndOfDailyTimeBracketOfLastInstanceOfDayTypeInLastWeekConstraint{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}:  (ReservoirLevelDayTypeFinish[v,y,ls,ld,r] - sum{lhlh in DAILYTIMEBRACKET:lh-lhlh<0} NetReservoirWithinDay[v,y,ls,ld,lhlh,r])-ReservoirLiveStorageVolume[v] <= 0;
+s.t. HyC4_LowerLimit_BeginningOfDailyTimeBracketOfFirstInstanceOfDayTypeInLastWeekConstraint{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}: 	0 <= if ld > min{ldld in DAYTYPE} min(ldld) then (ReservoirLevelDayTypeFinish[v,y,ls,ld-1,r]+sum{lhlh in DAILYTIMEBRACKET:lh-lhlh>0} NetReservoirWithinDay[v,y,ls,ld,lhlh,r]);
+s.t. HyC4_UpperLimit_BeginningOfDailyTimeBracketOfFirstInstanceOfDayTypeInLastWeekConstraint{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}: if ld > min{ldld in DAYTYPE} min(ldld) then (ReservoirLevelDayTypeFinish[v,y,ls,ld-1,r]+sum{lhlh in DAILYTIMEBRACKET:lh-lhlh>0} NetReservoirWithinDay[v,y,ls,ld,lhlh,r])-ReservoirLiveStorageVolume[v] <= 0;
+#
+#########		Reservoir Discharge Requirements (fisheries, etc.)		#############
+#
+s.t. HyC5_MaxReservoirEmptyingConstraint{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}: sum{l in TIMESLICE:Conversionls[l,ls]>0&&Conversionld[l,ld]>0&&Conversionlh[l,lh]>0} RateOfReservoirEmptying[v,y,ls,ld,lh,r] *Conversionls[l,ls] * Conversionld[l,ld] * Conversionlh[l,lh] <= ReservoirMaxDischargeRate[v];
+s.t. HyC6_MinReservoirEmptyingConstraint{v in RESERVOIR, y in YEAR, ls in SEASON, ld in DAYTYPE, lh in DAILYTIMEBRACKET, r in REGION}: sum{l in TIMESLICE:Conversionls[l,ls]>0&&Conversionld[l,ld]>0&&Conversionlh[l,lh]>0} ReservoirMinDischargeRate[v] *Conversionls[l,ls] * Conversionld[l,ld] * Conversionlh[l,lh] <= RateOfReservoirEmptying[v,y,ls,ld,lh,r];
 #
 #
 ###########################################################################################
