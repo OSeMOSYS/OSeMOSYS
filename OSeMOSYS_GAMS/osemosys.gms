@@ -1,5 +1,6 @@
 *
 * OSEMOSYS 2011.07.07 conversion to GAMS by Ken Noble, Noble-Soft Systems - August 2012
+* OSEMOSYS 2016.08.01 update by Thorsten Burandt, Konstantin Löffler and Karlo Hainsch, TU Berlin (Workgroup for Infrastructure Policy) - October 2017
 *
 * Files required are:
 * osemosys.gms (this file)
@@ -16,7 +17,7 @@
 * 3. Place all 4 of the above files in a convenient folder,
 * open a Command Prompt window in this folder, and enter:
 * gams osemosys.gms
-* 4. You should find that you get an optimal value of 26630.2254.
+* 4. You should find that you get an optimal value of 29446.861.
 * 5. Some results are created in file SelResults.CSV that you can view in Excel.
 *
 * declarations for sets, parameters, variables
@@ -30,6 +31,6 @@ $include osemosys_equ.gms
 * solve the model
 model osemosys /all/;
 option limrow=0, limcol=0, solprint=on;
-solve osemosys minimizing z using lp;
+solve osemosys minimizing z using MIP;
 * create results in file SelResults.CSV
 $include osemosys_res.gms

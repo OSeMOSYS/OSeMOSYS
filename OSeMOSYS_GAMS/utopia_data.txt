@@ -2,96 +2,56 @@ $offlisting
 * UTOPIA_DATA.TXT - specify Utopia Model data in format required by GAMS
 *
 * OSEMOSYS 2011.07.07 conversion to GAMS by Ken Noble.Noble-Soft Systems - August 2012
+* OSEMOSYS 2016.08.01 update by Thorsten Burandt, Konstantin Löffler and Karlo Hainsch, TU Berlin (Workgroup for Infrastructure Policy) - October 2017
 *
 $offlisting
 
-* OSEMOSYS 2011.07.07
+* OSEMOSYS 2016.08.01
 * Open Source energy Modeling SYStem
 *
-*#	Based on UTOPIA version 5: BASE - Utopia Base Model																							
-*#	Energy and demands in PJ/a																							
-*#	Power plants in GW																							
-*#	Investment and Fixed O&M Costs: Power plant: Million $ / GW (//$/kW)																							
-*#	Investment  and Fixed O&M Costs Costs: Other plant costs: Million $/PJ/a																							
-*#	Variable O&M (& Import) Costs: Million $ / PJ (//$/GJ)																							
+*#      Based on UTOPIA version 5: BASE - Utopia Base Model
+*#      Energy and demands in PJ/a
+*#      Power plants in GW
+*#      Investment and Fixed O&M Costs: Power plant: Million $ / GW (//$/kW)
+*#      Investment  and Fixed O&M Costs Costs: Other plant costs: Million $/PJ/a
+*#      Variable O&M (& Import) Costs: Million $ / PJ (//$/GJ)
 *#
 *#****************************************
-$offlisting
-set	EMISSION	/ CO2, NOX /;																			
-set	TECHNOLOGY	/ E01, E21, E31, E51, E70, IMPDSL1, IMPGSL1, IMPHCO1, IMPOIL1, IMPURN1, RHE, RHO, RL1, SRE, TXD, TXE, TXG, RIV, RHu, RLu, TXu /;			
-set	FUEL	/ CSV, DSL, ELC, GSL, HCO, HYD, LTH, OIL, URN, RH, RL, TX /;									
-
-set	YEAR	/ 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 /;
-YearVal(YEAR) = 1990+ord(YEAR)-1;
-
-set	TIMESLICE	/ ID, IN, SD, SN, WD, WN /;															
-set	MODE_OF_OPERATION	/ 1, 2 /;																				
-set	REGION	/ UTOPIA /;																				
-set	STORAGE	/ DAM /;																				
-set BOUNDARY_INSTANCES	/ endc1 /;																						
-$offlisting
-
-display EMISSION;
-display TECHNOLOGY;
-display FUEL;
-display YEAR;
-display TIMESLICE;
-display MODE_OF_OPERATION;
-display REGION;
-display STORAGE;
-display BOUNDARY_INSTANCES;
-*
 
 $offlisting
-*#****************************************
-*param	AnnualExogenousEmission	default	0	:=	;
+set     EMISSION        / CO2, NOX /;
+set     TECHNOLOGY      / E01, E21, E31, E51, E70, IMPDSL1, IMPGSL1, IMPHCO1, IMPOIL1, IMPURN1, RHE, RHO, RL1, SRE, TXD, TXE, TXG, RIV, RHu, RLu, TXu /;
+set     FUEL    / DSL, ELC, GSL, HCO, HYD, OIL, URN, RH, RL, TX /;
+
+set     YEAR    / 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 /;
+
+set     TIMESLICE       / ID, IN, SD, SN, WD, WN /;
+set     MODE_OF_OPERATION       / 1, 2 /;
+set     REGION  / UTOPIA /;
+
+set     SEASON / 1, 2, 3 /;
+set     DAYTYPE / 1 /;
+set     DAILYTIMEBRACKET / 1, 2 /;
+
+set     STORAGE / DAM /;
+
+
+*param        AnnualExogenousEmission                        default        0                :=        ;
 AnnualExogenousEmission(r,e,y) = 0;
-
-*param	AnnualEmissionLimit	default	9999	:=;
+*param        AnnualEmissionLimit                                default        9999        :=        ;
 AnnualEmissionLimit(r,e,y) = 9999;
-*option AnnualEmissionLimit:0:0:1; display AnnualEmissionLimit;
-
-*param	ModelPeriodExogenousEmission	default	0	:=	;
+*param        ModelPeriodExogenousEmission        default        0                :=        ;
 ModelPeriodExogenousEmission(r,e) = 0;
-
-*param	ModelPeriodEmissionLimit	default	9999	:=;
+*param        ModelPeriodEmissionLimit                default        9999        :=        ;
 ModelPeriodEmissionLimit(r,e) = 9999;
-*option ModelPeriodEmissionLimit:0:0:1; display ModelPeriodEmissionLimit;
 
-*param	StorageUpperLimit default 	9999	:=;
-StorageUpperLimit(r,s) = 9999;
-*option StorageUpperLimit:0:0:1; display StorageUpperLimit;
-
-*param	StorageLowerLimit	default 0	:=;
-StorageLowerLimit(r,s) = 0;
-
-*#****************************************
-																								
 *param DiscountRate default 0.05 :=;
-DiscountRate(r,t) = 0.05;
-*display DiscountRate;
+DiscountRate(r) = 0.05;
 
-*param StartYear := 1990;
-parameter StartYear / 1990 /;
-*display StartYear;
+*param DepreciationMethod default 1 :=;
+DepreciationMethod(r) = 1;
 
-*param	TechnologyToStorage	default	0	:=																				
-*	[*,2,*,UTOPIA]		:	DAM	:=																			
-*	E51			1	;																			
-parameter TechnologyToStorage /
-  UTOPIA.E51.DAM.2  1
-/;
-*option TechnologyToStorage:0:0:1; display TechnologyToStorage;
-
-*param	TechnologyFromStorage	default	0	:=																				
-*	[*,1,*,UTOPIA]		:	DAM	:=																			
-*	E51			1	;																			
-parameter TechnologyFromStorage /
-  UTOPIA.E51.DAM.1  1
-/;
-*option TechnologyFromStorage:0:0:1; display TechnologyFromStorage;
-
-*param	YearSplit:	ID	IN	SD	SN	WD	WN	:=
+*param  YearSplit:      ID      IN      SD      SN      WD      WN      :=
 parameter YearSplit /
   ID.1990  .1667
   ID.1991  .1667
@@ -219,12 +179,11 @@ parameter YearSplit /
   WN.2008  .1667
   WN.2009  .1667
   WN.2010  .1667
-/;																
-*option YearSplit:4:1:1; display YearSplit;
+/;
 
-*param	AccumulatedAnnualDemand	default	0	:=																				
-*	[*,*,UTOPIA]	:	TX	:=																				
-parameter AccumulatedAnnualDemand /																				
+*param  AccumulatedAnnualDemand default 0       :=
+*       [*,*,UTOPIA]    :       TX      :=
+parameter AccumulatedAnnualDemand /
   UTOPIA.TX.1990  5.2
   UTOPIA.TX.1991  5.46
   UTOPIA.TX.1992  5.72
@@ -247,11 +206,10 @@ parameter AccumulatedAnnualDemand /
   UTOPIA.TX.2009  11.301
   UTOPIA.TX.2010  11.69
 /;
-*option AccumulatedAnnualDemand:4:0:1; display AccumulatedAnnualDemand;
-																						
-*param	SpecifiedAnnualDemand	default	0	:=																				
-*	[*,*,UTOPIA]	:	RH	RL :=	
-parameter SpecifiedAnnualDemand /																			
+
+*param  SpecifiedAnnualDemand   default 0       :=
+*       [*,*,UTOPIA]    :       RH      RL :=
+parameter SpecifiedAnnualDemand /
   UTOPIA.RH.1990  25.2
   UTOPIA.RH.1991  26.46
   UTOPIA.RH.1992  27.72
@@ -295,10 +253,9 @@ parameter SpecifiedAnnualDemand /
   UTOPIA.RL.2009  12.18
   UTOPIA.RL.2010  12.6
 /;
-*option SpecifiedAnnualDemand:4:0:1; display SpecifiedAnnualDemand;
 
-*param	SpecifiedDemandProfile	default	0	:=																				
-*	[*,*,RH,UTOPIA]	:	ID	IN	SD	SN	WD	WN	:=	
+*param  SpecifiedDemandProfile  default 0       :=
+*       [*,*,RH,UTOPIA] :       ID      IN      SD      SN      WD      WN      :=
 parameter SpecifiedDemandProfile /
   UTOPIA.RH.ID.1990  .12
   UTOPIA.RH.ID.1991  .12
@@ -342,48 +299,48 @@ parameter SpecifiedDemandProfile /
   UTOPIA.RH.IN.2008  .06
   UTOPIA.RH.IN.2009  .06
   UTOPIA.RH.IN.2010  .06
-  UTOPIA.RH.SD.1990  0 
-  UTOPIA.RH.SD.1991  0 
-  UTOPIA.RH.SD.1992  0 
-  UTOPIA.RH.SD.1993  0 
-  UTOPIA.RH.SD.1994  0 
-  UTOPIA.RH.SD.1995  0 
-  UTOPIA.RH.SD.1996  0 
-  UTOPIA.RH.SD.1997  0 
-  UTOPIA.RH.SD.1998  0 
-  UTOPIA.RH.SD.1999  0 
-  UTOPIA.RH.SD.2000  0 
-  UTOPIA.RH.SD.2001  0 
-  UTOPIA.RH.SD.2002  0 
-  UTOPIA.RH.SD.2003  0 
-  UTOPIA.RH.SD.2004  0 
-  UTOPIA.RH.SD.2005  0 
-  UTOPIA.RH.SD.2006  0 
-  UTOPIA.RH.SD.2007  0 
-  UTOPIA.RH.SD.2008  0 
-  UTOPIA.RH.SD.2009  0 
-  UTOPIA.RH.SD.2010  0 
-  UTOPIA.RH.SN.1990  0 
-  UTOPIA.RH.SN.1991  0 
-  UTOPIA.RH.SN.1992  0 
-  UTOPIA.RH.SN.1993  0 
-  UTOPIA.RH.SN.1994  0 
-  UTOPIA.RH.SN.1995  0 
-  UTOPIA.RH.SN.1996  0 
-  UTOPIA.RH.SN.1997  0 
-  UTOPIA.RH.SN.1998  0 
-  UTOPIA.RH.SN.1999  0 
-  UTOPIA.RH.SN.2000  0 
-  UTOPIA.RH.SN.2001  0 
-  UTOPIA.RH.SN.2002  0 
-  UTOPIA.RH.SN.2003  0 
-  UTOPIA.RH.SN.2004  0 
-  UTOPIA.RH.SN.2005  0 
-  UTOPIA.RH.SN.2006  0 
-  UTOPIA.RH.SN.2007  0 
-  UTOPIA.RH.SN.2008  0 
-  UTOPIA.RH.SN.2009  0 
-  UTOPIA.RH.SN.2010  0 
+  UTOPIA.RH.SD.1990  0
+  UTOPIA.RH.SD.1991  0
+  UTOPIA.RH.SD.1992  0
+  UTOPIA.RH.SD.1993  0
+  UTOPIA.RH.SD.1994  0
+  UTOPIA.RH.SD.1995  0
+  UTOPIA.RH.SD.1996  0
+  UTOPIA.RH.SD.1997  0
+  UTOPIA.RH.SD.1998  0
+  UTOPIA.RH.SD.1999  0
+  UTOPIA.RH.SD.2000  0
+  UTOPIA.RH.SD.2001  0
+  UTOPIA.RH.SD.2002  0
+  UTOPIA.RH.SD.2003  0
+  UTOPIA.RH.SD.2004  0
+  UTOPIA.RH.SD.2005  0
+  UTOPIA.RH.SD.2006  0
+  UTOPIA.RH.SD.2007  0
+  UTOPIA.RH.SD.2008  0
+  UTOPIA.RH.SD.2009  0
+  UTOPIA.RH.SD.2010  0
+  UTOPIA.RH.SN.1990  0
+  UTOPIA.RH.SN.1991  0
+  UTOPIA.RH.SN.1992  0
+  UTOPIA.RH.SN.1993  0
+  UTOPIA.RH.SN.1994  0
+  UTOPIA.RH.SN.1995  0
+  UTOPIA.RH.SN.1996  0
+  UTOPIA.RH.SN.1997  0
+  UTOPIA.RH.SN.1998  0
+  UTOPIA.RH.SN.1999  0
+  UTOPIA.RH.SN.2000  0
+  UTOPIA.RH.SN.2001  0
+  UTOPIA.RH.SN.2002  0
+  UTOPIA.RH.SN.2003  0
+  UTOPIA.RH.SN.2004  0
+  UTOPIA.RH.SN.2005  0
+  UTOPIA.RH.SN.2006  0
+  UTOPIA.RH.SN.2007  0
+  UTOPIA.RH.SN.2008  0
+  UTOPIA.RH.SN.2009  0
+  UTOPIA.RH.SN.2010  0
   UTOPIA.RH.WD.1990  .5467
   UTOPIA.RH.WD.1991  .5467
   UTOPIA.RH.WD.1992  .5467
@@ -553,10 +510,9 @@ parameter SpecifiedDemandProfile /
   UTOPIA.RL.WN.2009  .1
   UTOPIA.RL.WN.2010  .1
 /;
-*option SpecifiedDemandProfile:4:2:2; display SpecifiedDemandProfile;
 
-*param	CapacityToActivityUnit	default	1	:	UTOPIA	:=
-parameter CapacityToActivityUnit /																	
+*param  CapacityToActivityUnit  default 1       :       UTOPIA  :=
+parameter CapacityToActivityUnit /
   UTOPIA.E01  31.536
   UTOPIA.E21  31.536
   UTOPIA.E31  31.536
@@ -564,20 +520,9 @@ parameter CapacityToActivityUnit /
   UTOPIA.E70  31.536
 /;
 CapacityToActivityUnit(r,t)$(CapacityToActivityUnit(r,t) = 0) = 1;
-*option CapacityToActivityUnit:4:0:1; display CapacityToActivityUnit;
 
-*param	TechWithCapacityNeededToMeetPeakTS	default	0	:	UTOPIA	:=	
-parameter TechWithCapacityNeededToMeetPeakTS /																								
-  UTOPIA.E01  1
-  UTOPIA.E21  1
-  UTOPIA.E31  1
-  UTOPIA.E51  1
-  UTOPIA.E70  1
-/;																				
-*option TechWithCapacityNeededToMeetPeakTS:4:0:1; display TechWithCapacityNeededToMeetPeakTS;
-
-*param	InputActivityRatio	default	0	:=																				
-*[*,*,DSL,1,UTOPIA]		:	E70	RHO	TXD	:=
+*param  InputActivityRatio      default 0       :=
+*[*,*,DSL,1,UTOPIA]             :       E70     RHO     TXD     :=
 parameter InputActivityRatio /
   UTOPIA.E01.HCO.1.1990  3.125
   UTOPIA.E01.HCO.1.1991  3.125
@@ -832,10 +777,9 @@ parameter InputActivityRatio /
   UTOPIA.TXG.GSL.1.2009  1
   UTOPIA.TXG.GSL.1.2010  1
 /;
-option InputActivityRatio:4:2:3; display InputActivityRatio;
-																								
-*param	OutputActivityRatio	default	0	:=																				
-*[*,*,RH,1,UTOPIA]		:	RHE	RHO	RHu:=	
+
+*param  OutputActivityRatio     default 0       :=
+*[*,*,RH,1,UTOPIA]              :       RHE     RHO     RHu:=
 parameter OutputActivityRatio /
   UTOPIA.E01.ELC.1.1990  1
   UTOPIA.E01.ELC.1.1991  1
@@ -1300,11 +1244,11 @@ parameter OutputActivityRatio /
   UTOPIA.TXU.TX.1.2009  1
   UTOPIA.TXU.TX.1.2010  1
 /;
-option OutputActivityRatio:4:2:3; display OutputActivityRatio;
-																								
-*param	FixedCost	default	0	:=																				
-*[*,*,UTOPIA]:		E01	E21	E31	E51	E70	RHO	RL1		TXD	TXE	TXG	:=
-parameter FixedCost /											
+
+
+*param  FixedCost       default 0       :=
+*[*,*,UTOPIA]:          E01     E21     E31     E51     E70     RHO     RL1             TXD     TXE     TXG     :=
+parameter FixedCost /
   UTOPIA.E01.1990  40
   UTOPIA.E01.1991  40
   UTOPIA.E01.1992  40
@@ -1516,10 +1460,9 @@ parameter FixedCost /
   UTOPIA.TXG.2009  48
   UTOPIA.TXG.2010  48
 /;
-*option FixedCost:4:0:1; display FixedCost;
 
-*param	CapitalCost	default	0	:=																		
-*[*,*,UTOPIA]:	E01	E21	E31	E51	E70	IMPDSL1	IMPGSL1	IMPHCO1	IMPOIL1	IMPURN1	RHE	RHO	RL1	SRE	TXD	TXE	TXG	RIV	RHu	RLu	TXu	:=
+*param  CapitalCost     default 0       :=
+*[*,*,UTOPIA]:  E01     E21     E31     E51     E70     IMPDSL1 IMPGSL1 IMPHCO1 IMPOIL1 IMPURN1 RHE     RHO     RL1     SRE     TXD     TXE     TXG     RIV     RHu     RLu     TXu     :=
 parameter CapitalCost /
   UTOPIA.E01.1990  1400
   UTOPIA.E01.1991  1390
@@ -1626,111 +1569,111 @@ parameter CapitalCost /
   UTOPIA.E70.2008  1000
   UTOPIA.E70.2009  1000
   UTOPIA.E70.2010  1000
-  UTOPIA.IMPDSL1.1990  0 
-  UTOPIA.IMPDSL1.1991  0 
-  UTOPIA.IMPDSL1.1992  0 
-  UTOPIA.IMPDSL1.1993  0 
-  UTOPIA.IMPDSL1.1994  0 
-  UTOPIA.IMPDSL1.1995  0 
-  UTOPIA.IMPDSL1.1996  0 
-  UTOPIA.IMPDSL1.1997  0 
-  UTOPIA.IMPDSL1.1998  0 
-  UTOPIA.IMPDSL1.1999  0 
-  UTOPIA.IMPDSL1.2000  0 
-  UTOPIA.IMPDSL1.2001  0 
-  UTOPIA.IMPDSL1.2002  0 
-  UTOPIA.IMPDSL1.2003  0 
-  UTOPIA.IMPDSL1.2004  0 
-  UTOPIA.IMPDSL1.2005  0 
-  UTOPIA.IMPDSL1.2006  0 
-  UTOPIA.IMPDSL1.2007  0 
-  UTOPIA.IMPDSL1.2008  0 
-  UTOPIA.IMPDSL1.2009  0 
-  UTOPIA.IMPDSL1.2010  0 
-  UTOPIA.IMPGSL1.1990  0 
-  UTOPIA.IMPGSL1.1991  0 
-  UTOPIA.IMPGSL1.1992  0 
-  UTOPIA.IMPGSL1.1993  0 
-  UTOPIA.IMPGSL1.1994  0 
-  UTOPIA.IMPGSL1.1995  0 
-  UTOPIA.IMPGSL1.1996  0 
-  UTOPIA.IMPGSL1.1997  0 
-  UTOPIA.IMPGSL1.1998  0 
-  UTOPIA.IMPGSL1.1999  0 
-  UTOPIA.IMPGSL1.2000  0 
-  UTOPIA.IMPGSL1.2001  0 
-  UTOPIA.IMPGSL1.2002  0 
-  UTOPIA.IMPGSL1.2003  0 
-  UTOPIA.IMPGSL1.2004  0 
-  UTOPIA.IMPGSL1.2005  0 
-  UTOPIA.IMPGSL1.2006  0 
-  UTOPIA.IMPGSL1.2007  0 
-  UTOPIA.IMPGSL1.2008  0 
-  UTOPIA.IMPGSL1.2009  0 
-  UTOPIA.IMPGSL1.2010  0 
-  UTOPIA.IMPHCO1.1990  0 
-  UTOPIA.IMPHCO1.1991  0 
-  UTOPIA.IMPHCO1.1992  0 
-  UTOPIA.IMPHCO1.1993  0 
-  UTOPIA.IMPHCO1.1994  0 
-  UTOPIA.IMPHCO1.1995  0 
-  UTOPIA.IMPHCO1.1996  0 
-  UTOPIA.IMPHCO1.1997  0 
-  UTOPIA.IMPHCO1.1998  0 
-  UTOPIA.IMPHCO1.1999  0 
-  UTOPIA.IMPHCO1.2000  0 
-  UTOPIA.IMPHCO1.2001  0 
-  UTOPIA.IMPHCO1.2002  0 
-  UTOPIA.IMPHCO1.2003  0 
-  UTOPIA.IMPHCO1.2004  0 
-  UTOPIA.IMPHCO1.2005  0 
-  UTOPIA.IMPHCO1.2006  0 
-  UTOPIA.IMPHCO1.2007  0 
-  UTOPIA.IMPHCO1.2008  0 
-  UTOPIA.IMPHCO1.2009  0 
-  UTOPIA.IMPHCO1.2010  0 
-  UTOPIA.IMPOIL1.1990  0 
-  UTOPIA.IMPOIL1.1991  0 
-  UTOPIA.IMPOIL1.1992  0 
-  UTOPIA.IMPOIL1.1993  0 
-  UTOPIA.IMPOIL1.1994  0 
-  UTOPIA.IMPOIL1.1995  0 
-  UTOPIA.IMPOIL1.1996  0 
-  UTOPIA.IMPOIL1.1997  0 
-  UTOPIA.IMPOIL1.1998  0 
-  UTOPIA.IMPOIL1.1999  0 
-  UTOPIA.IMPOIL1.2000  0 
-  UTOPIA.IMPOIL1.2001  0 
-  UTOPIA.IMPOIL1.2002  0 
-  UTOPIA.IMPOIL1.2003  0 
-  UTOPIA.IMPOIL1.2004  0 
-  UTOPIA.IMPOIL1.2005  0 
-  UTOPIA.IMPOIL1.2006  0 
-  UTOPIA.IMPOIL1.2007  0 
-  UTOPIA.IMPOIL1.2008  0 
-  UTOPIA.IMPOIL1.2009  0 
-  UTOPIA.IMPOIL1.2010  0 
-  UTOPIA.IMPURN1.1990  0 
-  UTOPIA.IMPURN1.1991  0 
-  UTOPIA.IMPURN1.1992  0 
-  UTOPIA.IMPURN1.1993  0 
-  UTOPIA.IMPURN1.1994  0 
-  UTOPIA.IMPURN1.1995  0 
-  UTOPIA.IMPURN1.1996  0 
-  UTOPIA.IMPURN1.1997  0 
-  UTOPIA.IMPURN1.1998  0 
-  UTOPIA.IMPURN1.1999  0 
-  UTOPIA.IMPURN1.2000  0 
-  UTOPIA.IMPURN1.2001  0 
-  UTOPIA.IMPURN1.2002  0 
-  UTOPIA.IMPURN1.2003  0 
-  UTOPIA.IMPURN1.2004  0 
-  UTOPIA.IMPURN1.2005  0 
-  UTOPIA.IMPURN1.2006  0 
-  UTOPIA.IMPURN1.2007  0 
-  UTOPIA.IMPURN1.2008  0 
-  UTOPIA.IMPURN1.2009  0 
-  UTOPIA.IMPURN1.2010  0 
+  UTOPIA.IMPDSL1.1990  0
+  UTOPIA.IMPDSL1.1991  0
+  UTOPIA.IMPDSL1.1992  0
+  UTOPIA.IMPDSL1.1993  0
+  UTOPIA.IMPDSL1.1994  0
+  UTOPIA.IMPDSL1.1995  0
+  UTOPIA.IMPDSL1.1996  0
+  UTOPIA.IMPDSL1.1997  0
+  UTOPIA.IMPDSL1.1998  0
+  UTOPIA.IMPDSL1.1999  0
+  UTOPIA.IMPDSL1.2000  0
+  UTOPIA.IMPDSL1.2001  0
+  UTOPIA.IMPDSL1.2002  0
+  UTOPIA.IMPDSL1.2003  0
+  UTOPIA.IMPDSL1.2004  0
+  UTOPIA.IMPDSL1.2005  0
+  UTOPIA.IMPDSL1.2006  0
+  UTOPIA.IMPDSL1.2007  0
+  UTOPIA.IMPDSL1.2008  0
+  UTOPIA.IMPDSL1.2009  0
+  UTOPIA.IMPDSL1.2010  0
+  UTOPIA.IMPGSL1.1990  0
+  UTOPIA.IMPGSL1.1991  0
+  UTOPIA.IMPGSL1.1992  0
+  UTOPIA.IMPGSL1.1993  0
+  UTOPIA.IMPGSL1.1994  0
+  UTOPIA.IMPGSL1.1995  0
+  UTOPIA.IMPGSL1.1996  0
+  UTOPIA.IMPGSL1.1997  0
+  UTOPIA.IMPGSL1.1998  0
+  UTOPIA.IMPGSL1.1999  0
+  UTOPIA.IMPGSL1.2000  0
+  UTOPIA.IMPGSL1.2001  0
+  UTOPIA.IMPGSL1.2002  0
+  UTOPIA.IMPGSL1.2003  0
+  UTOPIA.IMPGSL1.2004  0
+  UTOPIA.IMPGSL1.2005  0
+  UTOPIA.IMPGSL1.2006  0
+  UTOPIA.IMPGSL1.2007  0
+  UTOPIA.IMPGSL1.2008  0
+  UTOPIA.IMPGSL1.2009  0
+  UTOPIA.IMPGSL1.2010  0
+  UTOPIA.IMPHCO1.1990  0
+  UTOPIA.IMPHCO1.1991  0
+  UTOPIA.IMPHCO1.1992  0
+  UTOPIA.IMPHCO1.1993  0
+  UTOPIA.IMPHCO1.1994  0
+  UTOPIA.IMPHCO1.1995  0
+  UTOPIA.IMPHCO1.1996  0
+  UTOPIA.IMPHCO1.1997  0
+  UTOPIA.IMPHCO1.1998  0
+  UTOPIA.IMPHCO1.1999  0
+  UTOPIA.IMPHCO1.2000  0
+  UTOPIA.IMPHCO1.2001  0
+  UTOPIA.IMPHCO1.2002  0
+  UTOPIA.IMPHCO1.2003  0
+  UTOPIA.IMPHCO1.2004  0
+  UTOPIA.IMPHCO1.2005  0
+  UTOPIA.IMPHCO1.2006  0
+  UTOPIA.IMPHCO1.2007  0
+  UTOPIA.IMPHCO1.2008  0
+  UTOPIA.IMPHCO1.2009  0
+  UTOPIA.IMPHCO1.2010  0
+  UTOPIA.IMPOIL1.1990  0
+  UTOPIA.IMPOIL1.1991  0
+  UTOPIA.IMPOIL1.1992  0
+  UTOPIA.IMPOIL1.1993  0
+  UTOPIA.IMPOIL1.1994  0
+  UTOPIA.IMPOIL1.1995  0
+  UTOPIA.IMPOIL1.1996  0
+  UTOPIA.IMPOIL1.1997  0
+  UTOPIA.IMPOIL1.1998  0
+  UTOPIA.IMPOIL1.1999  0
+  UTOPIA.IMPOIL1.2000  0
+  UTOPIA.IMPOIL1.2001  0
+  UTOPIA.IMPOIL1.2002  0
+  UTOPIA.IMPOIL1.2003  0
+  UTOPIA.IMPOIL1.2004  0
+  UTOPIA.IMPOIL1.2005  0
+  UTOPIA.IMPOIL1.2006  0
+  UTOPIA.IMPOIL1.2007  0
+  UTOPIA.IMPOIL1.2008  0
+  UTOPIA.IMPOIL1.2009  0
+  UTOPIA.IMPOIL1.2010  0
+  UTOPIA.IMPURN1.1990  0
+  UTOPIA.IMPURN1.1991  0
+  UTOPIA.IMPURN1.1992  0
+  UTOPIA.IMPURN1.1993  0
+  UTOPIA.IMPURN1.1994  0
+  UTOPIA.IMPURN1.1995  0
+  UTOPIA.IMPURN1.1996  0
+  UTOPIA.IMPURN1.1997  0
+  UTOPIA.IMPURN1.1998  0
+  UTOPIA.IMPURN1.1999  0
+  UTOPIA.IMPURN1.2000  0
+  UTOPIA.IMPURN1.2001  0
+  UTOPIA.IMPURN1.2002  0
+  UTOPIA.IMPURN1.2003  0
+  UTOPIA.IMPURN1.2004  0
+  UTOPIA.IMPURN1.2005  0
+  UTOPIA.IMPURN1.2006  0
+  UTOPIA.IMPURN1.2007  0
+  UTOPIA.IMPURN1.2008  0
+  UTOPIA.IMPURN1.2009  0
+  UTOPIA.IMPURN1.2010  0
   UTOPIA.RHE.1990  90
   UTOPIA.RHE.1991  90
   UTOPIA.RHE.1992  90
@@ -1773,90 +1716,90 @@ parameter CapitalCost /
   UTOPIA.RHO.2008  100
   UTOPIA.RHO.2009  100
   UTOPIA.RHO.2010  100
-  UTOPIA.RHU.1990  0 
-  UTOPIA.RHU.1991  0 
-  UTOPIA.RHU.1992  0 
-  UTOPIA.RHU.1993  0 
-  UTOPIA.RHU.1994  0 
-  UTOPIA.RHU.1995  0 
-  UTOPIA.RHU.1996  0 
-  UTOPIA.RHU.1997  0 
-  UTOPIA.RHU.1998  0 
-  UTOPIA.RHU.1999  0 
-  UTOPIA.RHU.2000  0 
-  UTOPIA.RHU.2001  0 
-  UTOPIA.RHU.2002  0 
-  UTOPIA.RHU.2003  0 
-  UTOPIA.RHU.2004  0 
-  UTOPIA.RHU.2005  0 
-  UTOPIA.RHU.2006  0 
-  UTOPIA.RHU.2007  0 
-  UTOPIA.RHU.2008  0 
-  UTOPIA.RHU.2009  0 
-  UTOPIA.RHU.2010  0 
-  UTOPIA.RIV.1990  0 
-  UTOPIA.RIV.1991  0 
-  UTOPIA.RIV.1992  0 
-  UTOPIA.RIV.1993  0 
-  UTOPIA.RIV.1994  0 
-  UTOPIA.RIV.1995  0 
-  UTOPIA.RIV.1996  0 
-  UTOPIA.RIV.1997  0 
-  UTOPIA.RIV.1998  0 
-  UTOPIA.RIV.1999  0 
-  UTOPIA.RIV.2000  0 
-  UTOPIA.RIV.2001  0 
-  UTOPIA.RIV.2002  0 
-  UTOPIA.RIV.2003  0 
-  UTOPIA.RIV.2004  0 
-  UTOPIA.RIV.2005  0 
-  UTOPIA.RIV.2006  0 
-  UTOPIA.RIV.2007  0 
-  UTOPIA.RIV.2008  0 
-  UTOPIA.RIV.2009  0 
-  UTOPIA.RIV.2010  0 
-  UTOPIA.RL1.1990  0 
-  UTOPIA.RL1.1991  0 
-  UTOPIA.RL1.1992  0 
-  UTOPIA.RL1.1993  0 
-  UTOPIA.RL1.1994  0 
-  UTOPIA.RL1.1995  0 
-  UTOPIA.RL1.1996  0 
-  UTOPIA.RL1.1997  0 
-  UTOPIA.RL1.1998  0 
-  UTOPIA.RL1.1999  0 
-  UTOPIA.RL1.2000  0 
-  UTOPIA.RL1.2001  0 
-  UTOPIA.RL1.2002  0 
-  UTOPIA.RL1.2003  0 
-  UTOPIA.RL1.2004  0 
-  UTOPIA.RL1.2005  0 
-  UTOPIA.RL1.2006  0 
-  UTOPIA.RL1.2007  0 
-  UTOPIA.RL1.2008  0 
-  UTOPIA.RL1.2009  0 
-  UTOPIA.RL1.2010  0 
-  UTOPIA.RLU.1990  0 
-  UTOPIA.RLU.1991  0 
-  UTOPIA.RLU.1992  0 
-  UTOPIA.RLU.1993  0 
-  UTOPIA.RLU.1994  0 
-  UTOPIA.RLU.1995  0 
-  UTOPIA.RLU.1996  0 
-  UTOPIA.RLU.1997  0 
-  UTOPIA.RLU.1998  0 
-  UTOPIA.RLU.1999  0 
-  UTOPIA.RLU.2000  0 
-  UTOPIA.RLU.2001  0 
-  UTOPIA.RLU.2002  0 
-  UTOPIA.RLU.2003  0 
-  UTOPIA.RLU.2004  0 
-  UTOPIA.RLU.2005  0 
-  UTOPIA.RLU.2006  0 
-  UTOPIA.RLU.2007  0 
-  UTOPIA.RLU.2008  0 
-  UTOPIA.RLU.2009  0 
-  UTOPIA.RLU.2010  0 
+  UTOPIA.RHU.1990  0
+  UTOPIA.RHU.1991  0
+  UTOPIA.RHU.1992  0
+  UTOPIA.RHU.1993  0
+  UTOPIA.RHU.1994  0
+  UTOPIA.RHU.1995  0
+  UTOPIA.RHU.1996  0
+  UTOPIA.RHU.1997  0
+  UTOPIA.RHU.1998  0
+  UTOPIA.RHU.1999  0
+  UTOPIA.RHU.2000  0
+  UTOPIA.RHU.2001  0
+  UTOPIA.RHU.2002  0
+  UTOPIA.RHU.2003  0
+  UTOPIA.RHU.2004  0
+  UTOPIA.RHU.2005  0
+  UTOPIA.RHU.2006  0
+  UTOPIA.RHU.2007  0
+  UTOPIA.RHU.2008  0
+  UTOPIA.RHU.2009  0
+  UTOPIA.RHU.2010  0
+  UTOPIA.RIV.1990  0
+  UTOPIA.RIV.1991  0
+  UTOPIA.RIV.1992  0
+  UTOPIA.RIV.1993  0
+  UTOPIA.RIV.1994  0
+  UTOPIA.RIV.1995  0
+  UTOPIA.RIV.1996  0
+  UTOPIA.RIV.1997  0
+  UTOPIA.RIV.1998  0
+  UTOPIA.RIV.1999  0
+  UTOPIA.RIV.2000  0
+  UTOPIA.RIV.2001  0
+  UTOPIA.RIV.2002  0
+  UTOPIA.RIV.2003  0
+  UTOPIA.RIV.2004  0
+  UTOPIA.RIV.2005  0
+  UTOPIA.RIV.2006  0
+  UTOPIA.RIV.2007  0
+  UTOPIA.RIV.2008  0
+  UTOPIA.RIV.2009  0
+  UTOPIA.RIV.2010  0
+  UTOPIA.RL1.1990  0
+  UTOPIA.RL1.1991  0
+  UTOPIA.RL1.1992  0
+  UTOPIA.RL1.1993  0
+  UTOPIA.RL1.1994  0
+  UTOPIA.RL1.1995  0
+  UTOPIA.RL1.1996  0
+  UTOPIA.RL1.1997  0
+  UTOPIA.RL1.1998  0
+  UTOPIA.RL1.1999  0
+  UTOPIA.RL1.2000  0
+  UTOPIA.RL1.2001  0
+  UTOPIA.RL1.2002  0
+  UTOPIA.RL1.2003  0
+  UTOPIA.RL1.2004  0
+  UTOPIA.RL1.2005  0
+  UTOPIA.RL1.2006  0
+  UTOPIA.RL1.2007  0
+  UTOPIA.RL1.2008  0
+  UTOPIA.RL1.2009  0
+  UTOPIA.RL1.2010  0
+  UTOPIA.RLU.1990  0
+  UTOPIA.RLU.1991  0
+  UTOPIA.RLU.1992  0
+  UTOPIA.RLU.1993  0
+  UTOPIA.RLU.1994  0
+  UTOPIA.RLU.1995  0
+  UTOPIA.RLU.1996  0
+  UTOPIA.RLU.1997  0
+  UTOPIA.RLU.1998  0
+  UTOPIA.RLU.1999  0
+  UTOPIA.RLU.2000  0
+  UTOPIA.RLU.2001  0
+  UTOPIA.RLU.2002  0
+  UTOPIA.RLU.2003  0
+  UTOPIA.RLU.2004  0
+  UTOPIA.RLU.2005  0
+  UTOPIA.RLU.2006  0
+  UTOPIA.RLU.2007  0
+  UTOPIA.RLU.2008  0
+  UTOPIA.RLU.2009  0
+  UTOPIA.RLU.2010  0
   UTOPIA.SRE.1990  100
   UTOPIA.SRE.1991  100
   UTOPIA.SRE.1992  100
@@ -1941,33 +1884,32 @@ parameter CapitalCost /
   UTOPIA.TXG.2008  1044
   UTOPIA.TXG.2009  1044
   UTOPIA.TXG.2010  1044
-  UTOPIA.TXU.1990  0 
-  UTOPIA.TXU.1991  0 
-  UTOPIA.TXU.1992  0 
-  UTOPIA.TXU.1993  0 
-  UTOPIA.TXU.1994  0 
-  UTOPIA.TXU.1995  0 
-  UTOPIA.TXU.1996  0 
-  UTOPIA.TXU.1997  0 
-  UTOPIA.TXU.1998  0 
-  UTOPIA.TXU.1999  0 
-  UTOPIA.TXU.2000  0 
-  UTOPIA.TXU.2001  0 
-  UTOPIA.TXU.2002  0 
-  UTOPIA.TXU.2003  0 
-  UTOPIA.TXU.2004  0 
-  UTOPIA.TXU.2005  0 
-  UTOPIA.TXU.2006  0 
-  UTOPIA.TXU.2007  0 
-  UTOPIA.TXU.2008  0 
-  UTOPIA.TXU.2009  0 
-  UTOPIA.TXU.2010  0 
+  UTOPIA.TXU.1990  0
+  UTOPIA.TXU.1991  0
+  UTOPIA.TXU.1992  0
+  UTOPIA.TXU.1993  0
+  UTOPIA.TXU.1994  0
+  UTOPIA.TXU.1995  0
+  UTOPIA.TXU.1996  0
+  UTOPIA.TXU.1997  0
+  UTOPIA.TXU.1998  0
+  UTOPIA.TXU.1999  0
+  UTOPIA.TXU.2000  0
+  UTOPIA.TXU.2001  0
+  UTOPIA.TXU.2002  0
+  UTOPIA.TXU.2003  0
+  UTOPIA.TXU.2004  0
+  UTOPIA.TXU.2005  0
+  UTOPIA.TXU.2006  0
+  UTOPIA.TXU.2007  0
+  UTOPIA.TXU.2008  0
+  UTOPIA.TXU.2009  0
+  UTOPIA.TXU.2010  0
 /;
-*option CapitalCost:4:0:1; display CapitalCost;
-																								
-*param	VariableCost	default	0.00001	:=																				
-*[*,*,1,UTOPIA]:		E01	E21	E70	SRE	IMPDSL1	IMPGSL1	IMPHCO1	IMPOIL1	IMPURN1	RHu 	RLu 	TXu:=		
-parameter VariableCost /								
+
+*param  VariableCost    default 0.00001 :=
+*[*,*,1,UTOPIA]:                E01     E21     E70     SRE     IMPDSL1 IMPGSL1 IMPHCO1 IMPOIL1 IMPURN1 RHu     RLu     TXu:=
+parameter VariableCost /
   UTOPIA.E01.1.1990  .3
   UTOPIA.E01.1.1991  .3
   UTOPIA.E01.1.1992  .3
@@ -2222,11 +2164,11 @@ parameter VariableCost /
   UTOPIA.TXU.1.2010  99999
 /;
 VariableCost(r,t,m,y)$(VariableCost(r,t,m,y) = 0) = 0.00001;
-*option VariableCost:4:0:1; display VariableCost;
 
-*param	ResidualCapacity default	0	:=																					
-*[*,*,UTOPIA]		:			E01		E21	E31	E51	E70		RHE	RHO	RL1	TXD	:=	
-parameter ResidualCapacity /							
+
+*param  ResidualCapacity default        0       :=
+*[*,*,UTOPIA]           :                       E01             E21     E31     E51     E70             RHE     RHO     RL1     TXD     :=
+parameter ResidualCapacity /
   UTOPIA.E01.1990  .5
   UTOPIA.E01.1991  .5
   UTOPIA.E01.1992  .5
@@ -2248,27 +2190,27 @@ parameter ResidualCapacity /
   UTOPIA.E01.2008  .2
   UTOPIA.E01.2009  .2
   UTOPIA.E01.2010  .15
-  UTOPIA.E21.1990  0 
-  UTOPIA.E21.1991  0 
-  UTOPIA.E21.1992  0 
-  UTOPIA.E21.1993  0 
-  UTOPIA.E21.1994  0 
-  UTOPIA.E21.1995  0 
-  UTOPIA.E21.1996  0 
-  UTOPIA.E21.1997  0 
-  UTOPIA.E21.1998  0 
-  UTOPIA.E21.1999  0 
-  UTOPIA.E21.2000  0 
-  UTOPIA.E21.2001  0 
-  UTOPIA.E21.2002  0 
-  UTOPIA.E21.2003  0 
-  UTOPIA.E21.2004  0 
-  UTOPIA.E21.2005  0 
-  UTOPIA.E21.2006  0 
-  UTOPIA.E21.2007  0 
-  UTOPIA.E21.2008  0 
-  UTOPIA.E21.2009  0 
-  UTOPIA.E21.2010  0 
+  UTOPIA.E21.1990  0
+  UTOPIA.E21.1991  0
+  UTOPIA.E21.1992  0
+  UTOPIA.E21.1993  0
+  UTOPIA.E21.1994  0
+  UTOPIA.E21.1995  0
+  UTOPIA.E21.1996  0
+  UTOPIA.E21.1997  0
+  UTOPIA.E21.1998  0
+  UTOPIA.E21.1999  0
+  UTOPIA.E21.2000  0
+  UTOPIA.E21.2001  0
+  UTOPIA.E21.2002  0
+  UTOPIA.E21.2003  0
+  UTOPIA.E21.2004  0
+  UTOPIA.E21.2005  0
+  UTOPIA.E21.2006  0
+  UTOPIA.E21.2007  0
+  UTOPIA.E21.2008  0
+  UTOPIA.E21.2009  0
+  UTOPIA.E21.2010  0
   UTOPIA.E31.1990  .1
   UTOPIA.E31.1991  .1
   UTOPIA.E31.1992  .1
@@ -2332,27 +2274,27 @@ parameter ResidualCapacity /
   UTOPIA.E70.2008  .29
   UTOPIA.E70.2009  .3
   UTOPIA.E70.2010  .2
-  UTOPIA.RHE.1990  0 
-  UTOPIA.RHE.1991  0 
-  UTOPIA.RHE.1992  0 
-  UTOPIA.RHE.1993  0 
-  UTOPIA.RHE.1994  0 
-  UTOPIA.RHE.1995  0 
-  UTOPIA.RHE.1996  0 
-  UTOPIA.RHE.1997  0 
-  UTOPIA.RHE.1998  0 
-  UTOPIA.RHE.1999  0 
-  UTOPIA.RHE.2000  0 
-  UTOPIA.RHE.2001  0 
-  UTOPIA.RHE.2002  0 
-  UTOPIA.RHE.2003  0 
-  UTOPIA.RHE.2004  0 
-  UTOPIA.RHE.2005  0 
-  UTOPIA.RHE.2006  0 
-  UTOPIA.RHE.2007  0 
-  UTOPIA.RHE.2008  0 
-  UTOPIA.RHE.2009  0 
-  UTOPIA.RHE.2010  0 
+  UTOPIA.RHE.1990  0
+  UTOPIA.RHE.1991  0
+  UTOPIA.RHE.1992  0
+  UTOPIA.RHE.1993  0
+  UTOPIA.RHE.1994  0
+  UTOPIA.RHE.1995  0
+  UTOPIA.RHE.1996  0
+  UTOPIA.RHE.1997  0
+  UTOPIA.RHE.1998  0
+  UTOPIA.RHE.1999  0
+  UTOPIA.RHE.2000  0
+  UTOPIA.RHE.2001  0
+  UTOPIA.RHE.2002  0
+  UTOPIA.RHE.2003  0
+  UTOPIA.RHE.2004  0
+  UTOPIA.RHE.2005  0
+  UTOPIA.RHE.2006  0
+  UTOPIA.RHE.2007  0
+  UTOPIA.RHE.2008  0
+  UTOPIA.RHE.2009  0
+  UTOPIA.RHE.2010  0
   UTOPIA.RHO.1990  25
   UTOPIA.RHO.1991  23.8
   UTOPIA.RHO.1992  22.5
@@ -2373,7 +2315,7 @@ parameter ResidualCapacity /
   UTOPIA.RHO.2007  3.8
   UTOPIA.RHO.2008  2.5
   UTOPIA.RHO.2009  1.3
-  UTOPIA.RHO.2010  0 
+  UTOPIA.RHO.2010  0
   UTOPIA.RL1.1990  5.6
   UTOPIA.RL1.1991  5
   UTOPIA.RL1.1992  4.5
@@ -2384,17 +2326,17 @@ parameter ResidualCapacity /
   UTOPIA.RL1.1997  1.7
   UTOPIA.RL1.1998  1.1
   UTOPIA.RL1.1999  .6
-  UTOPIA.RL1.2000  0 
-  UTOPIA.RL1.2001  0 
-  UTOPIA.RL1.2002  0 
-  UTOPIA.RL1.2003  0 
-  UTOPIA.RL1.2004  0 
-  UTOPIA.RL1.2005  0 
-  UTOPIA.RL1.2006  0 
-  UTOPIA.RL1.2007  0 
-  UTOPIA.RL1.2008  0 
-  UTOPIA.RL1.2009  0 
-  UTOPIA.RL1.2010  0 
+  UTOPIA.RL1.2000  0
+  UTOPIA.RL1.2001  0
+  UTOPIA.RL1.2002  0
+  UTOPIA.RL1.2003  0
+  UTOPIA.RL1.2004  0
+  UTOPIA.RL1.2005  0
+  UTOPIA.RL1.2006  0
+  UTOPIA.RL1.2007  0
+  UTOPIA.RL1.2008  0
+  UTOPIA.RL1.2009  0
+  UTOPIA.RL1.2010  0
   UTOPIA.TXD.1990  .6
   UTOPIA.TXD.1991  .6
   UTOPIA.TXD.1992  .5
@@ -2413,272 +2355,13 @@ parameter ResidualCapacity /
   UTOPIA.TXD.2005  .1
   UTOPIA.TXD.2006  .1
   UTOPIA.TXD.2007  .1
-  UTOPIA.TXD.2008  0 
-  UTOPIA.TXD.2009  0 
-  UTOPIA.TXD.2010  0 
+  UTOPIA.TXD.2008  0
+  UTOPIA.TXD.2009  0
+  UTOPIA.TXD.2010  0
 /;
-*option ResidualCapacity:4:0:1; display ResidualCapacity;
 
-*param	SalvageFactor		default	0	:=																			
-*[*,*,UTOPIA]		:	E01	E21	E31	E51	E70	RHE	RHO	RL1	SRE	TXD	TXE	TXG :=
-parameter SalvageFactor /
-  UTOPIA.E01.1990  .7
-  UTOPIA.E01.1991  .73
-  UTOPIA.E01.1992  .75
-  UTOPIA.E01.1993  .77
-  UTOPIA.E01.1994  .79
-  UTOPIA.E01.1995  .8
-  UTOPIA.E01.1996  .82
-  UTOPIA.E01.1997  .84
-  UTOPIA.E01.1998  .85
-  UTOPIA.E01.1999  .87
-  UTOPIA.E01.2000  .88
-  UTOPIA.E01.2001  .9
-  UTOPIA.E01.2002  .91
-  UTOPIA.E01.2003  .92
-  UTOPIA.E01.2004  .93
-  UTOPIA.E01.2005  .94
-  UTOPIA.E01.2006  .95
-  UTOPIA.E01.2007  .96
-  UTOPIA.E01.2008  .97
-  UTOPIA.E01.2009  .98
-  UTOPIA.E01.2010  .99
-  UTOPIA.E21.1990  .7
-  UTOPIA.E21.1991  .73
-  UTOPIA.E21.1992  .75
-  UTOPIA.E21.1993  .77
-  UTOPIA.E21.1994  .79
-  UTOPIA.E21.1995  .8
-  UTOPIA.E21.1996  .82
-  UTOPIA.E21.1997  .84
-  UTOPIA.E21.1998  .85
-  UTOPIA.E21.1999  .87
-  UTOPIA.E21.2000  .88
-  UTOPIA.E21.2001  .9
-  UTOPIA.E21.2002  .91
-  UTOPIA.E21.2003  .92
-  UTOPIA.E21.2004  .93
-  UTOPIA.E21.2005  .94
-  UTOPIA.E21.2006  .95
-  UTOPIA.E21.2007  .96
-  UTOPIA.E21.2008  .97
-  UTOPIA.E21.2009  .98
-  UTOPIA.E21.2010  .99
-  UTOPIA.E31.1990  .99
-  UTOPIA.E31.1991  .99
-  UTOPIA.E31.1992  .99
-  UTOPIA.E31.1993  .99
-  UTOPIA.E31.1994  .99
-  UTOPIA.E31.1995  .99
-  UTOPIA.E31.1996  .99
-  UTOPIA.E31.1997  .99
-  UTOPIA.E31.1998  .99
-  UTOPIA.E31.1999  .99
-  UTOPIA.E31.2000  .99
-  UTOPIA.E31.2001  .999
-  UTOPIA.E31.2002  .999
-  UTOPIA.E31.2003  .999
-  UTOPIA.E31.2004  .999
-  UTOPIA.E31.2005  .999
-  UTOPIA.E31.2006  .999
-  UTOPIA.E31.2007  .999
-  UTOPIA.E31.2008  .999
-  UTOPIA.E31.2009  .999
-  UTOPIA.E31.2010  .999
-  UTOPIA.E51.1990  .99
-  UTOPIA.E51.1991  .99
-  UTOPIA.E51.1992  .99
-  UTOPIA.E51.1993  .99
-  UTOPIA.E51.1994  .99
-  UTOPIA.E51.1995  .99
-  UTOPIA.E51.1996  .99
-  UTOPIA.E51.1997  .99
-  UTOPIA.E51.1998  .99
-  UTOPIA.E51.1999  .99
-  UTOPIA.E51.2000  .99
-  UTOPIA.E51.2001  .999
-  UTOPIA.E51.2002  .999
-  UTOPIA.E51.2003  .999
-  UTOPIA.E51.2004  .999
-  UTOPIA.E51.2005  .999
-  UTOPIA.E51.2006  .999
-  UTOPIA.E51.2007  .999
-  UTOPIA.E51.2008  .999
-  UTOPIA.E51.2009  .999
-  UTOPIA.E51.2010  .999
-  UTOPIA.E70.1990  .7
-  UTOPIA.E70.1991  .73
-  UTOPIA.E70.1992  .75
-  UTOPIA.E70.1993  .77
-  UTOPIA.E70.1994  .79
-  UTOPIA.E70.1995  .8
-  UTOPIA.E70.1996  .82
-  UTOPIA.E70.1997  .84
-  UTOPIA.E70.1998  .85
-  UTOPIA.E70.1999  .87
-  UTOPIA.E70.2000  .88
-  UTOPIA.E70.2001  .9
-  UTOPIA.E70.2002  .91
-  UTOPIA.E70.2003  .92
-  UTOPIA.E70.2004  .93
-  UTOPIA.E70.2005  .94
-  UTOPIA.E70.2006  .95
-  UTOPIA.E70.2007  .96
-  UTOPIA.E70.2008  .97
-  UTOPIA.E70.2009  .98
-  UTOPIA.E70.2010  .99
-  UTOPIA.RHE.1990  .46
-  UTOPIA.RHE.1991  .5
-  UTOPIA.RHE.1992  .54
-  UTOPIA.RHE.1993  .58
-  UTOPIA.RHE.1994  .61
-  UTOPIA.RHE.1995  .64
-  UTOPIA.RHE.1996  .68
-  UTOPIA.RHE.1997  .71
-  UTOPIA.RHE.1998  .73
-  UTOPIA.RHE.1999  .76
-  UTOPIA.RHE.2000  .79
-  UTOPIA.RHE.2001  .81
-  UTOPIA.RHE.2002  .83
-  UTOPIA.RHE.2003  .86
-  UTOPIA.RHE.2004  .88
-  UTOPIA.RHE.2005  .9
-  UTOPIA.RHE.2006  .92
-  UTOPIA.RHE.2007  .94
-  UTOPIA.RHE.2008  .95
-  UTOPIA.RHE.2009  .97
-  UTOPIA.RHE.2010  .98
-  UTOPIA.RHO.1990  .46
-  UTOPIA.RHO.1991  .5
-  UTOPIA.RHO.1992  .54
-  UTOPIA.RHO.1993  .58
-  UTOPIA.RHO.1994  .61
-  UTOPIA.RHO.1995  .64
-  UTOPIA.RHO.1996  .68
-  UTOPIA.RHO.1997  .71
-  UTOPIA.RHO.1998  .73
-  UTOPIA.RHO.1999  .76
-  UTOPIA.RHO.2000  .79
-  UTOPIA.RHO.2001  .81
-  UTOPIA.RHO.2002  .83
-  UTOPIA.RHO.2003  .86
-  UTOPIA.RHO.2004  .88
-  UTOPIA.RHO.2005  .9
-  UTOPIA.RHO.2006  .92
-  UTOPIA.RHO.2007  .94
-  UTOPIA.RHO.2008  .95
-  UTOPIA.RHO.2009  .97
-  UTOPIA.RHO.2010  .98
-  UTOPIA.RL1.1990  0 
-  UTOPIA.RL1.1991  0 
-  UTOPIA.RL1.1992  0 
-  UTOPIA.RL1.1993  0 
-  UTOPIA.RL1.1994  0 
-  UTOPIA.RL1.1995  0 
-  UTOPIA.RL1.1996  0 
-  UTOPIA.RL1.1997  0 
-  UTOPIA.RL1.1998  0 
-  UTOPIA.RL1.1999  0 
-  UTOPIA.RL1.2000  0 
-  UTOPIA.RL1.2001  0 
-  UTOPIA.RL1.2002  .12
-  UTOPIA.RL1.2003  .24
-  UTOPIA.RL1.2004  .35
-  UTOPIA.RL1.2005  .46
-  UTOPIA.RL1.2006  .56
-  UTOPIA.RL1.2007  .66
-  UTOPIA.RL1.2008  .75
-  UTOPIA.RL1.2009  .84
-  UTOPIA.RL1.2010  .92
-  UTOPIA.SRE.1990  .83
-  UTOPIA.SRE.1991  .84
-  UTOPIA.SRE.1992  .85
-  UTOPIA.SRE.1993  .87
-  UTOPIA.SRE.1994  .88
-  UTOPIA.SRE.1995  .89
-  UTOPIA.SRE.1996  .9
-  UTOPIA.SRE.1997  .91
-  UTOPIA.SRE.1998  .92
-  UTOPIA.SRE.1999  .92
-  UTOPIA.SRE.2000  .93
-  UTOPIA.SRE.2001  .94
-  UTOPIA.SRE.2002  .95
-  UTOPIA.SRE.2003  .95
-  UTOPIA.SRE.2004  .96
-  UTOPIA.SRE.2005  .97
-  UTOPIA.SRE.2006  .97
-  UTOPIA.SRE.2007  .98
-  UTOPIA.SRE.2008  .98
-  UTOPIA.SRE.2009  .99
-  UTOPIA.SRE.2010  .999
-  UTOPIA.TXD.1990  0 
-  UTOPIA.TXD.1991  0 
-  UTOPIA.TXD.1992  0 
-  UTOPIA.TXD.1993  0 
-  UTOPIA.TXD.1994  0 
-  UTOPIA.TXD.1995  0 
-  UTOPIA.TXD.1996  0 
-  UTOPIA.TXD.1997  .09
-  UTOPIA.TXD.1998  .18
-  UTOPIA.TXD.1999  .26
-  UTOPIA.TXD.2000  .34
-  UTOPIA.TXD.2001  .42
-  UTOPIA.TXD.2002  .49
-  UTOPIA.TXD.2003  .56
-  UTOPIA.TXD.2004  .62
-  UTOPIA.TXD.2005  .68
-  UTOPIA.TXD.2006  .74
-  UTOPIA.TXD.2007  .8
-  UTOPIA.TXD.2008  .85
-  UTOPIA.TXD.2009  .9
-  UTOPIA.TXD.2010  .95
-  UTOPIA.TXE.1990  0 
-  UTOPIA.TXE.1991  0 
-  UTOPIA.TXE.1992  0 
-  UTOPIA.TXE.1993  0 
-  UTOPIA.TXE.1994  0 
-  UTOPIA.TXE.1995  0 
-  UTOPIA.TXE.1996  0 
-  UTOPIA.TXE.1997  .09
-  UTOPIA.TXE.1998  .18
-  UTOPIA.TXE.1999  .26
-  UTOPIA.TXE.2000  .34
-  UTOPIA.TXE.2001  .42
-  UTOPIA.TXE.2002  .49
-  UTOPIA.TXE.2003  .56
-  UTOPIA.TXE.2004  .62
-  UTOPIA.TXE.2005  .68
-  UTOPIA.TXE.2006  .74
-  UTOPIA.TXE.2007  .8
-  UTOPIA.TXE.2008  .85
-  UTOPIA.TXE.2009  .9
-  UTOPIA.TXE.2010  .95
-  UTOPIA.TXG.1990  0 
-  UTOPIA.TXG.1991  0 
-  UTOPIA.TXG.1992  0 
-  UTOPIA.TXG.1993  0 
-  UTOPIA.TXG.1994  0 
-  UTOPIA.TXG.1995  0 
-  UTOPIA.TXG.1996  0 
-  UTOPIA.TXG.1997  .09
-  UTOPIA.TXG.1998  .18
-  UTOPIA.TXG.1999  .26
-  UTOPIA.TXG.2000  .34
-  UTOPIA.TXG.2001  .42
-  UTOPIA.TXG.2002  .49
-  UTOPIA.TXG.2003  .56
-  UTOPIA.TXG.2004  .62
-  UTOPIA.TXG.2005  .68
-  UTOPIA.TXG.2006  .74
-  UTOPIA.TXG.2007  .8
-  UTOPIA.TXG.2008  .85
-  UTOPIA.TXG.2009  .9
-  UTOPIA.TXG.2010  .95
-/;
-*option SalvageFactor:4:0:1; display SalvageFactor;
-
-*param	AvailabilityFactor	default	1	:=																				
-*[*,*,UTOPIA]		:	RHE	RHO	RL1	TXD	TXE	TXG	:=	
+*param  AvailabilityFactor      default 1       :=
+*[*,*,UTOPIA]           :       RHE     RHO     RL1     TXD     TXE     TXG     :=
 parameter AvailabilityFactor /
   UTOPIA.RHE.1990  1
   UTOPIA.RHE.1991  1
@@ -2808,143 +2491,19 @@ parameter AvailabilityFactor /
   UTOPIA.TXG.2010  1
 /;
 AvailabilityFactor(r,t,y)$(AvailabilityFactor(r,t,y) = 0) = 1;
-*option AvailabilityFactor:4:0:1; display AvailabilityFactor;
 
-*param	CapacityFactor	default	1	:=																				
-*[*,*,UTOPIA]		:	E01	E21	E31	E51	E70	SRE	:=
-parameter CapacityFactor /
-  UTOPIA.E01.1990  .8
-  UTOPIA.E01.1991  .8
-  UTOPIA.E01.1992  .8
-  UTOPIA.E01.1993  .8
-  UTOPIA.E01.1994  .8
-  UTOPIA.E01.1995  .8
-  UTOPIA.E01.1996  .8
-  UTOPIA.E01.1997  .8
-  UTOPIA.E01.1998  .8
-  UTOPIA.E01.1999  .8
-  UTOPIA.E01.2000  .8
-  UTOPIA.E01.2001  .8
-  UTOPIA.E01.2002  .8
-  UTOPIA.E01.2003  .8
-  UTOPIA.E01.2004  .8
-  UTOPIA.E01.2005  .8
-  UTOPIA.E01.2006  .8
-  UTOPIA.E01.2007  .8
-  UTOPIA.E01.2008  .8
-  UTOPIA.E01.2009  .8
-  UTOPIA.E01.2010  .8
-  UTOPIA.E21.1990  .8
-  UTOPIA.E21.1991  .8
-  UTOPIA.E21.1992  .8
-  UTOPIA.E21.1993  .8
-  UTOPIA.E21.1994  .8
-  UTOPIA.E21.1995  .8
-  UTOPIA.E21.1996  .8
-  UTOPIA.E21.1997  .8
-  UTOPIA.E21.1998  .8
-  UTOPIA.E21.1999  .8
-  UTOPIA.E21.2000  .8
-  UTOPIA.E21.2001  .8
-  UTOPIA.E21.2002  .8
-  UTOPIA.E21.2003  .8
-  UTOPIA.E21.2004  .8
-  UTOPIA.E21.2005  .8
-  UTOPIA.E21.2006  .8
-  UTOPIA.E21.2007  .8
-  UTOPIA.E21.2008  .8
-  UTOPIA.E21.2009  .8
-  UTOPIA.E21.2010  .8
-  UTOPIA.E31.1990  .27
-  UTOPIA.E31.1991  .27
-  UTOPIA.E31.1992  .27
-  UTOPIA.E31.1993  .27
-  UTOPIA.E31.1994  .27
-  UTOPIA.E31.1995  .27
-  UTOPIA.E31.1996  .27
-  UTOPIA.E31.1997  .27
-  UTOPIA.E31.1998  .27
-  UTOPIA.E31.1999  .27
-  UTOPIA.E31.2000  .27
-  UTOPIA.E31.2001  .27
-  UTOPIA.E31.2002  .27
-  UTOPIA.E31.2003  .27
-  UTOPIA.E31.2004  .27
-  UTOPIA.E31.2005  .27
-  UTOPIA.E31.2006  .27
-  UTOPIA.E31.2007  .27
-  UTOPIA.E31.2008  .27
-  UTOPIA.E31.2009  .27
-  UTOPIA.E31.2010  .27
-  UTOPIA.E51.1990  .17
-  UTOPIA.E51.1991  .17
-  UTOPIA.E51.1992  .17
-  UTOPIA.E51.1993  .17
-  UTOPIA.E51.1994  .17
-  UTOPIA.E51.1995  .17
-  UTOPIA.E51.1996  .17
-  UTOPIA.E51.1997  .17
-  UTOPIA.E51.1998  .17
-  UTOPIA.E51.1999  .17
-  UTOPIA.E51.2000  .17
-  UTOPIA.E51.2001  .17
-  UTOPIA.E51.2002  .17
-  UTOPIA.E51.2003  .17
-  UTOPIA.E51.2004  .17
-  UTOPIA.E51.2005  .17
-  UTOPIA.E51.2006  .17
-  UTOPIA.E51.2007  .17
-  UTOPIA.E51.2008  .17
-  UTOPIA.E51.2009  .17
-  UTOPIA.E51.2010  .17
-  UTOPIA.E70.1990  .8
-  UTOPIA.E70.1991  .8
-  UTOPIA.E70.1992  .8
-  UTOPIA.E70.1993  .8
-  UTOPIA.E70.1994  .8
-  UTOPIA.E70.1995  .8
-  UTOPIA.E70.1996  .8
-  UTOPIA.E70.1997  .8
-  UTOPIA.E70.1998  .8
-  UTOPIA.E70.1999  .8
-  UTOPIA.E70.2000  .8
-  UTOPIA.E70.2001  .8
-  UTOPIA.E70.2002  .8
-  UTOPIA.E70.2003  .8
-  UTOPIA.E70.2004  .8
-  UTOPIA.E70.2005  .8
-  UTOPIA.E70.2006  .8
-  UTOPIA.E70.2007  .8
-  UTOPIA.E70.2008  .8
-  UTOPIA.E70.2009  .8
-  UTOPIA.E70.2010  .8
-  UTOPIA.SRE.1990  1
-  UTOPIA.SRE.1991  1
-  UTOPIA.SRE.1992  1
-  UTOPIA.SRE.1993  1
-  UTOPIA.SRE.1994  1
-  UTOPIA.SRE.1995  1
-  UTOPIA.SRE.1996  1
-  UTOPIA.SRE.1997  1
-  UTOPIA.SRE.1998  1
-  UTOPIA.SRE.1999  1
-  UTOPIA.SRE.2000  1
-  UTOPIA.SRE.2001  1
-  UTOPIA.SRE.2002  1
-  UTOPIA.SRE.2003  1
-  UTOPIA.SRE.2004  1
-  UTOPIA.SRE.2005  1
-  UTOPIA.SRE.2006  1
-  UTOPIA.SRE.2007  1
-  UTOPIA.SRE.2008  1
-  UTOPIA.SRE.2009  1
-  UTOPIA.SRE.2010  1
-/;
-CapacityFactor(r,t,y)$(CapacityFactor(r,t,y) = 0) = 1;
-*option CapacityFactor:4:0:1; display CapacityFactor;
+*param  CapacityFactor  default 1       :=
+*[*,*,UTOPIA]           :       E01     E21     E31     E51     E70     SRE     :=
 
-*param	EmissionActivityRatio	default	0	:=																				
-*[*,*,CO2,1,UTOPIA]		:	IMPDSL1	IMPGSL1	IMPHCO1	IMPOIL1	:=
+CapacityFactor(r,'E01',l,y) = 0.8;
+CapacityFactor(r,'E21',l,y) = 0.8;
+CapacityFactor(r,'E31',l,y) = 0.27;
+CapacityFactor(r,'E51',l,y) = 0.17;
+CapacityFactor(r,'E70',l,y) = 0.8;
+CapacityFactor(r,t,l,y)$(CapacityFactor(r,t,l,y) = 0) = 1;
+
+*param  EmissionActivityRatio   default 0       :=
+*[*,*,CO2,1,UTOPIA]             :       IMPDSL1 IMPGSL1 IMPHCO1 IMPOIL1 :=
 parameter EmissionActivityRatio /
   UTOPIA.IMPDSL1.CO2.1.1990  .075
   UTOPIA.IMPDSL1.CO2.1.1991  .075
@@ -3073,14 +2632,12 @@ parameter EmissionActivityRatio /
   UTOPIA.TXG.NOX.1.2009  1
   UTOPIA.TXG.NOX.1.2010  1
 /;
-*option EmissionActivityRatio:4:2:3; display EmissionActivityRatio;
 
-*param	EmissionsPenalty		[*,*,UTOPIA]		:	CO2	NOX	:=
-EmissionsPenalty(r,e,y) = eps;
-*option EmissionsPenalty:4:0:1; display EmissionsPenalty;
+*param  EmissionsPenalty                [*,*,UTOPIA]            :       CO2     NOX     :=
+EmissionsPenalty(r,e,y) = 0;
 
-*param	ReserveMarginTagFuel	default	0	:=																				
-*	[*,*,UTOPIA]	:	ELC	:=	
+*param  ReserveMarginTagFuel    default 0       :=
+*       [*,*,UTOPIA]    :       ELC     :=
 parameter ReserveMarginTagFuel /
   UTOPIA.ELC.1990  1
   UTOPIA.ELC.1991  1
@@ -3104,9 +2661,8 @@ parameter ReserveMarginTagFuel /
   UTOPIA.ELC.2009  1
   UTOPIA.ELC.2010  1
 /;
-*option ReserveMarginTagFuel:4:0:1; display ReserveMarginTagFuel;
 
-*param	ReserveMargin	:	UTOPIA	:=
+*param  ReserveMargin   :       UTOPIA  :=
 parameter ReserveMargin /
   UTOPIA.1990  1.18
   UTOPIA.1991  1.18
@@ -3129,11 +2685,10 @@ parameter ReserveMargin /
   UTOPIA.2008  1.18
   UTOPIA.2009  1.18
   UTOPIA.2010  1.18
-/;																				
-*option ReserveMargin:4:0:1; display ReserveMargin;
+/;
 
-*param	ReserveMarginTagTechnology	default	0	:=																				
-*	[*,*,UTOPIA]:		E01	E21	E31	E51	E70	:=
+*param  ReserveMarginTagTechnology      default 0       :=
+*       [*,*,UTOPIA]:           E01     E21     E31     E51     E70     :=
 parameter ReserveMarginTagTechnology /
   UTOPIA.E01.1990  1
   UTOPIA.E01.1991  1
@@ -3241,9 +2796,8 @@ parameter ReserveMarginTagTechnology /
   UTOPIA.E70.2009  1
   UTOPIA.E70.2010  1
 /;
-*option ReserveMarginTagTechnology:4:0:1; display ReserveMarginTagTechnology;
 
-*param	OperationalLife	default	1	:	UTOPIA	:=
+*param  OperationalLife default 1       :       UTOPIA  :=
 parameter OperationalLife /
   UTOPIA.E01  40
   UTOPIA.E21  40
@@ -3259,10 +2813,9 @@ parameter OperationalLife /
   UTOPIA.TXG  15
 /;
 OperationalLife(r,t)$(OperationalLife(r,t) = 0) = 1;
-*option OperationalLife:4:0:1; display OperationalLife;
 
-*param	TotalAnnualMaxCapacity	default	99999	:=																				
-*[*,*,UTOPIA]		:	E31		E51	RHE			SRE			TXE :=	
+*param  TotalAnnualMaxCapacity  default 99999   :=
+*[*,*,UTOPIA]           :       E31             E51     RHE                     SRE                     TXE :=
 parameter TotalAnnualMaxCapacity /
   UTOPIA.E31.1990  .1301
   UTOPIA.E31.1991  .1401
@@ -3306,16 +2859,16 @@ parameter TotalAnnualMaxCapacity /
   UTOPIA.E51.2008  3
   UTOPIA.E51.2009  3
   UTOPIA.E51.2010  3
-  UTOPIA.RHE.1990  EPS 
-  UTOPIA.RHE.1991  EPS 
-  UTOPIA.RHE.1992  EPS 
-  UTOPIA.RHE.1993  EPS 
-  UTOPIA.RHE.1994  EPS 
-  UTOPIA.RHE.1995  EPS 
-  UTOPIA.RHE.1996  EPS 
-  UTOPIA.RHE.1997  EPS 
-  UTOPIA.RHE.1998  EPS 
-  UTOPIA.RHE.1999  EPS 
+  UTOPIA.RHE.1990  EPS
+  UTOPIA.RHE.1991  EPS
+  UTOPIA.RHE.1992  EPS
+  UTOPIA.RHE.1993  EPS
+  UTOPIA.RHE.1994  EPS
+  UTOPIA.RHE.1995  EPS
+  UTOPIA.RHE.1996  EPS
+  UTOPIA.RHE.1997  EPS
+  UTOPIA.RHE.1998  EPS
+  UTOPIA.RHE.1999  EPS
   UTOPIA.RHE.2000  99999
   UTOPIA.RHE.2001  99999
   UTOPIA.RHE.2002  99999
@@ -3348,7 +2901,7 @@ parameter TotalAnnualMaxCapacity /
   UTOPIA.SRE.2008  99999
   UTOPIA.SRE.2009  99999
   UTOPIA.SRE.2010  99999
-  UTOPIA.TXE.1990  EPS 
+  UTOPIA.TXE.1990  EPS
   UTOPIA.TXE.1991  .4
   UTOPIA.TXE.1992  .8
   UTOPIA.TXE.1993  1.2
@@ -3371,10 +2924,20 @@ parameter TotalAnnualMaxCapacity /
   UTOPIA.TXE.2010  10
 /;
 TotalAnnualMaxCapacity(r,t,y)$(TotalAnnualMaxCapacity(r,t,y) = 0) = 99999;
-*option TotalAnnualMaxCapacity:4:0:1; display TotalAnnualMaxCapacity;
+TotalAnnualMaxCapacity(r,'TXE','1990') = 0;
+TotalAnnualMaxCapacity(r,'RHE','1990') = 0;
+TotalAnnualMaxCapacity(r,'RHE','1991') = 0;
+TotalAnnualMaxCapacity(r,'RHE','1992') = 0;
+TotalAnnualMaxCapacity(r,'RHE','1993') = 0;
+TotalAnnualMaxCapacity(r,'RHE','1994') = 0;
+TotalAnnualMaxCapacity(r,'RHE','1995') = 0;
+TotalAnnualMaxCapacity(r,'RHE','1996') = 0;
+TotalAnnualMaxCapacity(r,'RHE','1997') = 0;
+TotalAnnualMaxCapacity(r,'RHE','1998') = 0;
+TotalAnnualMaxCapacity(r,'RHE','1999') = 0;
 
-*param	TotalAnnualMinCapacity	default	0	:=																				
-*[*,*,UTOPIA]		:	E31	SRE	:=	
+*param  TotalAnnualMinCapacity  default 0       :=
+*[*,*,UTOPIA]           :       E31     SRE     :=
 parameter TotalAnnualMinCapacity /
   UTOPIA.E31.1990  .13
   UTOPIA.E31.1991  .14
@@ -3407,51 +2970,117 @@ parameter TotalAnnualMinCapacity /
   UTOPIA.SRE.1997  .1
   UTOPIA.SRE.1998  .1
   UTOPIA.SRE.1999  .1
-  UTOPIA.SRE.2000  0 
-  UTOPIA.SRE.2001  0 
-  UTOPIA.SRE.2002  0 
-  UTOPIA.SRE.2003  0 
-  UTOPIA.SRE.2004  0 
-  UTOPIA.SRE.2005  0 
-  UTOPIA.SRE.2006  0 
-  UTOPIA.SRE.2007  0 
-  UTOPIA.SRE.2008  0 
-  UTOPIA.SRE.2009  0 
-  UTOPIA.SRE.2010  0 
+  UTOPIA.SRE.2000  0
+  UTOPIA.SRE.2001  0
+  UTOPIA.SRE.2002  0
+  UTOPIA.SRE.2003  0
+  UTOPIA.SRE.2004  0
+  UTOPIA.SRE.2005  0
+  UTOPIA.SRE.2006  0
+  UTOPIA.SRE.2007  0
+  UTOPIA.SRE.2008  0
+  UTOPIA.SRE.2009  0
+  UTOPIA.SRE.2010  0
 /;
-*option TotalAnnualMinCapacity:4:0:1; display TotalAnnualMinCapacity;
 
-*param	TotalAnnualMaxCapacityInvestment	default	99999	:=	;																			
+*param  TotalAnnualMaxCapacityInvestment        default 99999   :=      ;
 TotalAnnualMaxCapacityInvestment(r,t,y) = 99999;
-*option TotalAnnualMaxCapacityInvestment:0:1:2; display TotalAnnualMaxCapacityInvestment;
-																							
-*param	TotalAnnualMinCapacityInvestment	default	0	:=	;																			
+
+*param  TotalAnnualMinCapacityInvestment        default 0       :=      ;
 TotalAnnualMinCapacityInvestment(r,t,y) = 0;
 
-*param	TotalTechnologyAnnualActivityUpperLimit	default	99999	:=	;
+*param  TotalTechnologyAnnualActivityUpperLimit default 99999   :=      ;
 TotalTechnologyAnnualActivityUpperLimit(r,t,y) = 99999;
-*option TotalTechnologyAnnualActivityUpperLimit:0:1:2; display TotalTechnologyAnnualActivityUpperLimit;
-																			
-*param	TotalTechnologyAnnualActivityLowerLimit	default	0	:=	;																			
+
+*param  TotalTechnologyAnnualActivityLowerLimit default 0       :=      ;
 TotalTechnologyAnnualActivityLowerLimit(r,t,y) = 0;
-																								
-*param	TotalTechnologyModelPeriodActivityUpperLimit	default	99999	:=	;
+
+*param  TotalTechnologyModelPeriodActivityUpperLimit    default 99999   :=      ;
 TotalTechnologyModelPeriodActivityUpperLimit(r,t) = 99999;
-*option TotalTechnologyModelPeriodActivityUpperLimit:0:1:1; display TotalTechnologyModelPeriodActivityUpperLimit;
-																		
-*param	TotalTechnologyModelPeriodActivityLowerLimit	default	0	:=	;																			
+
+*param  TotalTechnologyModelPeriodActivityLowerLimit    default 0       :=      ;
 TotalTechnologyModelPeriodActivityLowerLimit(r,t) = 0;
 
-*param	RETagTechnology	default	0	:=	;
+*param  RETagTechnology default 0       :=      ;
 RETagTechnology(r,t,y) = 0;
-																						
-*param	RETagFuel	default	0	:=	;
-RETagFuel(r,f,y) = 0;
-																		
-*param	REMinProductionTarget	default	0	:=	;
-REMinProductionTarget(r,y) = 0;
-																		
-*param 	StorageInflectionTimes	default 0 :=	;
-StorageInflectionTimes(y,l,b) = 0;
 
-*end;																								
+*param  RETagFuel       default 0       :=      ;
+RETagFuel(r,f,y) = 0;
+
+*param  REMinProductionTarget   default 0       :=      ;
+REMinProductionTarget(r,y) = 0;
+
+*param Conversionls default 0 :=
+parameter Conversionls(l,ls) /
+ID.2 1
+IN.2 1
+SD.3 1
+SN.3 1
+WD.1 1
+WN.1 1
+/;
+
+*param        Conversionld        default        0        :=
+parameter Conversionld(l,ld) /
+ID.1 1
+IN.1 1
+SD.1 1
+SN.1 1
+WD.1 1
+WN.1 1
+/;
+
+*param        Conversionlh        default        0        :=
+parameter Conversionlh(l,lh) /
+ID.1 1
+IN.2 1
+SD.2 1
+SN.2 1
+WD.1 1
+WN.2 1
+/;
+
+*param DaySplit default 0.00137 :=;
+DaySplit(y,lh) = 0.00137;
+
+*param  TechnologyToStorage     default 0       :=
+parameter TechnologyToStorage /
+  UTOPIA.2.E51.DAM  1
+/;
+
+*param  TechnologyFromStorage   default 0       :=
+parameter TechnologyFromStorage /
+  UTOPIA.1.E51.DAM  1
+/;
+
+*param StorageLevelStart default 999:=
+StorageLevelStart(r,s) = 999;
+
+*param DaysInDayType default 7:=
+DaysInDayType(y,ls,ld) = 7;
+
+*param StorageMaxChargeRate default 99:=
+StorageMaxChargeRate(r,s) = 99;
+
+*param StorageMaxDischargeRate default 99:=
+StorageMaxDischargeRate(r,s) = 99;
+
+*param MinStorageCharge default 0. :=
+MinStorageCharge(r,s,y) = 0;
+
+*param OperationalLifeStorage default                        99        :=
+OperationalLifeStorage(r,s) = 99;
+
+*param ResidualStorageCapacity default                        999        :=
+ResidualStorageCapacity(r,s,y) = 999;
+
+*param CapitalCostStorage default                        999        :=
+CapitalCostStorage(r,s,y) = 0;
+
+*param CapacityOfOneTechnologyUnit default        0        :=        ;
+CapacityOfOneTechnologyUnit(r,t,y) = 0;
+
+*param TradeRoute default        0 :=
+TradeRoute(r,rr,f,y) = 0;
+
+*end;
