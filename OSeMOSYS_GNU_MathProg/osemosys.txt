@@ -1,10 +1,11 @@
-# OSeMOSYS_2016_08_01
+# OSeMOSYS_2017_11_08
 # 
 # Open Source energy MOdeling SYStem
 #
-# Main changes to previous version OSeMOSYS_2015_08_27
-#		- Parameter REMinProductionTarget no more indicated by user as % of demand for fuel f, but as % of production of fuel f.
-#
+# Modified by Francesco Gardumi, Constantinos Taliotis, Igor Tatarewicz, Adrian Levfert
+# Main changes to previous version OSeMOSYS_2016_08_01
+# Bug fixed in:
+#		- Equation E1
 # ============================================================================
 #
 #    Copyright [2010-2015] [OSeMOSYS Forum steering committee see: www.osemosys.org]
@@ -24,7 +25,7 @@
 #
 #  To run OSeMOSYS, enter the following line into your command prompt after replacing FILEPATH & YOURDATAFILE with your folder structure and data file name: 
 #
-#  C:\...FILEPATH...\glpsol -m C:\...FILEPATH...\OSeMOSYS_2016_08_01.txt -d C:\...FILEPATH...\YOURDATAFILE.txt -o C:\...FILEPATH...\Results.txt
+#  C:\...FILEPATH...\glpsol -m C:\...FILEPATH...\osemosys.txt -d C:\...FILEPATH...\YOURDATAFILE.txt -o C:\...FILEPATH...\Results.txt
 #
 #  Alternatively, install GUSEK (http://gusek.sourceforge.net/gusek.html) and run the model within this integrated development environment (IDE). 
 #  To do so, open the .dat file and select "Use External .dat file" from the Options menu. Then change to the model file and select the "Go" icon or press F5.
@@ -183,6 +184,7 @@ var RateOfActivity{r in REGION, l in TIMESLICE, t in TECHNOLOGY, m in MODE_OF_OP
 var RateOfTotalActivity{r in REGION, t in TECHNOLOGY, l in TIMESLICE, y in YEAR} >= 0;
 var TotalTechnologyAnnualActivity{r in REGION, t in TECHNOLOGY, y in YEAR} >= 0;
 var TotalAnnualTechnologyActivityByMode{r in REGION, t in TECHNOLOGY, m in MODE_OF_OPERATION, y in YEAR}>=0;
+var TotalTechnologyModelPeriodActivity{r in REGION, t in TECHNOLOGY};
 var RateOfProductionByTechnologyByMode{r in REGION, l in TIMESLICE, t in TECHNOLOGY, m in MODE_OF_OPERATION, f in FUEL, y in YEAR}>= 0;
 var RateOfProductionByTechnology{r in REGION, l in TIMESLICE, t in TECHNOLOGY, f in FUEL, y in YEAR}>= 0;
 var ProductionByTechnology{r in REGION, l in TIMESLICE, t in TECHNOLOGY, f in FUEL, y in YEAR}>= 0;
@@ -213,7 +215,6 @@ var DiscountedOperatingCost{r in REGION, t in TECHNOLOGY, y in YEAR}>= 0;
 #
 var AnnualVariableOperatingCost{r in REGION, t in TECHNOLOGY, y in YEAR}>= 0;
 var AnnualFixedOperatingCost{r in REGION, t in TECHNOLOGY, y in YEAR}>= 0;
-var VariableOperatingCost{r in REGION, t in TECHNOLOGY, l in TIMESLICE, y in YEAR}>= 0;
 #
 var TotalDiscountedCostByTechnology{r in REGION, t in TECHNOLOGY, y in YEAR}>= 0;
 var TotalDiscountedCost{r in REGION, y in YEAR}>= 0;
@@ -230,17 +231,15 @@ var DemandNeedingReserveMargin{r in REGION,l in TIMESLICE, y in YEAR}>= 0;
 var TotalREProductionAnnual{r in REGION, y in YEAR};
 var RETotalProductionOfTargetFuelAnnual{r in REGION, y in YEAR};
 #
-var TotalTechnologyModelPeriodActivity{r in REGION, t in TECHNOLOGY};
-#
 #########			Emissions					#############
 #
-var AnnualTechnologyEmissionByMode{r in REGION, t in TECHNOLOGY, e in EMISSION, m in MODE_OF_OPERATION, y in YEAR}>= 0;
-var AnnualTechnologyEmission{r in REGION, t in TECHNOLOGY, e in EMISSION, y in YEAR}>= 0;
-var AnnualTechnologyEmissionPenaltyByEmission{r in REGION, t in TECHNOLOGY, e in EMISSION, y in YEAR}>= 0;
-var AnnualTechnologyEmissionsPenalty{r in REGION, t in TECHNOLOGY, y in YEAR}>= 0;
-var DiscountedTechnologyEmissionsPenalty{r in REGION, t in TECHNOLOGY, y in YEAR}>= 0;
-var AnnualEmissions{r in REGION, e in EMISSION, y in YEAR}>= 0;
-var ModelPeriodEmissions{r in REGION, e in EMISSION}>= 0;
+var AnnualTechnologyEmissionByMode{r in REGION, t in TECHNOLOGY, e in EMISSION, m in MODE_OF_OPERATION, y in YEAR}>=0;
+var AnnualTechnologyEmission{r in REGION, t in TECHNOLOGY, e in EMISSION, y in YEAR}>=0;
+var AnnualTechnologyEmissionPenaltyByEmission{r in REGION, t in TECHNOLOGY, e in EMISSION, y in YEAR}>=0;
+var AnnualTechnologyEmissionsPenalty{r in REGION, t in TECHNOLOGY, y in YEAR}>=0;
+var DiscountedTechnologyEmissionsPenalty{r in REGION, t in TECHNOLOGY, y in YEAR}>=0;
+var AnnualEmissions{r in REGION, e in EMISSION, y in YEAR}>=0;
+var ModelPeriodEmissions{r in REGION, e in EMISSION}>=0;
 #
 #	table data IN "CSV" "data.csv": s <- [FROM,TO], d~DISTANCE, c~COST;
 #	table capacity IN "CSV" "SpecifiedAnnualDemand.csv": [YEAR, FUEL, REGION], SpecifiedAnnualDemand~ColumnNameInCSVSheet;
@@ -410,7 +409,7 @@ s.t. RE5_FuelUseByTechnologyAnnual{r in REGION, t in TECHNOLOGY, f in FUEL, y in
 #
 #########   		Emissions Accounting		##############
 #
-s.t. E1_AnnualEmissionProductionByMode{r in REGION, t in TECHNOLOGY, e in EMISSION, m in MODE_OF_OPERATION, y in YEAR: EmissionActivityRatio[r,t,e,m,y]<>0}: EmissionActivityRatio[r,t,e,m,y]*TotalAnnualTechnologyActivityByMode[r,t,m,y]=AnnualTechnologyEmissionByMode[r,t,e,m,y];
+s.t. E1_AnnualEmissionProductionByMode{r in REGION, t in TECHNOLOGY, e in EMISSION, m in MODE_OF_OPERATION, y in YEAR}: EmissionActivityRatio[r,t,e,m,y]*TotalAnnualTechnologyActivityByMode[r,t,m,y]=AnnualTechnologyEmissionByMode[r,t,e,m,y];
 s.t. E2_AnnualEmissionProduction{r in REGION, t in TECHNOLOGY, e in EMISSION, y in YEAR}: sum{m in MODE_OF_OPERATION} AnnualTechnologyEmissionByMode[r,t,e,m,y] = AnnualTechnologyEmission[r,t,e,y];
 s.t. E3_EmissionsPenaltyByTechAndEmission{r in REGION, t in TECHNOLOGY, e in EMISSION, y in YEAR}: AnnualTechnologyEmission[r,t,e,y]*EmissionsPenalty[r,e,y] = AnnualTechnologyEmissionPenaltyByEmission[r,t,e,y];
 s.t. E4_EmissionsPenaltyByTechnology{r in REGION, t in TECHNOLOGY, y in YEAR}: sum{e in EMISSION} AnnualTechnologyEmissionPenaltyByEmission[r,t,e,y] = AnnualTechnologyEmissionsPenalty[r,t,y];
