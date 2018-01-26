@@ -6,7 +6,7 @@
 Welcome to OSeMOSYS' documentation!
 ===========================================
 
-.. figure::  documents/img/OSeMOSYS logo.png
+.. figure::  manual/documents/img/OSeMOSYSlogo.png
    :align:   center
    
    KTH - dESA, `www.osemosys.org <https://www.osemosys.org>`_
@@ -15,7 +15,7 @@ OSeMOSYS is an open source modelling system for long-run integrated assessment a
 Thanks to its transparency, it is broadly employed as a training and dissemination tool.
 
 
-.. figure::  documents/img/optimus.png
+.. figure::  manual/documents/img/optimus.png
    :align:   center
 
 
