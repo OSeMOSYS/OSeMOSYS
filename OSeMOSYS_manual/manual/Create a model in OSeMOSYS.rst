@@ -34,7 +34,7 @@ When developing a model using an optimization tool like OSeMOSYS, the energy/ele
 
 Figure 1 illustrates the RES of Atlantis, where the lines represent energy carriers (e.g., crude oil, coal etc.), while the blocks represent transformation technologies (e.g., power plants, transmission and distribution stations etc.). The RES can be read from the left to the right. On the left hand side, the primary energy resources are represented. They can be extracted domestically, imported or both. Extraction and import processes are represented as technologies in the RES (i.e. black boxes with outgoing lines representing the fuels they make available). Importantly, each chain must always start with a technology. Moving from the left to right, the energy carriers are transformed by different technologies, each with a user-defined transfer function, to ultimately meet the final demand for energy or services, presented by the lines on the far right hand side. 
 
-.. figure::  documents\img\Atlantis_RES.png
+.. figure::  documents/img/Atlantis_RES.png
    :align:   center
 
    The Reference Energy System (RES) of the Atlantis case study.
