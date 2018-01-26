@@ -1,4 +1,4 @@
 # OSeMOSYS Manual
 
-This is an instruction guide to OSeMOSYS. A preview is available at [Read the Docs](http://osemosys.readthedocs.io/en/latest/)!
+This is a user manual to OSeMOSYS. The full documentation is available at [Read the Docs](http://osemosys.readthedocs.io/en/latest/)!
 
