@@ -516,32 +516,6 @@ Calculates the annual and model period emissions from each technology, for each 
    :linenos:
    :lines: 556-581
 
-::
-	s.t. E1_AnnualEmissionProductionByMode{r in REGION, t in TECHNOLOGY, e in EMISSION, m in MODE_OF_OPERATION, y in YEAR}: 
-		EmissionActivityRatio[r,t,e,m,y]*TotalAnnualTechnologyActivityByMode[r,t,m,y]=AnnualTechnologyEmissionByMode[r,t,e,m,y];
 
-	s.t. E2_AnnualEmissionProduction{r in REGION, t in TECHNOLOGY, e in EMISSION, y in YEAR}: 
-		sum{m in MODE_OF_OPERATION} AnnualTechnologyEmissionByMode[r,t,e,m,y] = AnnualTechnologyEmission[r,t,e,y];
-
-	s.t. E3_EmissionsPenaltyByTechAndEmission{r in REGION, t in TECHNOLOGY, e in EMISSION, y in YEAR}: 
-		AnnualTechnologyEmission[r,t,e,y]*EmissionsPenalty[r,e,y] = AnnualTechnologyEmissionPenaltyByEmission[r,t,e,y];
-
-	s.t. E4_EmissionsPenaltyByTechnology{r in REGION, t in TECHNOLOGY, y in YEAR}: 
-		sum{e in EMISSION} AnnualTechnologyEmissionPenaltyByEmission[r,t,e,y] = AnnualTechnologyEmissionsPenalty[r,t,y];
-
-	s.t. E5_DiscountedEmissionsPenaltyByTechnology{r in REGION, t in TECHNOLOGY, y in YEAR}: 
-		AnnualTechnologyEmissionsPenalty[r,t,y]/((1+DiscountRate[r])^(y-min{yy in YEAR} min(yy)+0.5)) = DiscountedTechnologyEmissionsPenalty[r,t,y];
-
-	s.t. E6_EmissionsAccounting1{r in REGION, e in EMISSION, y in YEAR}: 
-		sum{t in TECHNOLOGY} AnnualTechnologyEmission[r,t,e,y] = AnnualEmissions[r,e,y];
-
-	s.t. E7_EmissionsAccounting2{r in REGION, e in EMISSION}: 
-		sum{y in YEAR} AnnualEmissions[r,e,y] = ModelPeriodEmissions[r,e]- ModelPeriodExogenousEmission[r,e];
-
-	s.t. E8_AnnualEmissionsLimit{r in REGION, e in EMISSION, y in YEAR}: 
-		AnnualEmissions[r,e,y]+AnnualExogenousEmission[r,e,y] <= AnnualEmissionLimit[r,e,y];
-
-	s.t. E9_ModelPeriodEmissionsLimit{r in REGION, e in EMISSION}: 
-		ModelPeriodEmissions[r,e] <= ModelPeriodEmissionLimit[r,e];
 
 
