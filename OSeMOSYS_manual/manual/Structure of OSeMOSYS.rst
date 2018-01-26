@@ -332,7 +332,7 @@ Objective function
 ----------------------------
 This equation represents the overall objective of the model. The default in OSeMOSYS is to minimise the total system cost, over the entire model period.
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 251   
@@ -341,7 +341,7 @@ Rate of demand
 ----------------------------
 The equation below is used to generate the term *RateOfDemand*, from the user-provided data for *SpecifiedAnnualDemand* and *SpecifiedDemandProfile*. The *RateOfDemand* is defined for each combination of commodity, TimeSlice and Year.                     
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 257-258
@@ -350,7 +350,7 @@ Capacity Adequacy A
 ----------------------------
 Used to first calculate total capacity of each technology for each year based on existing capacity from before the model period (*ResidualCapacity*), *AccumulatedNewCapacity* during the modelling period, and *NewCapacity* installed in each year. It is then ensured that this Capacity is sufficient to meet the *RateOfTotalActivity* in each TimeSlice and Year. An additional constraint based on the size, or capacity, of each unit of a Technology is included (*CapacityOfOneTechnologyUnit*). This stipulates that the capacity of certain Technology can only be a multiple of the user-defined *CapacityOfOneTechnologyUnit*.                                                                                                                                                                                  
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 262-275
@@ -360,7 +360,7 @@ Capacity Adequacy B
 ----------------------------
 Ensures that adequate capacity of technologies is present to at least meet the average annual demand.     
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 281-282
@@ -369,7 +369,7 @@ Energy Balance A
 ----------------------------
 Ensures that demand for each commodity is met in each TimeSlice.  
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 286-317
@@ -378,7 +378,7 @@ Energy Balance B
 ----------------------------
 Ensures that demand for each commodity is met in each Year.    
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 321-331
@@ -387,7 +387,7 @@ Accounting Technology Production/Use
 ---------------------------------------------
 Accounting equations used to generate specific intermediate variables: *ProductionByTechnology*, *UseBytechnology*, *TotalAnnualTechnologyActivityByMode*, and *ModelPeriodCostByRegion*. 
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 335-345
@@ -395,7 +395,7 @@ Accounting equations used to generate specific intermediate variables: *Producti
 Storage Equations
 ----------------------------
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 349-380
@@ -403,7 +403,7 @@ Storage Equations
 Storage Constraints                                                                                                                                                                 
 ---------------------------------
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 384-410
@@ -412,7 +412,7 @@ Storage Investments
 ----------------------------                                                                                                                                                                  
 Calculates the total discounted capital costs expenditure for each storage technology in each year.            
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 414-442
@@ -421,7 +421,7 @@ Capital Costs
 --------------------
 Calculates the total discounted capital cost expenditure for each technology in each year.
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 446-450
@@ -430,7 +430,7 @@ Salvage Value
 --------------------
 Calculates the fraction of the initial capital cost that can be recouped at the end of a technologies operational life. The salvage value can be calculated using one of two depreciation methods: straight line and sinking fund.   
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 454-464
@@ -439,7 +439,7 @@ Operating Costs
 --------------------
 Calculates the total variable and fixed operating costs for each technology, in each year.
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 468-478
@@ -448,7 +448,7 @@ Total Discounted Costs
 -------------------------------                                                                                                                                                      
 Calculates the total discounted system cost over the entire model period to give the *TotalDiscountedCost*. This is the variable that is minimized in the model’s objective function.
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 482-486
@@ -457,7 +457,7 @@ Total Capacity Constraints
 ----------------------------------------
 Ensures that the total capacity of each technology in each year is greater than and less than the user-defined parameters *TotalAnnualMinCapacityInvestment* and *TotalAnnualMaxCapacityInvestment* respectively.
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 490-494
@@ -466,7 +466,7 @@ New Capacity Constraints
 -----------------------------------                                                                                                                                                                                        
 Ensures that the new capacity of each technology installed in each year is greater than and less than the user-defined parameters *TotalAnnualMinCapacityInvestment* and *TotalAnnualMaxCapacityInvestment* respectively.
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 498-502
@@ -475,7 +475,7 @@ Annual Activity Constraints
 -----------------------------------------
 Ensures that the total activity of each technology over each year is greater than and less than the user-defined parameters *TotalTechnologyAnnualActivityLowerLimit* and *TotalTechnologyAnnualActivityUpperLimit* respectively.
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 506-513
@@ -484,7 +484,7 @@ Total Activity Constraints
 -------------------------------------------------
 Ensures that the total activity of each technology over the entire model period is greater than and less than the user-defined parameters *TotalTechnologyModelPeriodActivityLowerLimit* and *TotalTechnologyModelPeriodActivityUpperLimit* respectively.
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 517-524
@@ -493,7 +493,7 @@ Reserve Margin Constraints
 --------------------------------------------------
 Ensures that sufficient reserve capacity of specific technologies (*ReserveMarginTagTechnology* = 1) is installed such that the user-defined *ReserveMargin* is maintained.
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 528-535
@@ -502,7 +502,7 @@ RE Production Target
 ----------------------------------------------
 Ensures that production from technologies tagged as renewable energy technologies (*RETagTechnology* = 1) is at least equal to the user-defined renewable energy (RE) target.
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 539-552
@@ -511,10 +511,37 @@ Emissions Accounting
 -------------------------------------------
 Calculates the annual and model period emissions from each technology, for each type of emission. It also calculates the total associated emission penalties, if any. Finally, it ensures that emissions are maintained before stipulated limits that may be defined for each year and/or the entire model period.
 
-.. literalinclude:: documents\OSeMOSYS code\osemosys_2017_11_08.txt
+.. literalinclude:: documents/OSeMOSYS code/osemosys_2017_11_08.txt
    :language: gnumathprog
    :linenos:
    :lines: 556-581
 
+::
+	s.t. E1_AnnualEmissionProductionByMode{r in REGION, t in TECHNOLOGY, e in EMISSION, m in MODE_OF_OPERATION, y in YEAR}: 
+		EmissionActivityRatio[r,t,e,m,y]*TotalAnnualTechnologyActivityByMode[r,t,m,y]=AnnualTechnologyEmissionByMode[r,t,e,m,y];
+
+	s.t. E2_AnnualEmissionProduction{r in REGION, t in TECHNOLOGY, e in EMISSION, y in YEAR}: 
+		sum{m in MODE_OF_OPERATION} AnnualTechnologyEmissionByMode[r,t,e,m,y] = AnnualTechnologyEmission[r,t,e,y];
+
+	s.t. E3_EmissionsPenaltyByTechAndEmission{r in REGION, t in TECHNOLOGY, e in EMISSION, y in YEAR}: 
+		AnnualTechnologyEmission[r,t,e,y]*EmissionsPenalty[r,e,y] = AnnualTechnologyEmissionPenaltyByEmission[r,t,e,y];
+
+	s.t. E4_EmissionsPenaltyByTechnology{r in REGION, t in TECHNOLOGY, y in YEAR}: 
+		sum{e in EMISSION} AnnualTechnologyEmissionPenaltyByEmission[r,t,e,y] = AnnualTechnologyEmissionsPenalty[r,t,y];
+
+	s.t. E5_DiscountedEmissionsPenaltyByTechnology{r in REGION, t in TECHNOLOGY, y in YEAR}: 
+		AnnualTechnologyEmissionsPenalty[r,t,y]/((1+DiscountRate[r])^(y-min{yy in YEAR} min(yy)+0.5)) = DiscountedTechnologyEmissionsPenalty[r,t,y];
+
+	s.t. E6_EmissionsAccounting1{r in REGION, e in EMISSION, y in YEAR}: 
+		sum{t in TECHNOLOGY} AnnualTechnologyEmission[r,t,e,y] = AnnualEmissions[r,e,y];
+
+	s.t. E7_EmissionsAccounting2{r in REGION, e in EMISSION}: 
+		sum{y in YEAR} AnnualEmissions[r,e,y] = ModelPeriodEmissions[r,e]- ModelPeriodExogenousEmission[r,e];
+
+	s.t. E8_AnnualEmissionsLimit{r in REGION, e in EMISSION, y in YEAR}: 
+		AnnualEmissions[r,e,y]+AnnualExogenousEmission[r,e,y] <= AnnualEmissionLimit[r,e,y];
+
+	s.t. E9_ModelPeriodEmissionsLimit{r in REGION, e in EMISSION}: 
+		ModelPeriodEmissions[r,e] <= ModelPeriodEmissionLimit[r,e];
 
 
