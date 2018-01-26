@@ -25,9 +25,9 @@ OSeMOSYS is a non-profit project. We rely on external funding and welcome partne
 
 Administration
 +++++++++++++++++++++++++++
-KTH Royal Institute of Technology, division of Energy Systems Analysis (dESA)
+**KTH Royal Institute of Technology, division of Energy Systems Analysis (dESA)**
 
-Postal Address:
+*Postal Address:*
 
 KTH - School of Industrial Engineering and Management
 division of Energy Systems Analysis
@@ -36,3 +36,9 @@ Brinellvägen 68
 SE-100 44 STOCKHOLM
 
 https://www.desa.kth.se
+
+
+
+
+.. figure::  documents/img/KTH_Logotyp_RGB_2013.png
+   :align:   center
