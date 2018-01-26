@@ -3,8 +3,21 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to OSeMOSYS manual's documentation!
+Welcome to OSeMOSYS' documentation!
 ===========================================
+
+.. figure::  documents/img/OSeMOSYS logo.png
+   :align:   center
+   
+   KTH - dESA, `www.osemosys.org <https://www.osemosys.org>`_
+
+OSeMOSYS is an open source modelling system for long-run integrated assessment and energy planning. It has been employed to develop energy systems models from the scale of continents (African Power Pools, South America, EU28+2) down to the scale of countries, regions and villages. Designed to require no upfront financial investment, a fast learning curve and little time commitment to operate, it is fit for use by communities of developers, modellers, academics up to policy makers.
+Thanks to its transparency, it is broadly employed as a training and dissemination tool.
+
+
+.. figure::  documents/img/optimus.png
+   :align:   center
+
 
 .. toctree::
    :maxdepth: 3
