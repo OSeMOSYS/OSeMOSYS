@@ -41,4 +41,4 @@ https://www.desa.kth.se
 
 
 .. figure::  documents/img/KTH.png
-   :align:   center
+   :align:   left
