@@ -3,7 +3,7 @@ Create a model in OSeMOSYS
 =================================
 This section introduces the user to the basic components of any application of OSeMOSYS and describes the steps for the creation of a model. To this end, a sample case study, Atlantis, is used and examples from it are shown throughout the section. The concepts described here apply to any application, with due adjustments, and they are valid both in case interfaces are used or not. 
 
-In the following subsections, `The Atlantis Case Study`_ describes the Atlantis sample case study, representing a country sharing features of developed and developing ones. `How to build a model in OSeMOSYS`_ shows the step-by-step creation of a model without using interfaces.
+In the following subsections, `The Atlantis Case Study`_ describes the Atlantis sample case study for OSeMOSYS, representing a country sharing features of developed and developing ones. `How to build a model in OSeMOSYS`_ shows the step-by-step creation of a model without using interfaces.
 
 The Atlantis Case Study
 +++++++++++++++++++++++++++++
@@ -26,6 +26,8 @@ Over the modelling period, this system will be expanded to explore the feasibili
 - a nuclear power plant (light water reactor);
 
 - a new Combined Cycle Power Plant running on natural gas. 
+
+The Atlantis input data file can be `downloaded here <http://www.osemosys.org/uploads/1/8/5/0/18504136/atlantisdatafile_02_11.txt>`_
 
 
 Mapping the RES of Atlantis
