@@ -6,7 +6,7 @@ In OSeMOSYS, like usually in linear programs, sets, parameters and variables are
 Sets
 +++++++++
 The ‘sets’ define the physical structure of a model, usually independent from the specific scenarios which will be run. They define the time domain and time split, the spatial coverage, the technologies and energy vectors to be considered, etc. For instance, when a variable is defined as a function of the set ‘YEAR’ it will be indicated as **variablename[y]** at it will be computed for every year listed in the set.
-The sets of OSeMOSYS are presented in Table xxx.
+The sets of OSeMOSYS are presented in the Table below.
 
 +----------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+
 | **Name**             | **Description**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | **Index**    |
@@ -38,7 +38,7 @@ The sets of OSeMOSYS are presented in Table xxx.
 Parameters
 +++++++++++++
 The parameters are the user-defined numerical inputs to the model. While usually the structure of a model, therefore the sets, remains fixed across scenarios, it is common practice to change the values of some parameters when running different scenarios and/or sensitivity analyses. As will be clear in the following, each parameter is a function of the elements in one or more sets. For instance, **CapitalCost[r,t,y]** indicates that the capital cost is a function of the region (r), the technology (t) and the year (y) .
-A list and brief description of the parameters declared in the master version of OSeMOSYS is given in Table ...
+A list and brief description of the parameters declared in the master version of OSeMOSYS is given in the Table below.
 
 
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -172,7 +172,7 @@ A list and brief description of the parameters declared in the master version of
 Variables
 +++++++++++++
 The variables are the outputs computed by the code. As much as the parameters, also the variables are functions of the elements in one or more sets.
-In the following Table ..., a list and brief description of all the variables computed by the code of OSeMOSYS (in its full version) is given. As will be explained in Section 3, a shortened version of OSeMOSYS has been created, to improve the computational capability at the expenses of the readability of the code. In such version, only some of the variables here listed are computed.
+In the following Table, a list and brief description of all the variables computed by the code of OSeMOSYS (in its full version) is given. As will be explained in Section 3, a shortened version of OSeMOSYS has been created, to improve the computational capability at the expenses of the readability of the code. In such version, only some of the variables here listed are computed.
 When reasonable, the domain of several variables has been constrained to be positive, in order to decrease the size of the solution space and therefore the computational effort.
 
 +--------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+
