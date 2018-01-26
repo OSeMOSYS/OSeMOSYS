@@ -7,7 +7,7 @@ Welcome to OSeMOSYS manual's documentation!
 ===========================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
    
    manual/Introduction
