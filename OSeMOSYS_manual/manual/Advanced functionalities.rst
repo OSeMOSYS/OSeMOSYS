@@ -97,7 +97,7 @@ This version of OSeMOSYS was developed to further evaluate the short-term perfor
 
 - Equations that incorporate the cost of curtailment into the model. This is not usually accounted for in a long-term model due to the averaging imposed by the time slice definitions.
 
-.. figure::  documents\img\AdvancedFunctionality.png
+.. figure::  documents/img/AdvancedFunctionality.png
    :align:   center
 
    Comparison between the power generation profile without and with storage.
