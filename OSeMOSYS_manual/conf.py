@@ -46,7 +46,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'OSeMOSYS manual'
+project = 'OSeMOSYS'
 copyright = '2018, KTH-dESA'
 author = 'KTH-dESA'
 
