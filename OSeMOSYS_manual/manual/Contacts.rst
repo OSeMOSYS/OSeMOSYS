@@ -33,8 +33,7 @@ Administration
 KTH - School of Industrial Engineering and Management
 division of Energy Systems Analysis
 
-Brinellvägen 68
-SE-100 44 STOCKHOLM
+Brinellvägen 68, SE-100 44 STOCKHOLM (Sweden)
 
 https://www.desa.kth.se
 
