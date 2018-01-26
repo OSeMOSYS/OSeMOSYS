@@ -40,5 +40,5 @@ https://www.desa.kth.se
 
 
 
-.. figure::  documents/img/KTH_Logotyp_RGB_2013.png
+.. figure::  documents/img/KTH.png
    :align:   center
