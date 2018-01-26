@@ -6,7 +6,7 @@
 Welcome to OSeMOSYS' documentation!
 ===========================================
 
-.. figure::  manual/documents/img/OSeMOSYSlogo.png
+.. figure::  manual/documents/img/OSeMOSYS.png
    :align:   center
    
    KTH - dESA, `www.osemosys.org <https://www.osemosys.org>`_
