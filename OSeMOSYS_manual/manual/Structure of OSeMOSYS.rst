@@ -35,11 +35,11 @@ The sets of OSeMOSYS are presented in the Table below.
 +----------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+
 
 
+
 Parameters
 +++++++++++++
-The parameters are the user-defined numerical inputs to the model. While usually the structure of a model, therefore the sets, remains fixed across scenarios, it is common practice to change the values of some parameters when running different scenarios and/or sensitivity analyses. As will be clear in the following, each parameter is a function of the elements in one or more sets. For instance, **CapitalCost[r,t,y]** indicates that the capital cost is a function of the region (r), the technology (t) and the year (y) .
+The parameters are the user-defined numerical inputs to the model. While usually the structure of a model, therefore the sets, remains fixed across scenarios, it is common practice to change the values of some parameters when running different scenarios and/or sensitivity analyses. As will be clear in the following, each parameter is a function of the elements in one or more sets. For instance, **CapitalCost[r,t,y]** indicates that the capital cost is a function of the region (r), the technology (t) and the year (y) [#note1]_ .
 A list and brief description of the parameters declared in the master version of OSeMOSYS is given in the Table below.
-
 
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | **Global parameters**                                                                                                                                                                                                                                                                                                                |
@@ -166,6 +166,9 @@ A list and brief description of the parameters declared in the master version of
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ModelPeriodEmissionLimit[r,e]                     | Annual upper limit for a specific emission generated in the whole modelled region, over the entire modelled period.                                                                                                                                                              |
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+.. rubric:: 
+.. [#note1] Please note that the order of the indexes of the parameters presented here and available in the current version of OSeMOSYS is different from the one in `Howells et al. in 2011 <http://www.sciencedirect.com/science/article/pii/S0301421511004897>`_. For more information refer to the Change Log of the OSeMOSYS versions, available at http://www.osemosys.org/get-started.html. 
 
 
 
@@ -326,7 +329,6 @@ When reasonable, the domain of several variables has been constrained to be posi
 Equations
 ++++++++++++
 The OSeMOSYS code is divided into blocks of equations that comprises one objective function and several constraints. The blocks of code allow for a modular structure in different functionalities can be added or removed based on the user’s needs. This flexible, modular structure allows OSeMOSYS to be used for a wide range of applications of different scales, complexities, and objectives.
-
 
 Objective function 
 ----------------------------

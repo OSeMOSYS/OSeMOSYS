@@ -60,7 +60,7 @@ The main steps to perform a model run are outlined in the following:
 
 2. *Open the command prompt*
 	The command prompt can be opened by clicking in Windows on Start, Run, and then typing ‘cmd’. (There are other ways of doing this but the above mentioned procedure is one of the easiest.) The command prompt will have some text to indicate the current directory to which you can send ‘prompts’. If you are not in the same directory where GLPSOL is stored, you need to change the directory to the address that contains ‘glpsol.exe’ (.../GnuWin32/bin). If GLPK has been extracted to (the default) ‘program files’ folder, you will need to go to C:/Program Files/GnuWin32/bin.
-	In case you are not sure about the current directory, return to the root directory by typing ”cd/” . Then, navigate to the folder in which the files are stored by typing ”cd C:/.../GnuWin32/bin” then hit the return key (if you need help on command prompt, type ‘help’ and possible command options will be listed).
+	In case you are not sure about the current directory, return to the root directory by typing ”cd/” [#note1]_ . Then, navigate to the folder in which the files are stored by typing ”cd C:/.../GnuWin32/bin” then hit the return key (if you need help on command prompt, type ‘help’ and possible command options will be listed).
 
 3. *Running the Atlantis example in OSeMOSYS using ‘glpsol’*
 	Now that you are in the .../GnuWin32/bin directory in command prompt, and you have OSeMOSYS_201x_xx_x.txt and Atlantis.txt pasted in the same directory you can run the Atlantis example in OSeMOSYS. To do this type:
@@ -104,11 +104,14 @@ The main steps to perform a model run are outlined in the following:
 	
 	- Annual emissions, by species and region (emissions units, Mton)
 	
-	- Annual emissions by technology, species and region (emissions units, Mton) (3) (4).\
+	- Annual emissions by technology, species and region (emissions units, Mton).\
 	
 If you have problems in running the files from the .../GnuWin32/bin directory (due to lack of administrative rights), redirect the OSeMOSYS code and data files to a different directory out of the C drive. 
 
 Note that if the directory on the command prompt window is not same as .../GnuWin32/bin, then you need to write the complete path (e.g., C:/Users/user001/Documents/OSeMOSYS_201x_xx_x.txt) in the command Prompt or change to the new folder before running the model.
+
+.. rubric:: 
+.. [#note1] cd stands for *change directory*.
 
 
 
