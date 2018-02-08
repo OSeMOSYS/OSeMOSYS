@@ -21,7 +21,7 @@ Starting the chain with a technology
 -------------------------------------------
 In OSeMOSYS the chain always needs to start with a technology. This means that in order to have a fuel in the system, a technology needs to be defined as the producer. For instance, in an oil power plant we define oil as an input (parameter “InputActivityRatio”) and electricity as an output (parameter “OutputActivityRatio”). However, the oil has to be produced by another technology, such as “oil import”. In this case the oil import technology has NO input (unless we are defining the entire oil supply chain as well), but only oil as an output. Another example where an error is common is when defining a renewable energy technology, such as solar photovoltaics (PV). For example, in the case of a PV, the output is electricity. You can choose to define sunlight or have no input at all. In the former case though, a technology providing this sunlight needs to be defined also (e.g. “Sun”).  
 
-It is advisable to construct a Reference Energy System (similar to Figure 3), before starting to construct the model. This will help visualize the overall system with its interconnections and it will facilitate in the quick identification of potential sources of error. 
+It is advisable to construct a Reference Energy System (similar to the Figure above, under `Adding a dummy technology`_), before starting to construct the model. This will help visualize the overall system with its interconnections and it will facilitate in the quick identification of potential sources of error. 
 
 
 Incorrect demand split definitions
