@@ -49,9 +49,9 @@ Downloading OSeMOSYS and GLPK
 -----------------------------------
 To develop an energy systems model using OSeMOSYS and optimize it using GLPSOL (GNU- Linear programming solver), we will need two different files: one OSeMOSYS code file and a data/model file representing the data corresponding to the model developed by the user. 
 
-The OSeMOSYS code (both the long and short versions) can be downloaded from GITHUB or the OSeMOSYS website; the latter also contains older versions of the code. A data file corresponding to the Atlantis model described in section 4.1 can also be downloaded from the above-mentioned sources.
+The OSeMOSYS code (both the long and short versions) can be downloaded from the `OSeMOSYS GitHub repository <https://github.com/KTH-dESA/OSeMOSYS/tree/master/OSeMOSYS_GNU_MathProg>`_ or the `OSeMOSYS website <http://www.osemosys.org/get-started.html>`_; the latter also contains older versions of the code. A data file corresponding to the Atlantis model described in the previous section `The Atlantis Case Study`_ can also be downloaded from the above-mentioned sources.
 
-GLPK (GNU-Linear Programming toolkit) which contains GLPSOL can be downloaded from this link. The Setup file on extraction will create a folder containing the necessary library files and GLPSOL. The folder can be extracted to any location (referred by ”... in the sections below).  
+The latest version of the GNU-Linear Programming Kit (GLPK) which contains the solver GLPSOL can be downloaded `here <https://sourceforge.net/projects/winglpk/>`_. The Setup file on extraction will create a folder containing the necessary library files and GLPSOL. The folder can be extracted to any location (referred by ”...” in the sections below).  
 
 The main steps to perform a model run are outlined in the following: 
 
