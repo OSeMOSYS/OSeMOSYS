@@ -7,24 +7,19 @@ Using OSeMOSYS with the solver CPLEX
 
 CPLEX is a commercial solver, more performing than the freely available GLPK solver for large problems. It is freely available for use by universities and in non-commercial projects. To run OSeMOSYS using CPLEX, you need to have CPLEX and Python installed on your PC.  
 
-1. In order to use CPLEX, the OSeMOSYS model and data files first need to be combined into a single ‘.lp’ file. To do this, open the command prompt, select the GLPK folder containing the OSeMOSYS model and data files (see ... for basic command prompt functions and how to select folders) and use the following command:
-	**glpsol -m [OSeMOSYS model file] -d [Data file] --wlp [Input_Filename.lp]**
+1. In order to use CPLEX, the OSeMOSYS model and data files first need to be combined into a single ‘.lp’ file. To do this, open the command prompt, select the GLPK folder containing the OSeMOSYS model and data files (see ... for basic command prompt functions and how to select folders) and use the following command: **glpsol -m [OSeMOSYS model file] -d [Data file] --wlp [Input_Filename.lp]**
 
 2. After the .lp file is generated, close the command prompt window. Open CPLEX. Type *‘read C:\Input_Filepath\Input_Filename.lp’* and press Enter. The command will require from few second, up to minutes to be executed, depending on the size of the file to be read from the chosen filepath.
 
-3. After the file is read, type *‘optimize’* and press enter. CPLEX will run the problem and find an optimal solution (or give a message of infeasibility if no solution can be found).
+3. After the file is read, type *‘optimize’* and press enter. CPLEX will run the problem and find an optimal solution (or give a message of non-feasibility if no solution can be found).
 
 4. After the optimization is over, type *‘write C:\Output_Filepath\Output_Filename.sol’* and press Enter. The command will require from few second, up to minutes to be executed, depending on the size of the file to be written to the chosen filepath. When the solution file is written, close the CPLEX window.
 
-5. The solution file needs now to be sorted and reordered. For this, download from the OSeMOSYS website the **python sorting script** that was developed for this function and copy it in to the Python installation folder. Usually, when Python is installed, the folder *‘C:\PythonXX\’* is chosen by default. For this step and the next two, the instructions will assume this as the folder. Please check what the path of the installation folder is in your case and use that in steps 5, 6 and 7 instead, if different. Copy in the same folder also the *Output_Filename.sol* generated in the steps before. 
+5. The solution file needs now to be sorted and reordered. For this, download from the OSeMOSYS website the `Python sorting script <http://www.osemosys.org/get-started.html>`_ (bottom page) that was developed for this function and copy it in to the Python installation folder. Usually, when Python is installed, the folder *‘C:\PythonXX\’* is chosen by default. For this step and the next two, the instructions will assume this as the folder. Please check what the path of the installation folder is in your case and use that in steps 5, 6 and 7 instead, if different. Copy in the same folder also the *Output_Filename.sol* generated in the steps before. 
 
-6. Open the command prompt again. Select the directory *‘C:\PythonXX\’* and type:
-	**python transform_31072013.py Output_Filename.sol Output_Filename.txt.**
+6. Open the command prompt again. Select the directory *‘C:\PythonXX\’* and type: *python transform_31072013.py Output_Filename.sol Output_Filename.txt*. The execution of the command may take from few seconds to minutes, depending on the size of the file.
 
-	The execution of the command may take from few seconds to minutes, depending on the size of the file.
-
-7. After the command is executed, type:
-	**‘sort/+1<C:\PythonXX\Output_Filepath\Output_Filename.txt>C:\PythonXX\Output_Filename_so rted.txt’**
+7. After the command is executed, type: *‘sort/+1<C:\PythonXX\Output_Filepath\Output_Filename.txt>C:\PythonXX\Output_Filename_so rted.txt’*.
 
 The file produced through the above process is available in the *‘C:\PythonXX\’* installation folder. The user may cut and paste it where she/he finds it convenient. It contains the results of the model run in a format that is easy to analyze, either directly or after copying into another platform such as MS Excel.
 
@@ -68,9 +63,10 @@ Short-term operational constraints of power plants
 ----------------------------------------------------------
 The global push towards increasing the share of Renewable Energy Sources (RES) in the energy supply poses challenges in terms of security and adequacy of electricity networks. Intermittent generation from e.g. wind and solar power may require back up. Two of the widely discussed options include controllable fossil fuel-fired generation (such as Open Cycle or Combined Cycle Gas Turbines) and storage. In order to assess the costs and benefits of using the first as a back-up option for peaking generation, new blocks of functionality computing short-term costs and operational constraints of dispatchable generation were designed. These include:
 
-- *Computing the reserve capacity dispatch to meet an exogenously given demand, under constraints on ramp rates and minimum duty [#welsch1]_ *: the enhanced version of OSeMOSYS was compared to a modelling framework coupling TIMES and PLEXOS, through a case-study analysing optimal energy infrastructure investments in Ireland in 2020 [#welsch2]_ . While avoiding the high computational burden of the TIMES-PLEXOS model (the time resolution of the latter is 700 times higher), the OSeMOSYS model provides similar results. For instance, the investments diverge by 5%. The new block of functionality was further modified to make the reserve capacity demand an endogenous variable, namely a function of the penetration of intermittent renewables [#maggi]_.
+- *Computing the reserve capacity dispatch to meet an exogenously given demand, under constraints on ramp rates and minimum duty [#welsch1]_* : the enhanced version of OSeMOSYS was compared to a modelling framework coupling TIMES and PLEXOS, through a case-study analysing optimal energy infrastructure investments in Ireland in 2020 [#welsch2]_ . While avoiding the high computational burden of the TIMES-PLEXOS model (the time resolution of the latter is 700 times higher), the OSeMOSYS model provides similar results. For instance, the investments diverge by 5%. The new block of functionality was further modified to make the reserve capacity demand an endogenous variable, namely a function of the penetration of intermittent renewables [#maggi]_ .
 
 - *Costs related to the flexible operation of power plants, specifically*: increased specific fuel consumption at lower load, wear and tear costs associated to the number of ramp-up and ramp-down cycles and costs for refurbishing existing units [#gardumi]_ .
+
 
 
 Demand-flexibility

@@ -117,7 +117,7 @@ Note that if the directory on the command prompt window is not same as .../GnuWi
 
 Creating an input file
 ------------------------------------------------------------
-To create the input data for an optimization run, you can set up the model directly in a text editor like Notepad++. It is advisable to start with a small model and build it up step wise. This will simplify the debugging process (see following section on `Debugging a model`_). It is further advisable to back up working versions of model data files by saving them in a folder of your choice. The Atlantis input file provided with the downloaded model code might serve as a useful starting point to see how data needs to be correctly formatted. Alternatively, LEAP has also proven useful to write an OSeMOSYS data file. 
+To create the input data for an optimization run, you can set up the model directly in a text editor like Notepad++. It is advisable to start with a small model and build it up step wise. This will simplify the debugging process (see following chapter in this manual on *Debugging a model*). It is further advisable to back up working versions of model data files by saving them in a folder of your choice. The Atlantis input file provided with the downloaded model code might serve as a useful starting point to see how data needs to be correctly formatted. Alternatively, LEAP has also proven useful to write an OSeMOSYS data file. 
 
 
 Data and choices of units
@@ -155,7 +155,7 @@ There is no unit conversion in OSeMOSYS: the modelling system assumes that all u
 
 Supportive programmes and documentation
 ------------------------------------------------------------
-The installation of Notepad ++ is recommended to work with and edit the model and data files. It can be downloaded `here <https://notepad-plus-plus.org/download/v7.5.4.html>`_ (3) (4). 
+The installation of Notepad ++ is recommended to work with and edit the model and data files. It can be downloaded `here <https://notepad-plus-plus.org/download/v7.5.4.html>`_. 
 
 The following three files are recommended for more background documentation on the basics of GNU MathProg and the linear optimization logic applied in OSeMOSYS:
 
