@@ -19,7 +19,7 @@ OSeMOSYS applications can be created and run without interface. Still, several u
 OSeMOSYS is available for download at http://www.osemosys.org/. 
 
 
-.. rubric::
+.. rubric:: 
 .. [#markal] Energy Technology Systems Analysis Program (IEA-ETSAP), 2015. IEA-ETSAP Energy Systems Analysis Tools. [Online]. Available at: https://iea-etsap.org/index.php/etsap-tools
 .. [#message] International Atomic Energy Agency (IAEA), 2015. Planning & Economic Studies Section (PESS): Capacity Building for Sustainable Energy Development. [Online] Available at: https://www.iaea.org/OurWork/ST/NE/Pess/PESSenergymodels.html
 .. [#primes] National Technical University of Athens (NTUA), 2015. The PRIMES Energy. [Online] Available at: http://www.e3mlab.ntua.gr/manuals/PRIMES_Brussels_November_2007.pdf
