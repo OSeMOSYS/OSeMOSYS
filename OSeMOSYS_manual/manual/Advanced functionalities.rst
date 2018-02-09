@@ -119,7 +119,7 @@ This application has proven important in the study of integrated approaches for 
 The cascaded hydro storage equations have been uploaded to GitHub where anyone interested can download, use and modify them for their own purposes [#niet]_ .
 
 
-.. rubric:: References 
+.. rubric:: 
 .. [#optimus1] Optimus.community, OSeMOSYS GitHub, (2017). https://github.com/KTH-dESA/OSeMOSYS (accessed October 3, 2017).
 .. [#welsch1] Welsch, M., Howells, M., Hesamzadeh, M., O Gallachoir, B., Deane, P., Strachan, N., Bazilian, M., Kammen, D., Jones, L., Strbac, G., Rogner, H., 2015. Supporting security and adequacy in future energy systems: The need to enhance long-term energy system models to better treat issues related to variability. *Int. J. Energy Res.*, 39, pp. 377–396. doi:10.1002/er.3250.
 .. [#welsch2] Welsch, M., Deane, P., Howells, M., O Gallachoir, B., Rogan, F., Bazilian, M., Rogner, H., 2014. Incorporating flexibility requirements into long-term energy system models–A case study on high levels of renewable electricity penetration in Ireland. *Applied Energy*, 135, pp. 600–615. doi:10.1016/j.apenergy.2014.08.072.
