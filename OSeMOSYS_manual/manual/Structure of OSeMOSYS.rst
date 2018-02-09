@@ -175,7 +175,7 @@ A list and brief description of the parameters declared in the master version of
 Variables
 +++++++++++++
 The variables are the outputs computed by the code. As much as the parameters, also the variables are functions of the elements in one or more sets.
-In the following Table, a list and brief description of all the variables computed by the code of OSeMOSYS (in its full version) is given. As will be explained in Section 3, a shortened version of OSeMOSYS has been created, to improve the computational capability at the expenses of the readability of the code. In such version, only some of the variables here listed are computed.
+In the following Table, a list and brief description of all the variables computed by the code of OSeMOSYS (in its full version) is given. As will be explained next in this manual, a shortened version of OSeMOSYS has been created, to improve the computational capability at the expenses of the readability of the code. In such version, only some of the variables here listed are computed.
 When reasonable, the domain of several variables has been constrained to be positive, in order to decrease the size of the solution space and therefore the computational effort.
 
 +--------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+
