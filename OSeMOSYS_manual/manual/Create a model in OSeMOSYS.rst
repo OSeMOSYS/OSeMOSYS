@@ -178,7 +178,7 @@ It should be noted that the salvage value as described in `Howells et al. in 201
 
 How to run OSeMOSYS using a macOS operating system
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
-(these information were kindly provided by Pablo E. Carvajal, UCL Energy Institute)
+*(These information were kindly provided by Pablo E. Carvajal, UCL Energy Institute)*
 
 This section will guide you through the steps needed to run an OSeMOSYS model in an Apple Computer running macOS operating system. This approach does not require you to purchase any program. 
 
