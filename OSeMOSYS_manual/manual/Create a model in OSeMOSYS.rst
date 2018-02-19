@@ -173,3 +173,123 @@ Further, as mentioned before, the most comprehensive description of how OSeMOSYS
 2. `“Modelling elements of Smart Grids – Enhancing the OSeMOSYS (Open Source Energy Modelling System) code” <https://www.sciencedirect.com/science/article/pii/S0360544212006299>`_ by Welsch et al. in 2012. 
 
 It should be noted that the salvage value as described in `Howells et al. in 2011 <http://www.sciencedirect.com/science/article/pii/S0301421511004897>`_ is not applicable anymore: please see the `Change Log <http://www.osemosys.org/uploads/1/8/5/0/18504136/change_log_2017_11_08.pdf>`_ provided at `www.osemosys.org <http://www.osemosys.org>`_ for latest changes. Further, the description of storage in `Howells et al. in 2011 <http://www.sciencedirect.com/science/article/pii/S0301421511004897>`_ is not applicable any longer. Instead, refer to the current way of modelling storage or variability as described in `Welsch et al. in 2012 <https://www.sciencedirect.com/science/article/pii/S0360544212006299>`_. 
+
+
+
+How to run OSeMOSYS using a macOS operating system
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+(these information were kindly provided by Pablo E. Carvajal, UCL Energy Institute)
+
+This section will guide you through the steps needed to run an OSeMOSYS model in an Apple Computer running macOS operating system. This approach does not require you to purchase any program. 
+
+This instructions was developed and tested in macOS High Sierra v.10.13.2 
+
+
+1. Installing XCode
+------------------------------------------------------------
+You must have Xcode Developer Tools Software installed on your mac. If you do not, download and install it from the App Store. You will need to have macOS X version 10.10.5 or later. You will need to have an AppleID and 4Gb of free hard drive space to install Xcode. 
+
+Once Xcode is installed, agree to the licence and open it (Xcode will be found in the Launchpad).
+
+
+2. Install Command Line Tools
+-------------------------------------
+- Open the Terminal window. To open the Terminal, type “Terminal” in the Spotlight search function (upper right corner of your screen - magnifying glass).
+
+.. figure::  documents/img/TerminalMAC.png
+   :align:   center
+   
+- Type the following line and press Enter: **xcode-select --install++**
+
+.. figure::  documents/img/MACinstall.png
+   :align:   center
+
+- If you get following message, click install, agree on the terms and wait for the package to download.
+
+.. figure::  documents/img/MAC1.png
+   :align:   center
+   
+- When the installation is complete, type the following in the Terminal and press Enter: 
+
+	**xcode-select -p**
+
+- The following line should appear: */Applications/Xcode.app/Contents/Developer*
+
+- If this line does not appear, start again from Step 1.
+
+
+3. Installing Homebrew
+--------------------------------
+- Type or copy the following into your Terminal window and press Enter: 
+	
+	**ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install )"**
+
+- You should see the following in the Terminal window:
+
+.. figure::  documents/img/MAC2.png
+   :align:   center
+
+- Press Enter. If a password is requested, enter your computer password (you will not see what you type on the line). If this does not work you need to enable the “root” user mode in OS X following the instructions from the following web page: https://support.apple.com/en-gb/HT204012
+
+- Once you have enabled the root user mode, repeat step 3.
+
+- When the Homebrew is installed you should see following in the Terminal window.
+
+.. figure::  documents/img/MAC3.png
+   :align:   center
+
+   
+4. Installing GLPK and locating glpsol
+------------------------------------------
+- If you get the message below, type the following line and press Enter: 
+
+	**brew install homebrew/science/glpk**:
+
+.. figure::  documents/img/MAC4.png
+   :align:   center
+
+You should now have GLPK Installed
+
+- In Finder, open the GO menu and click on Go to Folder…
+
+- Type: **/usr/local/Cellar**
+
+In the folder glpk/4.64/bin you will find the glpsol program. 
+
+- Create a folder called OSEMOSYS on your Desktop and copy the glpsol program into it. 
+
+.. figure::  documents/img/MAC5.png
+   :align:   center
+   
+
+5. Downloading model files and running the model
+---------------------------------------------------------
+Download the model and data *.txt* files provided on the OSeMOSYS website, under `Get Started <http://www.osemosys.org/get-started.html>`_. 
+
+This tutorial uses the `OSEMOSYS_2011_11_08.txt <http://www.osemosys.org/uploads/1/8/5/0/18504136/osemosys_2011_11_08.txt>`_ model and the `UTOPIA_2011_11_08.txt <http://www.osemosys.org/uploads/1/8/5/0/18504136/utopia_2011_11_08.txt>`_ data. Save these *.txt* files in your Desktop/OSEYMOSYS folder. 
+
+Notice: When using Textedit.app to save your model and data, your file might be saved with the *.rtf* extension. To change it to *.txt*, locate the file, click on the name (so it turns blue, do not double click it, just select) and change the extension to *.txt* manually.
+
+You should end up having three items in your OSEMOSYS folder:
+
+.. figure::  documents/img/MAC6.png
+   :align:   center
+   
+To run the model go back to the Terminal, locate the OSEMOSYS file in the desktop by typing: 
+	
+	**cd desktop/OSEMOSYS**
+
+And to run the model type the following line and press Enter: 
+
+	**glpsol -m OSEMOSYS_2011_11_08.txt -d UTOPIA_2011_11_08.txt -o Results.txt**
+
+
+.. figure::  documents/img/MAC7.png
+   :align:   center
+
+The model will run in the Terminal and when finished you should see the following message:
+
+.. figure::  documents/img/MAC8.png
+   :align:   center
+
+Running the model will create a Results.txt file in the OSEMOSYS folder.
