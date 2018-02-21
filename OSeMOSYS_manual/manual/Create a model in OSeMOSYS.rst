@@ -66,7 +66,7 @@ The main steps to perform a model run are outlined in the following:
 3. *Running the Atlantis example in OSeMOSYS using ‘glpsol’*
 	Now that you are in the .../GnuWin32/bin directory in command prompt, and you have OSeMOSYS_201x_xx_x.txt and Atlantis.txt pasted in the same directory you can run the Atlantis example in OSeMOSYS. To do this type:
 
-	**glpsol -m OSeMOSYS_201x_xx_xx.txt -d UTOPIA_201x_xx_.dat -o results.txt**
+	**glpsol -m OSeMOSYS_201x_xx_xx.txt -d Atlantis_201x_xx_.dat -o results.txt**
 
 	All characters are important including space. This invokes a command (glpsol) to take the model file (OSeMOSYS_201x_xx_x.txt) and associated data input file (Atlantis.txt) to produce an output file with a full set of results (result.txt). The results file is particularly large, even for a simple problem. To easily comprehend the results, the OSeMOSYS code includes a few extra lines of code (not part of the optimization routine and available at the end of the code file) to produce a summary of results called SelectedResults.csv. This, as well as the full results file will appear in the .../GnuWin32/bin directory after the model run. A list of other possible command options can be found in the command prompt by typing glpsol –help.
 
