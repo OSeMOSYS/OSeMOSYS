@@ -76,7 +76,7 @@ The main steps to perform a model run are outlined in the following:
 5. *Output*
 	When glpsol is running successfully, it prints a status line. Each line will look similar to the following:
 
-	\*4: \objval = 1.563750000e+002 \infeas = 0.000000000e+000 
+	\*4: \objval = 6.254971664e+03 \infeas = 0.000000000e+000 
 
 
 	‘*’ means that a basic feasible solution has been found, ‘4:’ means that there have been 4 iterations to find a solution so far, ‘objval’ shows the current objective value, and ‘infeas’ shows the amount of infeasibility. When a feasible solution has been found, its value will be either 0 or a very small number. For more information on this please read the `documentation on GNU Linear Programming <http://www.osemosys.org/uploads/1/8/5/0/18504136/ceron_-_2006_-_the_gnu_linear_programming_kit,_part_1_-_introduction_to_linear_optimization.pdf>`_ by Rodrigo Ceron Ferreira. 
