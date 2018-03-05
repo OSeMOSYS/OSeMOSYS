@@ -28,7 +28,7 @@ Over the modelling period, this system will be expanded to explore the feasibili
 
 - a new Combined Cycle Power Plant running on natural gas. 
 
-The Atlantis input data file can be `accessed here <http://www.osemosys.org/uploads/1/8/5/0/18504136/atlantisdatafile_02_11.txt>`_
+The Atlantis input data file can be `accessed here <http://www.osemosys.org/uploads/1/8/5/0/18504136/atlantis_bau.txt>`_
 
 
 Mapping the RES of Atlantis
