@@ -603,9 +603,9 @@ ReserveMarginConstraint = Constraint(model.REGION, model.TIMESLICE, model.YEAR, 
 # modeldata.add = ('OSeMOSYS_2015_08_27_Pyomo.dat')
 # modeldata.read(model)
 
-opt = SolverFactory('cplex')
+opt = SolverFactory('glpk')
 
-instance = model.create_instance('OSeMOSYS_2015_08_27_Pyomo.dat')
+instance = model.create_instance('UTOPIA_2015_08_27.dat')
 results = opt.solve(instance)
 # results.write()
 #model.solutions.load_from(results)
