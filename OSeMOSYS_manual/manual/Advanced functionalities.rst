@@ -7,7 +7,7 @@ Using OSeMOSYS with the solver CPLEX
 
 CPLEX is a commercial solver, more performing than the freely available GLPK solver for large problems. It is freely available for use by universities and in non-commercial projects. To run OSeMOSYS using CPLEX, you need to have CPLEX and Python installed on your PC.  
 
-1. In order to use CPLEX, the OSeMOSYS model and data files first need to be combined into a single ‘.lp’ file. To do this, open the command prompt, select the GLPK folder containing the OSeMOSYS model and data files (see ... for basic command prompt functions and how to select folders) and use the following command: **glpsol -m [OSeMOSYS model file] -d [Data file] --wlp [Input_Filename.lp]**
+1. In order to use CPLEX, the OSeMOSYS model and data files first need to be combined into a single ‘.lp’ file. To do this, open the command prompt, select the GLPK folder containing the OSeMOSYS model and data files (see ... for basic command prompt functions and how to select folders) and use the following command: **glpsol -m [OSeMOSYS model file] -d [Data file] - -wlp [Input_Filename.lp]**
 
 2. After the .lp file is generated, close the command prompt window. Open CPLEX. Type *‘read C:\Input_Filepath\Input_Filename.lp’* and press Enter. The command will require from few second, up to minutes to be executed, depending on the size of the file to be read from the chosen filepath.
 
