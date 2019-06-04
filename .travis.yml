@@ -4,7 +4,6 @@ before_install:
   - sudo apt-get install glpk-utils libglpk-dev
 install:
   - pip install pyomo
-  - pyomo install-extras
   
 script:
   - glpsol -m OSeMOSYS_GNU_MathProg/osemosys.txt -d Training_Case_Studies/utopia.txt -o results.csv
