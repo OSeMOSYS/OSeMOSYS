@@ -3,7 +3,7 @@
 To run OSeMOSYS, enter the following line into your command prompt and 
 data file name:
 
-    glpsol -m osemosys.txt -d  ../Training_Case_Studies/atlantis.txt -o results.csv
+    glpsol -m osemosys.txt -d  ../Training_Case_Studies/utopia.txt -o results.csv
 
 Alternatively, install GUSEK (http://gusek.sourceforge.net/gusek.html) 
 and run the model within this integrated development environment (IDE).
