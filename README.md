@@ -1,6 +1,6 @@
 # OSeMOSYS - Open Source Energy Modelling System
 
-[![Build Status](https://travis-ci.com/willu47/OSeMOSYS.svg?branch=master)](https://travis-ci.com/willu47/OSeMOSYS)
+[![Build Status](https://travis-ci.com/KTH-dESA/OSeMOSYS.svg?branch=master)](https://travis-ci.com/KTH-dESA/OSeMOSYS)
 
 Welcome to OSeMOSYS - the open source energy modelling system. This source code
 repository contains the Apache-2.0 licensed source-code for three different
