@@ -1,9 +1,12 @@
 * OSEMOSYS_EQU.GMS - model equations
 *
-* OSEMOSYS 2011.07.07 conversion to GAMS by Ken Noble, Noble-Soft Systems - August 2012
-* OSEMOSYS 2016.08.01 update by Thorsten Burandt, Konstantin Löffler and Karlo Hainsch, TU Berlin (Workgroup for Infrastructure Policy) - October 2017
+* OSeMOSYS 2011.07.07 conversion to GAMS by Ken Noble, Noble-Soft Systems - August 2012
+* OSeMOSYS 2017.11.08 update by Thorsten Burandt, Konstantin Löffler and Karlo Hainsch, TU Berlin (Workgroup for Infrastructure Policy) - October 2017
 *
-* OSEMOSYS 2016.08.01
+* OSeMOSYS 2017.11.08
+* Main changes to previous version OSeMOSYS_2016_08_01
+* Bug fixed in:
+* - Equation E1
 * Open Source energy Modeling SYStem
 *
 * ============================================================================
@@ -354,7 +357,7 @@ RE5_FuelUseByTechnologyAnnual(r,t,f,y).. sum(l, (RateOfUseByTechnology(r,l,t,f,y
 *
 *s.t. E1_AnnualEmissionProductionByMode{r in REGION, t in TECHNOLOGY, e in EMISSION, m in MODE_OF_OPERATION, y in YEAR: EmissionActivityRatio[r,t,e,m,y]<>0}: EmissionActivityRatio[r,t,e,m,y]*TotalAnnualTechnologyActivityByMode[r,t,m,y]=AnnualTechnologyEmissionByMode[r,t,e,m,y];
 equation E1_AnnualEmissionProductionByMode(REGION,TECHNOLOGY,EMISSION,MODE_OF_OPERATION,YEAR);
-* E1_AnnualEmissionProductionByMode(r,t,e,m,y)$(EmissionActivityRatio(r,t,e,m,y) <> 0).. EmissionActivityRatio(r,t,e,m,y)*TotalAnnualTechnologyActivityByMode(r,t,m,y) =e= AnnualTechnologyEmissionByMode(r,t,e,m,y);
+* E1_AnnualEmissionProductionByMode(r,t,e,m,y).. EmissionActivityRatio(r,t,e,m,y)*TotalAnnualTechnologyActivityByMode(r,t,m,y) =e= AnnualTechnologyEmissionByMode(r,t,e,m,y);
 E1_AnnualEmissionProductionByMode(r,t,e,m,y).. EmissionActivityRatio(r,t,e,m,y)*TotalAnnualTechnologyActivityByMode(r,t,m,y) =e= AnnualTechnologyEmissionByMode(r,t,e,m,y);
 *s.t. E2_AnnualEmissionProduction{r in REGION, t in TECHNOLOGY, e in EMISSION, y in YEAR}: sum{m in MODE_OF_OPERATION} AnnualTechnologyEmissionByMode[r,t,e,m,y] = AnnualTechnologyEmission[r,t,e,y];
 equation E2_AnnualEmissionProduction(REGION,TECHNOLOGY,EMISSION,YEAR);
