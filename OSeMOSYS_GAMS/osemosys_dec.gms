@@ -1,9 +1,9 @@
 * OSEMOSYS_DEC.GMS - declarations for sets, parameters, variables (but not equations)
 *
 * OSEMOSYS 2011.07.07 conversion to GAMS by Ken Noble, Noble-Soft Systems - August 2012
-* OSEMOSYS 2016.08.01 update by Thorsten Burandt, Konstantin Löffler and Karlo Hainsch, TU Berlin (Workgroup for Infrastructure Policy) - October 2017
+* OSEMOSYS 2017.11.08 update by Thorsten Burandt, Konstantin Löffler and Karlo Hainsch, TU Berlin (Workgroup for Infrastructure Policy) - October 2017
 *
-* OSEMOSYS 2016.08.01
+* OSEMOSYS 2017.11.08
 * Open Source energy Modeling SYStem
 *
 * ============================================================================
