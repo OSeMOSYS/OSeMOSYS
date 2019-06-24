@@ -1,0 +1,96 @@
+Global parameters,
+"YearSplit[l,y]","Duration of a modelled time slice, expressed as a fraction of the year. The sum of each entry over one modelled year should equal 1."
+DiscountRate[r],"Region specific value for the discount rate, expressed in decimals (e.g. 0.05)"
+"DaySplit[lh,y]","Length of one DailyTimeBracket in one specific day as a fraction of the year (e.g., when distinguishing between days and night: 12h/(24h*365d))."
+"Conversionls[l,ls]","Binary parameter linking one TimeSlice to a certain Season. It has value 0 if the TimeSlice does not pertain to the specific season, 1 if it does."
+"Conversionld[ld,l]","Binary parameter linking one TimeSlice to a certain DayType. It has value 0 if the TimeSlice does not pertain to the specific DayType, 1 if it does."
+"Conversionlh[lh,l]","Binary parameter linking one TimeSlice to a certain DaylyTimeBracket. It has value 0 if the TimeSlice does not pertain to the specific DaylyTimeBracket, 1 if it does."
+"DaysInDayType[ls,ld,y]","Number of days for each day type, within one week (natural number, ranging from 1 to 7)"
+"TradeRoute[r,rr,f,y]","Binary parameter defining the links between region r and region rr, to enable or disable trading of a specific commodity. It has value 1 when two regions are linked, 0 otherwise"
+DepreciationMethod[r],"Binary parameter defining the type of depreciation to be applied. It has value 1 for sinking fund depreciation, value 2 for straight-line depreciation."
+Demands,
+"SpecifiedAnnualDemand[r,f,y]","Total specified demand for the year, linked to a specific 'time of use' during the year. "
+"SpecifiedDemandProfile[r,f,l,y]","Annual fraction of energy-service or commodity demand that is required in each time slice. For each year, all the defined SpecifiedDemandProfile input values should sum up to 1."
+"AccumulatedAnnualDemand[r,f,y]",Accumulated Demand for a certain commodity in one specific year. It cannot be defined for a commodity if its SpecifiedAnnualDemand for the same year is already defined and vice versa.
+Performance,
+"CapacityToActivityUnit[r,t]",Conversion factor relating the energy that would be produced when one unit of capacity is fully used in one year.
+"AvailabilityFactor[r,t,y]","Capacity available eachTimeSlice expressed as a fraction of the total installed capacity, with values ranging from 0 to 1. It gives the possibility to account for forced outages. "
+"OperationalLife[r,t]","Maximum time a technology can run in the whole year, as a fraction of the year ranging from 0 to 1. It gives the possibility to account for planned outages. "
+"ResidualCapacity[r,t,y]","Useful lifetime of a technology, expressed in years."
+"InputActivityRatio[r,t,f,m,y]",Capacity available from before the modelling period. 
+"OutputActivityRatio[r,t,f,m,y]","Rate of use of a commodity by a technology, as a ratio of the rate of activity."
+Technology costs,
+"CapitalCost[r,t,y]","Capital investment cost of a technology, per unit of capacity."
+"VariableCost[r,t,m,y]","Cost of a technology for a given mode of operation (Variable O&M cost), per unit of activity."
+"FixedCost[r,t,y]","Fixed O&M cost of a technology, per unit of capacity."
+Storage,
+"TechnologyToStorage[r,t,s,m]","Binary parameter linking a technology to the storage facility it charges. It has value 1 if the technology and the storage facility are linked, 0 otherwise."
+"TechnologyFromStorage[r,t,s,m]","Binary parameter linking a storage facility to the technology it feeds. It has value 1 if the technology and the storage facility are linked, 0 otherwise."
+"StorageLevelStart[r,s]","Level of storage at the beginning of first modelled year, in units of activity."
+"StorageMaxChargeRate[r,s]","Maximum charging rate for the storage, in units of activity per year."
+"StorageMaxDischargeRate[r,s]","Maximum discharging rate for the storage, in units of activity per year."
+"MinStorageCharge[r,s,y]","It sets a lower bound to the amount of energy stored, as a fraction of the maximum, with a number reanging between 0 and 1. The storage facility cannot be emptied below this level."
+"OperationalLifeStorage[r,s]",Useful lifetime of the storage facility.
+"CapitalCostStorage[r,s,y]","Binary parameter linking a technology to the storage facility it charges. It has value 0 if the technology and the storage facility are not linked, 1 if they are."
+"ResidualStorageCapacity[r,s,y]","Binary parameter linking a storage facility to the technology it feeds. It has value 0 if the technology and the storage facility are not linked, 1 if they are."
+Capacity constraints,
+"CapacityOfOneTechnologyUnit[r,t,y]","Capacity of one new unit of a technology. In case the user sets this parameter, the related technology will be installed only in batches of the specified capacity and the problem will turn into a Mixed Integer Linear Problem."
+"TotalAnnualMaxCapacity[r,t,y]",Total maximum existing (residual plus cumulatively installed) capacity allowed for a technology in a specified year.
+"TotalAnnualMinCapacity[r,t,y]",Total minimum existing (residual plus cumulatively installed) capacity allowed for a technology in a specified year.
+Investment constraints,
+"TotalAnnualMaxCapacityInvestment[r,t,y]","Maximum capacity of a technology, expressed in power units. "
+"TotalAnnualMinCapacityInvestment[r,t,y]","Minimum capacity of a technology, expressed in power units."
+Activity constraints,
+"TotalTechnologyAnnualActivityUpperLimit[r,t,y]",Total maximum level of activity allowed for a technology in one year.
+"TotalTechnologyAnnualActivityLowerLimit[r,t,y]",Total minimum level of activity allowed for a technology in one year.
+"TotalTechnologyModelPeriodActivityUpperLimit[r,t]",Total maximum level of activity allowed for a technology in the entire modelled period.
+"TotalTechnologyModelPeriodActivityLowerLimit[r,t]",Total minimum level of activity allowed for a technology in the entire modelled period.
+Reserve margin,
+"ReserveMarginTagTechnology[r,t,y]","Binary parameter tagging the technologies that are allowed to contribute to the reserve margin. It has value 1 for the technologies allowed, 0 otherwise. "
+"ReserveMarginTagFuel[r,f,y]","Binary parameter tagging the fuels to which the reserve margin applies. It has value 1 if the reserve margin applies to the fuel, 0 otherwise. "
+"ReserveMargin[r,y]","Minimum level of the reserve margin required to be provided for all the tagged commodities, by the tagged technologies. If no reserve margin is required, the parameter will have value 1; if, for instance, 20% reserve margin is required, the parameter will have value 1.2."
+RE Generation target,
+"RETagTechnology[r,t,y]","Binary parameter tagging the renewable technologies that must contribute to reaching the indicated minimum renewable production target. It has value 1 for thetechnologies contributing, 0 otherwise. "
+"RETagFuel[r,f,y]","Binary parameter tagging the fuels to which the renewable target applies to. It has value 1 if the target applies, 0 otherwise. "
+"REMinProductionTarget[r,y]","Minimum ratio  of all renewable commodities tagged in the RETagCommodity parameter, to be produced by the technologies tagged with the RETechnology parameter."
+Emissions,
+"EmissionActivityRatio[r,t,e,m,y]","Emission factor of a technology per unit of activity, per mode of operation."
+"EmissionsPenalty[r,e,y]",Penalty per unit of emission.
+"AnnualExogenousEmission[r,e,y]","It allows the user to account for additional annual emissions, on top of those computed endogenously by the model (e.g. emissions generated outside the region)."
+"AnnualEmissionLimit[r,e,y]",Annual upper limit for a specific emission generated in the whole modelled region.
+"ModelPeriodExogenousEmission[r,e]","It allows the user to account for additional emissions over the entire modelled period, on top of those computed endogenously by the model (e.g. generated outside the region)."
+"ModelPeriodEmissionLimit[r,e]","Annual upper limit for a specific emission generated in the whole modelled region, over the entire modelled period."
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,

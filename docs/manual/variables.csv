@@ -1,0 +1,92 @@
+Demands,,Unit
+"RateOfDemand[r,l,f,y]>=0",Intermediate variable. It represents the energy that would be demanded in one time slice l if the latter lasted the whole year. It is a function of  the parameters SpecifiedAnnualDemand and SpecifiedDemandProfile. ,Energy
+,,(per year)
+"Demand[r,l,f,y]>=0",Demand for one fuel in one time slice. ,Energy
+Storage,,
+"RateOfStorageCharge[r,s,ls,ld,lh,y]",Intermediate variable. It represents the commodity that would be charged to the storage facility s in one time slice if the latter lasted the whole year. It is a function of the RateOfActivity and the parameter TechnologyToStorage. ,Energy
+,,(per year)
+"RateOfStorageDischarge[r,s,ls,ld,lh,y]",Intermediate variable. It represents the commodity that would be discharged from storage facility s in one time slice if the latter lasted the whole year. It is a function of  the RateOfActivity and the parameter TechnologyFromStorage. ,Energy
+,,(per year)
+"NetChargeWithinYear[r,s,ls,ld,lh,y]",Net quantity of commodity charged to storage facility s in year y. It is a function of the RateOfStorageCharge and the RateOfStorageDischarge and it can be negative.,Energy
+"NetChargeWithinDay[r,s,ls,ld,lh,y]",Net quantity of commodity charged to storage facility s in daytype ld. It is a function of the RateOfStorageCharge and the RateOfStorageDischarge and can be negative.,Energy
+"StorageLevelYearStart[r,s,y]>=0",Level of stored commodity in storage facility s in the first time step of year y.,Energy
+"StorageLevelYearFinish[r,s,y]>=0",Level of stored commodity in storage facility s in the last time step of year y.,Energy
+"StorageLevelSeasonStart[r,s,ls,y]>=0",Level of stored commodity in storage facility s in the first time step of season ls.,Energy
+"StorageLevelDayTypeStart[r,s,ls,ld,y]>=0",Level of stored commodity in storage facility s in the first time step of daytype ld.,Energy
+"StorageLevelDayTypeFinish[r,s,ls,ld,y]>=0",Level of stored commodity in storage facility s in the last time step of daytype ld.,Energy
+"StorageLowerLimit[r,s,y]>=0","Minimum allowed level of stored commodity in storage facility s, as a function of the storage capacity and the user-defined MinStorageCharge ratio.",Energy
+"StorageUpperLimit[r,s,y]>=0",Maximum allowed level of stored commodity in storage facility s. It corresponds to the total existing capacity of storage facility s (summing newly installed and pre-existing capacities).,Energy
+"AccumulatedNewStorageCapacity[r,s,y]>=0",Cumulative capacity of newly installed storage from the beginning of the time domain to year y.,Energy
+"NewStorageCapacity[r,s,y]>=0",Capacity of newly installed storage in year y.,Energy
+"CapitalInvestmentStorage[r,s,y]>=0",Undiscounted investment in new capacity for storage facility s. Derived from the NewStorageCapacity and the parameter CapitalCostStorage.,Monetary units
+"DiscountedCapitalInvestmentStorage[r,s,y]>=0","Investment in new capacity for storage facility s, discounted through the parameter DiscountRate. ",Monetary units
+"SalvageValueStorage[r,s,y]>=0","Salvage value of storage facility s in year y, as a function of the parameters OperationalLifeStorage and DepreciationMethod.",Monetary units
+"DiscountedSalvageValueStorage[r,s,y]>=0","Salvage value of storage facility s, discounted through the parameter DiscountRate.",Monetary units
+"TotalDiscountedStorageCost[r,s,y]>=0",Difference between the discounted capital investment in new storage facilities and the salvage value in year y.,Monetary units
+Capacity variables,,
+"NumberOfNewTechnologyUnits[r,t,y]>=0, integer","Number of newly installed units of technology t in year y, as a function of the parameter CapacityOfOneTechnologyUnit.",No unit
+"NewCapacity[r,t,y]>=0",Newly installed capacity of technology t in year y.,Power
+"AccumulatedNewCapacity[r,t,y]>=0",Cumulative newly installed capacity of technology t from the beginning of the time domain to year y.,Power
+"TotalCapacityAnnual[r,t,y]>=0",Total existing capacity of technology t in year y (sum of cumulative newly installed and pre-existing capacity).,Power
+Activity variables,,
+"RateOfActivity[r,l,t,m,y] >=0","Intermediate variable. It represents the activity of technology t in one mode of operation and in time slice l, if the latter lasted the whole year. ",Energy
+,,(per year)
+"RateOfTotalActivity[r,t,l,y] >=0",Sum of the RateOfActivity of a technology over the modes of operation.,Energy
+,,(per year)
+"TotalTechnologyAnnualActivity[r,t,y] >=0",Total annual activity of technology t.,Energy
+"TotalAnnualTechnologyActivityByMode[r,t,m,y] >=0",Annual activity of technology t in mode of operation m.,Energy
+"TotalTechnologyModelPeriodActivity[r,t]",Sum of the TotalTechnologyAnnualActivity over the years of the modelled period.,Energy
+"RateOfProductionByTechnologyByMode[r,l,t,m,f,y] >=0","Intermediate variable. It represents the quantity of fuel f that technology t would produce in one mode of operation and in time slice l, if the latter lasted the whole year. It is a function of the variable RateOfActivity and the parameter OutputActivityRatio.",Energy
+,,(per year)
+"RateOfProductionByTechnology[r,l,t,f,y] >=0",Sum of the RateOfProductionByTechnologyByMode over the modes of operation. ,Energy
+,,(per year)
+"ProductionByTechnology[r,l,t,f,y] >=0",Production of fuel f by technology t in time slice l.,Energy
+"ProductionByTechnologyAnnual[r,t,f,y] >=0",Annual production of fuel f by technology t.,Energy
+"RateOfProduction[r,l,f,y] >=0",Sum of the RateOfProductionByTechnology over all the technologies.,Energy
+,,(per year)
+"Production[r,l,f,y] >=0",Total production of fuel f in time slice l. It is the sum of the ProductionByTechnology over all technologies.,Energy
+"RateOfUseByTechnologyByMode[r,l,t,m,f,y] >=0","Intermediate variable. It represents the quantity of fuel f that technology t would use in one mode of operation and in time slice l, if the latter lasted the whole year. It is the function of the variable RateOfActivity and the parameter InputActivityRatio.",Energy
+,,(per year)
+"RateOfUseByTechnology[r,l,t,f,y] >=0",Sum of the RateOfUseByTechnologyByMode over the modes of operation.,Energy
+,,(per year)
+"UseByTechnologyAnnual[r,t,f,y] >=0",Annual use of fuel f by technology t.,Energy
+"RateOfUse[r,l,f,y] >=0",Sum of the RateOfUseByTechnology over all the technologies.,Energy
+,,(per year)
+"UseByTechnology[r,l,t,f,y] >=0",Use of fuel f by technology t in time slice l.,Energy
+"Use[r,l,f,y] >=0",Total use of fuel f in time slice l. It is the sum of the UseByTechnology over all technologies.,Energy
+"Trade[r,rr,l,f,y]",Quantity of fuel f traded between region r and rr in time slice l.,Energy
+"TradeAnnual[r,rr,f,y]",Annual quantity of fuel f traded between region r and rr. It is the sum of the variable Trade over all the time slices.,Energy
+"ProductionAnnual[r,f,y] >=0",Total annual production of fuel f. It is the sum of the variable Production over all technologies.,Energy
+"UseAnnual[r,f,y] >=0",Total annual use of fuel f. It is the sum of the variable Use over all technologies.,Energy
+Costing variables,,
+"CapitalInvestment[r,t,y] >=0",Undiscounted investment in new capacity of technology t. It is a function of the NewCapacity and the parameter CapitalCost.,Monetary units
+"DiscountedCapitalInvestment[r,t,y] >=0","Investment in new capacity of technology t, discounted through the parameter DiscountRate.",Monetary units
+"SalvageValue[r,t,y] >=0","Salvage value of technology t in year y, as a function of the parameters OperationalLife and DepreciationMethod.",Monetary units
+"DiscountedSalvageValue[r,t,y] >=0","Salvage value of technology t, discounted through the parameter DiscountRate.",Monetary units
+"OperatingCost[r,t,y] >=0",Undiscounted sum of the annual variable and fixed operating costs of technology t.,Monetary units
+"DiscountedOperatingCost[r,t,y] >=0","Annual OperatingCost of technology t, discounted through the parameter DiscountRate.",Monetary units
+"AnnualVariableOperatingCost[r,t,y] >=0",Annual variable operating cost of technology t. Derived from the TotalAnnualTechnologyActivityByMode and the parameter VariableCost. ,Monetary units
+"AnnualFixedOperatingCost[r,t,y] >=0",Annual fixed operating cost of technology t. Derived from the TotalCapacityAnnual and the parameter FixedCost.,Monetary units
+"TotalDiscountedCostByTechnology[r,t,y] >=0",Difference between the sum of discounted operating cost / capital cost / emission penalties and the salvage value.,Monetary units
+"TotalDiscountedCost[r,y] >=0",Sum of the TotalDiscountedCostByTechnology over all the technologies.,Monetary units
+ModelPeriodCostByRegion[r] >=0,Sum of the TotalDiscountedCost over all modelled years.,Monetary units
+Reserve margin,,
+"TotalCapacityInReserveMargin[r,y] >=0",Total available capacity of the technologies required to provide reserve margin. It is derived from the TotalCapacityAnnual and the parameter ReserveMarginTagTechnology.,Energy
+"DemandNeedingReserveMargin[r,l,y] >=0",Quantity of fuel produced that is assigned to a target of reserve margin. Derived from the RateOfProduction and the parameter ReserveMarginTagFuel.  ,Energy
+RE Generation target,,
+"TotalREProductionAnnual[r,y]",Annual production by all technologies tagged as renewable in the model. Derived from the ProductionByTechnologyAnnual and the parameter RETagTechnology.,Energy
+"RETotalProductionOfTargetFuelAnnual[r,y]",Annual production of fuels tagged as renewable in the model. Derived from the RateOfProduction and the parameter RETagFuel.,Energy
+Emissions,,
+"AnnualTechnologyEmissionByMode[r,t,e,m,y] >=0",Annual emission of agent e by technology t in mode of operation m. Derived from the RateOfActivity and the parameter EmissionActivityRatio.,Quantity of emission
+"AnnualTechnologyEmission[r,t,e,y] >=0",Sum of the AnnualTechnologyEmissionByMode over the modes of operation.,Quantity of emission
+"AnnualTechnologyEmissionPenaltyByEmission[r,t,e,y] >=0",Undiscounted annual cost of emission e by technology t. It is a function of the AnnualTechnologyEmission and the parameter EmissionPenalty.,Monetary units
+"AnnualTechnologyEmissionsPenalty[r,t,y] >=0",Total undiscounted annual cost of all emissions generatedby technology t. Sum of the AnnualTechnologyEmissionPenaltyByEmission over all the emitted agents.,Monetary units
+"DiscountedTechnologyEmissionsPenalty[r,t,y] >=0","Annual cost of emissions by technology t, discounted through the DiscountRate.",Monetary units
+"AnnualEmissions[r,e,y] >=0",Sum of the AnnualTechnologyEmission over all technologies.,Quantity of emission
+"ModelPeriodEmissions[r,e] >=0","Total system emissions of agent e in the model period, accounting for both the emissions by technologies and the user defined ModelPeriodExogenousEmission.",Quantity of emission
+,,
+,,
+,,
+,,
+,,
+,,
