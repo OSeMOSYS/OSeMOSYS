@@ -1,3 +1,6 @@
 [submodule "OSeMOSYS_GNU_MathProg"]
 	path = OSeMOSYS_GNU_MathProg
 	url = https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg
+[submodule "OSeMOSYS_GAMS"]
+	path = OSeMOSYS_GAMS
+	url = https://github.com/OSeMOSYS/OSeMOSYS_GAMS
