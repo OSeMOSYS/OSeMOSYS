@@ -4,3 +4,6 @@
 [submodule "OSeMOSYS_GAMS"]
 	path = OSeMOSYS_GAMS
 	url = https://github.com/OSeMOSYS/OSeMOSYS_GAMS
+[submodule "OSeMOSYS_Pyomo"]
+	path = OSeMOSYS_Pyomo
+	url = https://github.com/OSeMOSYS/OSeMOSYS_Pyomo
