@@ -41,7 +41,7 @@ OSeMOSYS community welcomes professionals and experts from different levels: dec
 
 ## Getting the OSeMOSYS code
 
-## Modellers
+### Modellers
 
 The OSeMOSYS code packages you need for writing your own models are released on the
 [website](http://www.osemosys.org/get-started.html), along with a lot of useful
@@ -52,7 +52,8 @@ information on how to get started.
 OSeMOSYS consists of this repository and several submodules, which contain the different language implementations of
 the OSeMOSYS formualation.
 
-To obtain all the OSeMOSYS code for development purposes, run the following commands from your command line:
+To obtain all the OSeMOSYS code including the language implementations 
+for development purposes, run the following commands from your command line:
 
 ```bash
 cd <name_of_folder>
