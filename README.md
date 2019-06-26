@@ -63,3 +63,11 @@ git submodule update # fetch all the data from project and check out correct com
 
 If successful, this should download all the code to the folder you specified in
 the first step.
+
+Alternatively, use the `--recurse-submodules` argument to the `git clone` command:
+
+```bash
+cd <name_of_folder>
+git clone https://github.com/OSeMOSYS/OSeMOSYS --recurse-submodules
+# obtain the OSeMOSYS repository code and submodules all in one line
+```
