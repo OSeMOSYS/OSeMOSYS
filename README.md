@@ -1,6 +1,7 @@
 # OSeMOSYS - Open Source Energy Modelling System
 
 [![Build Status](https://travis-ci.com/KTH-dESA/OSeMOSYS.svg?branch=master)](https://travis-ci.com/KTH-dESA/OSeMOSYS)
+[![Documentation Status](https://readthedocs.org/projects/osemosys/badge/?version=latest)](https://osemosys.readthedocs.io/en/latest/?badge=latest)
 
 Welcome to OSeMOSYS - the open source energy modelling system. This source code
 repository contains the Apache-2.0 licensed source-code for three different
@@ -38,3 +39,37 @@ Enabling graduate students to build and iteratively develop formal energy models
 ## Community
 
 OSeMOSYS community welcomes professionals and experts from different levels: decision makers, policy officers, energy planners, developers of new model functionalities, programmers.
+
+## Getting the OSeMOSYS code
+
+### Modellers
+
+The OSeMOSYS code packages you need for writing your own models are released on the
+[website](http://www.osemosys.org/get-started.html), along with a lot of useful
+information on how to get started.
+
+### Developers
+
+OSeMOSYS consists of this repository and several submodules, which contain the different language implementations of
+the OSeMOSYS formualation.
+
+To obtain all the OSeMOSYS code including the language implementations 
+for development purposes, run the following commands from your command line:
+
+```bash
+cd <name_of_folder>
+git clone https://github.com/OSeMOSYS/OSeMOSYS # obtain the OSeMOSYS repository code
+git submodule init # initialize your local submodule configuration file
+git submodule update # fetch all the data from project and check out correct commit
+```
+
+If successful, this should download all the code to the folder you specified in
+the first step.
+
+Alternatively, use the `--recurse-submodules` argument to the `git clone` command:
+
+```bash
+cd <name_of_folder>
+git clone https://github.com/OSeMOSYS/OSeMOSYS --recurse-submodules
+# obtain the OSeMOSYS repository code and submodules all in one line
+```
