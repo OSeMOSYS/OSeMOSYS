@@ -38,3 +38,28 @@ Enabling graduate students to build and iteratively develop formal energy models
 ## Community
 
 OSeMOSYS community welcomes professionals and experts from different levels: decision makers, policy officers, energy planners, developers of new model functionalities, programmers.
+
+## Getting the OSeMOSYS code
+
+## Modellers
+
+The OSeMOSYS code packages you need for writing your own models are released on the
+[website](http://www.osemosys.org/get-started.html), along with a lot of useful
+information on how to get started.
+
+### Developers
+
+OSeMOSYS consists of this repository and several submodules, which contain the different language implementations of
+the OSeMOSYS formualation.
+
+To obtain all the OSeMOSYS code for development purposes, run the following commands from your command line:
+
+```bash
+cd <name_of_folder>
+git clone https://github.com/OSeMOSYS/OSeMOSYS # obtain the OSeMOSYS repository code
+git submodule init # initialize your local submodule configuration file
+git submodule update # fetch all the data from project and check out correct commit
+```
+
+If successful, this should download all the code to the folder you specified in
+the first step.
