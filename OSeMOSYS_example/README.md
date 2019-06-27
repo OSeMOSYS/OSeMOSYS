@@ -28,9 +28,9 @@ For example, create a script which runs your implementation with any pre- and po
 ```bash
 INPUT_LOCATION=$1
 OUTPUT_LOCATION=$1
-src/pre-processing.sh $INPUT_DATA > data/pre_processed.dat
+scripts/pre-processing.sh $INPUT_DATA > data/pre_processed.dat
 src/my_implementation.sh data/pre_processed.dat > data/results.dat
-src/post_processing.sh data/results.dat $OUTPUT_LOCATION
+scripts/post_processing.sh data/results.dat $OUTPUT_LOCATION
 ```
 
 This script could then be called as follows:
