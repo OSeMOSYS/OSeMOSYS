@@ -23,6 +23,24 @@ in the contents of the `OSeMOSYS_example` folder.
 The implementation should be runnable from the command line, taking the input
 location, and output location as arguments.
 
+For example, create a script which runs your implementation with any pre- and post- processing.
+
+```bash
+INPUT_LOCATION=$1
+OUTPUT_LOCATION=$1
+src/pre-processing.sh $INPUT_DATA > data/pre_processed.dat
+src/my_implementation.sh data/pre_processed.dat > data/results.dat
+src/post_processing.sh data/results.dat $OUTPUT_LOCATION
+```
+
+This script could then be called as follows:
+
+```bash
+run.sh ./my_project/input_data ./my_project/results
+```
+
+You may like to use a Makefile to run the pipeline of pre-processing -> run the model -> post-process the results.
+
 ### Ensure that your implementation can read and run the example models
 
 The example model definitions can be found in `./examples`.
