@@ -11,6 +11,8 @@ OSeMOSYS_example $ tree
 │   └── index.md
 └── scripts
     └── README.md
+├── src
+    └── README.md
 ```
 
 ## Creating a new implementation
@@ -56,7 +58,7 @@ When you have finished creating your new implementation of OSeMOSYS, submit a
 pull request at http://github.com/OSeMOSYS/OSeMOSYS in which you add your
 implementation as a submodule.
 
-For example, first [fork](https://github.com/OSeMOSYS/OSeMOSYS/fork) 
+For example, first [fork](https://github.com/OSeMOSYS/OSeMOSYS/fork)
 the OSeMOSYS code on Github. Then, add your implementation
 as a submodule, and push your changes to your fork:
 
