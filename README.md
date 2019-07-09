@@ -51,7 +51,7 @@ information on how to get started.
 ### Developers
 
 OSeMOSYS consists of this repository and several submodules, which contain the different language implementations of
-the OSeMOSYS formualation.
+the OSeMOSYS formulation.
 
 To obtain all the OSeMOSYS code including the language implementations 
 for development purposes, run the following commands from your command line:
