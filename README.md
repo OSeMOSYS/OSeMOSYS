@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/OSeMOSYS/OSeMOSYS.svg?branch=master)](https://travis-ci.com/OSeMOSYS/OSeMOSYS)
 [![Documentation Status](https://readthedocs.org/projects/osemosys/badge/?version=latest)](https://osemosys.readthedocs.io/en/latest/?badge=latest)
 
-Welcome to OSeMOSYS - the open source energy modelling system. This source code
+Welcome to OSeMOSYS - the Open Source energy MOdelling SYStem. This source code
 repository contains the Apache-2.0 licensed source-code for three different
 flavours of OSeMOSYS - GNU MathProg, Python and GAMS.
 The different versions are contained in subfolders, together with readme files
