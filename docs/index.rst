@@ -19,7 +19,7 @@ The OpTIMUS Community
 OSeMOSYS is part of the OpTIMUS Community, Practice 3: Open Software, together with other world class, peer reviewed open source tools and data. 
 
 OpTIMUS aims at promoting quantitative analysis to inform sustainable development policy, through the coordination of networks to advance open source software, knowledge development and capacity building. It is organized in three practices -modeling and capacity building for policy support, expert review and quality control, and software development. 
-For more information on the OpTIMUS Community, please visit the related website: http://www.optimus.community/.
+For more information on the OpTIMUS Community, please visit the related website: `www.optimus.community <http://www.optimus.community/>`.
 
 
 .. figure::  manual/documents/img/optimus.png
