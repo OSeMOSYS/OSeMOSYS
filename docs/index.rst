@@ -14,7 +14,7 @@ Welcome to the OSeMOSYS' documentation!
 OSeMOSYS is an open source modelling system for long-run integrated assessment and energy planning. It has been employed to develop energy systems models from the scale of continents (African Power Pools, South America, EU28+2) down to the scale of countries, regions and villages. Designed to require no upfront financial investment, a fast learning curve and little time commitment to operate, it is fit for use by communities of developers, modellers, academics up to policy makers.
 Thanks to its transparency, it is broadly employed as a training and dissemination tool.
 
-The OpTIMUS Community: Practice 3
+The OpTIMUS Community
 ---------------------------------------------
 OSeMOSYS is part of the OpTIMUS Community, Practice 3: Open Software, together with other world class, peer reviewed open source tools and data. 
 
