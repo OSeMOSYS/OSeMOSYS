@@ -29,6 +29,7 @@ Thanks to its transparency, it is broadly employed as a training and disseminati
    manual/Create a model in OSeMOSYS
    manual/Debugging a model
    manual/Advanced functionalities
+   manual/developers.rst
    manual/References
    manual/Contacts
    manual/FAQ

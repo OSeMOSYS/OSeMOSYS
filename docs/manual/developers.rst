@@ -12,7 +12,7 @@ The tests must pass before a pull request may be merged into the main
 repository.
 
 Tests are defined using the Python package ``pytest`` and the runs are
-configured within the Travis CI configuration file ``.travis.yml`.
+configured within the Travis CI configuration file ``.travis.yml``.
 
 The tests are stored in the ``tests`` folder.
 
