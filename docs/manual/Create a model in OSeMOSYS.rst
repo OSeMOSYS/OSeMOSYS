@@ -243,7 +243,7 @@ Once Xcode is installed, agree to the licence and open it (Xcode will be found i
 ------------------------------------------
 - If you get the message below, type the following line and press Enter: 
 
-	**brew install homebrew/science/glpk**:
+	**brew install glpk**:
 
 .. figure::  documents/img/MAC4.png
    :align:   center
@@ -254,7 +254,7 @@ You should now have GLPK Installed
 
 - Type: **/usr/local/Cellar**
 
-In the folder glpk/4.64/bin you will find the glpsol program. 
+In the folder glpk/4.65/bin you will find the glpsol program. 
 
 - Create a folder called OSEMOSYS on your Desktop and copy the glpsol program into it. 
 
