@@ -29,8 +29,8 @@ Releases
 Each of the OSeMOSYS implementations is deployed to Github Releases as a
 separate package within the release.
 
-If a tag is pushed to the master branch on the main OSeMOSYS project 
-Travis CI runs regression and harmonisation tests across the various 
+If a tag is pushed to the master branch on the main OSeMOSYS project
+Travis CI runs regression and harmonisation tests across the various
 implementations, and if successful, run the build and deployment scripts.
 
 Deployment to Github Releases is handled by Travis CI, and the versions
