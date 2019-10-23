@@ -36,6 +36,7 @@ For more information on the OpTIMUS Community, please visit the related website:
    manual/Create a model in OSeMOSYS
    manual/Debugging a model
    manual/Advanced functionalities
+   manual/How to contribute to the development of the tool
    manual/References
    manual/Contacts
    manual/FAQ
