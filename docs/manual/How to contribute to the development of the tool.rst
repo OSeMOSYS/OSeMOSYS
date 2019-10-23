@@ -15,9 +15,9 @@ All the community is encouraged to collaborate to the maintenance and developmen
 	
 	* Provide a detailed description of proposed changes, to inform on how the OSeMOSYS formulation will be affected; this should include details on:
 	
-		1)addition, removal or changes of sets, parameters;
-		2)addition, removal or changes of equations;
-		3)addition, remove or changes of constraints.
+		1) addition, removal or changes of sets, parameters;
+		2) addition, removal or changes of equations;
+		3) addition, remove or changes of constraints.
 	
 
 OEPs can then be discussed with the administrators of the OSeMOSYS organisation, and representatives of the OSeMOSYS Steering Committee in order to be either approved, rejected, or changes requested, following a peer-review process.
