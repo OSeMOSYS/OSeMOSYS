@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/OSeMOSYS/OSeMOSYS.svg?branch=master)](https://travis-ci.com/OSeMOSYS/OSeMOSYS)
 [![Documentation Status](https://readthedocs.org/projects/osemosys/badge/?version=latest)](https://osemosys.readthedocs.io/en/latest/?badge=latest)
 
-Welcome to OSeMOSYS - the open source energy modelling system. This source code
+Welcome to OSeMOSYS - the Open Source energy MOdelling SYStem. This source code
 repository contains the Apache-2.0 licensed source-code for three different
 flavours of OSeMOSYS - GNU MathProg, Python and GAMS.
 The different versions are contained in subfolders, together with readme files
@@ -40,6 +40,14 @@ Enabling graduate students to build and iteratively develop formal energy models
 
 OSeMOSYS community welcomes professionals and experts from different levels: decision makers, policy officers, energy planners, developers of new model functionalities, programmers.
 
+## The OpTIMUS Community, Practice 3
+
+OSeMOSYS is part of the OpTIMUS Community, Practice 3: Open Software, together with other world class, peer reviewed open source tools and data. 
+
+OpTIMUS aims at promoting quantitative analysis to inform sustainable development policy, through the coordination of networks to advance open source software, knowledge development and capacity building. It is organized in three practices -modeling and capacity building for policy support, expert review and quality control, and software development. 
+For more information on the OpTIMUS Community, please visit the related website: http://www.optimus.community/.
+
+
 ## Getting the OSeMOSYS code
 
 ### Modellers
@@ -51,7 +59,7 @@ information on how to get started.
 ### Developers
 
 OSeMOSYS consists of this repository and several submodules, which contain the different language implementations of
-the OSeMOSYS formualation.
+the OSeMOSYS formulation.
 
 To obtain all the OSeMOSYS code including the language implementations 
 for development purposes, run the following commands from your command line:
