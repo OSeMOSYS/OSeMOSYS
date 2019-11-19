@@ -9,7 +9,7 @@ assignees: willu47
 
 **Note**
 
-Please note that this issue should be used to describe a bug with this OSeMOSYS repository. If you bug report relates to one of the implementations of OSeMOSYS, such as [GNU MathProg](), [Pyomo](), [PuLP]() or [GAMS](), please go to the relevant repository to submit your report.
+Please note that this issue should be used to describe a bug with this OSeMOSYS repository. If you bug report relates to one of the implementations of OSeMOSYS, such as [GNU MathProg](https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/issues/new), [Pyomo](https://github.com/OSeMOSYS/OSeMOSYS_Pyomo/issues/new), [PuLP](https://github.com/OSeMOSYS/OSeMOSYS_PuLP/issues/new) or [GAMS](https://github.com/OSeMOSYS/OSeMOSYS_GAMS/issues/new), please go to the relevant repository to submit your report.
 
 **Describe the bug**
 A clear and concise description of what the bug is.
