@@ -50,3 +50,28 @@ useful addition to the model, please submit a feature request using the Github
 issue tracker at [here](http://github.com/OSeMOSYS/OSeMOSYS/issues/new).
 
 Please follow the **OSeMOSYS Enhancement Proposal** issue template.
+
+## Git Workflow
+
+To work with any of the OSeMOSYS code bases, please follow the forking workflow
+recommended for contributing to open-source projects. The steps below assume
+you have a Github account.
+
+1. Fork the repository to which you wish to contribute by clicking the grey
+   `fork` button or visiting https://github.com/osemosys/osemosys/fork
+2. Clone your fork of the repository
+   `git clone http://github.com/<user>/osemosys`
+3. Create a new branch on which you will commit your changes
+   `git checkout -b <branchname>`
+4. Do the work and stage and commit your changes: `git add ...`,
+   `git commit -m "A nice descriptive message"`
+5. Push the changes to your fork `git push -u <branchname> origin/<branchname>`
+6. Submit a pull request from your fork of the repository to the master branch
+   of the original repository.
+7. The pull request is reviewed. Any changes required by the review can be
+   performed on the same branch and pushed to the forked repo as in the steps
+   above.
+8. Once the pull request has been reviewed and accepted,
+   you may delete your local copy of the branch `git branch -d <branchname>` and
+   update your copy of the master branch `git checkout master`,
+   `git pull origin master`
