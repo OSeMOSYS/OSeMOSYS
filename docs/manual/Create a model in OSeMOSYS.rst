@@ -194,7 +194,7 @@ There is no unit conversion in OSeMOSYS: the modelling system assumes that all u
 
 
 Supportive programmes and documentation
-------------------------------------------------------------
+---------------------------------------
 The installation of Notepad ++ is recommended to work with and edit the model and data files. It can be downloaded `here <https://notepad-plus-plus.org/download/v7.5.4.html>`_.
 
 The following three files are recommended for more background documentation on the basics of GNU MathProg and the linear optimization logic applied in OSeMOSYS:
@@ -215,120 +215,66 @@ It should be noted that the salvage value as described in `Howells et al. in 201
 
 
 
-How to run OSeMOSYS using a macOS operating system
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++
-*(These information were kindly provided by Pablo E. Carvajal, UCL Energy Institute)*
+How to run OSeMOSYS using a macOS
++++++++++++++++++++++++++++++++++
 
-This section will guide you through the steps needed to run an OSeMOSYS model in an Apple Computer running macOS operating system. This approach does not require you to purchase any program.
+You have two options to run OSeMOSYS on OSX.
 
-This instructions was developed and tested in macOS High Sierra v.10.13.2
+Use Homebrew to install GLPK:
 
+(Thanks to @EmiFey for the instructions)
 
-1. Installing XCode
-------------------------------------------------------------
-You must have Xcode Developer Tools Software installed on your mac. If you do not, download and install it from the App Store. You will need to have macOS X version 10.10.5 or later. You will need to have an AppleID and 4Gb of free hard drive space to install Xcode.
+1. Open the terminal
 
-Once Xcode is installed, agree to the licence and open it (Xcode will be found in the Launchpad).
+2. Enter the following: ``xcode-select --install``
 
+3. After the command line developer tools are installed, go to: ``https://brew.sh``
 
-2. Install Command Line Tools
--------------------------------------
-- Open the Terminal window. To open the Terminal, type “Terminal” in the Spotlight search function (upper right corner of your screen - magnifying glass).
+4. On the home page, copy the ”Install Homebrew” link to the Terminal prompt on your Mac.
 
-.. figure::  documents/img/TerminalMAC.png
-   :align:   center
+5. Follow the instructions in the Terminal prompt, it will require your computer password.
 
-- Type the following line and press Enter: **xcode-select --install++**
+6. After the installation of HomeBrew is completed, you should see this line in the Terminal prompt: ``==> Installation successful!``.
+   Check that HomeBrew is correctly installed by entering ``brew help`` in the TerminalPrompt.
+   This should give you examples for usage or troubleshooting.
 
-.. figure::  documents/img/MACinstall.png
-   :align:   center
-
-- If you get following message, click install, agree on the terms and wait for the package to download.
-
-.. figure::  documents/img/MAC1.png
-   :align:   center
-
-- When the installation is complete, type the following in the Terminal and press Enter:
-
-	**xcode-select -p**
-
-- The following line should appear: */Applications/Xcode.app/Contents/Developer*
-
-- If this line does not appear, start again from Step 1.
+7. Enter the following command into the Terminal prompt: ``brew install glpk``. Homebrew will now install the GLPK
+   package on your computer. You can check if
 
 
-3. Installing Homebrew
---------------------------------
-- Type or copy the following into your Terminal window and press Enter:
+Use miniconda to create an environment:
 
-	**ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install )"**
+1. Follow `these instructions to install miniconda <https://docs.conda.io/en/latest/miniconda.html>`_
 
-- You should see the following in the Terminal window:
+2. Create a new conda environment ``conda create -n osemosys glpk``
 
-.. figure::  documents/img/MAC2.png
-   :align:   center
+3. Activate the new conda environment (you need to do this everytime you open a new terminal window or tab)
+   ``conda activate osemosys``
 
-- Press Enter. If a password is requested, enter your computer password (you will not see what you type on the line). If this does not work you need to enable the “root” user mode in OS X following the instructions from the following web page: https://support.apple.com/en-gb/HT204012
-
-- Once you have enabled the root user mode, repeat step 3.
-
-- When the Homebrew is installed you should see following in the Terminal window.
-
-.. figure::  documents/img/MAC3.png
-   :align:   center
+4. The command ``glpsol`` should now be available in the terminal
 
 
-4. Installing GLPK and locating glpsol
-------------------------------------------
-- If you get the message below, type the following line and press Enter:
+Downloading model files and running the model
+---------------------------------------------
+Download the model and data *.txt* files provided on the OSeMOSYS website,
+under `Get Started <http://www.osemosys.org/get-started.html>`_.
 
-	**brew install glpk**:
+This tutorial uses the `OSEMOSYS_2011_11_08.txt <http://www.osemosys.org/uploads/1/8/5/0/18504136/osemosys_2011_11_08.txt>`_
+model and the `UTOPIA_2011_11_08.txt <http://www.osemosys.org/uploads/1/8/5/0/18504136/utopia_2011_11_08.txt>`_ data.
+Save these *.txt* files in your working folder.
 
-.. figure::  documents/img/MAC4.png
-   :align:   center
+Notice: When using Textedit.app to save your model and data, your file might be saved with the *.rtf* extension.
+To change it to *.txt*, locate the file, click on the name (so it turns blue, do not double click it, just select)
+and change the extension to *.txt* manually.
 
-You should now have GLPK Installed
+To run the model go back to the Terminal, locate the OSeMOSYS files in the working folder and then run the model
+by typing the following line::
 
-- In Finder, open the GO menu and click on Go to Folder…
+	glpsol -m OSEMOSYS_2011_11_08.txt -d UTOPIA_2011_11_08.txt -o Results.txt
 
-- Type: **/usr/local/Cellar**
+The model will run in the Terminal and when finished you should see the following message::
 
-In the folder glpk/4.65/bin you will find the glpsol program.
+	OPTIMAL LP SOLUTION FOUND
+	Time used:  2.8
 
-- Create a folder called OSEMOSYS on your Desktop and copy the glpsol program into it.
-
-.. figure::  documents/img/MAC5.png
-   :align:   center
-
-
-5. Downloading model files and running the model
----------------------------------------------------------
-Download the model and data *.txt* files provided on the OSeMOSYS website, under `Get Started <http://www.osemosys.org/get-started.html>`_.
-
-This tutorial uses the `OSEMOSYS_2011_11_08.txt <http://www.osemosys.org/uploads/1/8/5/0/18504136/osemosys_2011_11_08.txt>`_ model and the `UTOPIA_2011_11_08.txt <http://www.osemosys.org/uploads/1/8/5/0/18504136/utopia_2011_11_08.txt>`_ data. Save these *.txt* files in your Desktop/OSEYMOSYS folder.
-
-Notice: When using Textedit.app to save your model and data, your file might be saved with the *.rtf* extension. To change it to *.txt*, locate the file, click on the name (so it turns blue, do not double click it, just select) and change the extension to *.txt* manually.
-
-You should end up having three items in your OSEMOSYS folder:
-
-.. figure::  documents/img/MAC6.png
-   :align:   center
-
-To run the model go back to the Terminal, locate the OSEMOSYS file in the desktop by typing:
-
-	**cd desktop/OSEMOSYS**
-
-And to run the model type the following line and press Enter:
-
-	**glpsol -m OSEMOSYS_2011_11_08.txt -d UTOPIA_2011_11_08.txt -o Results.txt**
-
-
-.. figure::  documents/img/MAC7.png
-   :align:   center
-
-The model will run in the Terminal and when finished you should see the following message:
-
-.. figure::  documents/img/MAC8.png
-   :align:   center
-
-Running the model will create a Results.txt file in the OSEMOSYS folder.
+Running the model will create a results file in the working folder.
