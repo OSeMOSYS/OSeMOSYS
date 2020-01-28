@@ -242,7 +242,7 @@ Use Homebrew to install GLPK:
    package on your computer. You can check if
 
 
-Use miniconda to create an environment:
+Or, you can use miniconda to create an environment:
 
 1. Follow `these instructions to install miniconda <https://docs.conda.io/en/latest/miniconda.html>`_
 
