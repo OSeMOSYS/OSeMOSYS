@@ -156,17 +156,28 @@ or change to the new folder before running the model.
 
 
 Creating an input file
-------------------------------------------------------------
-To create the input data for an optimization run, you can set up the model directly in a text editor like Notepad++. It is advisable to start with a small model and build it up step wise. This will simplify the debugging process (see following chapter in this manual on *Debugging a model*). It is further advisable to back up working versions of model data files by saving them in a folder of your choice. The Atlantis input file provided with the downloaded model code might serve as a useful starting point to see how data needs to be correctly formatted. Alternatively, LEAP has also proven useful to write an OSeMOSYS data file.
+----------------------
+To create the input data for an optimization run, you can set up the model directly in a text editor.
+It is advisable to start with a small model and build it up step wise.
+This will simplify the debugging process (see following chapter in this manual on *Debugging a model*).
+It is further advisable to back up working versions of model data files by saving them in a folder of your choice.
+The Atlantis input file provided with the downloaded model code might serve as a useful starting point to see how data
+needs to be correctly formatted.
+Alternatively, LEAP has also proven useful to write an OSeMOSYS data file.
 
 
 Data and choices of units
-------------------------------------------------------------
-The cornerstone of a legitimate model is input data. Using accurate data, relevant model designs and a consistent choice of assumptions will ultimately offer better and more representative insights into the system.
+-------------------------
+The cornerstone of a legitimate model is input data.
+Using accurate data, relevant model designs and a consistent choice of assumptions will ultimately offer better
+and more representative insights into the system.
 Typical data requirements include:
-- Energy demand for the activities that are considered in the model and an annual (hourly) load curve for the relevant demands;
 
-- Technology specific efficiencies, Electricity generation capacity, technology specific factors (capacity/availability), construction time, lifetime;
+- Energy demand for the activities that are considered in the model and an annual (hourly)
+  load curve for the relevant demands;
+
+- Technology specific efficiencies, Electricity generation capacity, technology specific factors
+  (capacity/availability), construction time, lifetime;
 
 - Technology costs (capital, fixed and variable O&M), Fuel costs (both local and imported costs);
 
@@ -174,9 +185,20 @@ Typical data requirements include:
 
 - Emissions accounting and corresponding fuel specific emission factors.
 
-Useful technology briefs containing such data have been developed by `ETSAP <http://iea-etsap.org/>`_. `The World Energy Outlook <http://www.iea.org/weo/>`_ from IEA, IEA Cost of Generating Electricity (look for latest publication at `www.iea.org <http://www.iea.org/>`_) and IRENA’s Renewable energy publications can further be used to obtain the required data for modelling a country’s energy sector. The fossil fuel reserves in every country can be obtained from EIA (U.S. Energy Information Administration) (5). The World Bank database is another useful source of data for energy demand. Note that these publications provide generic values, and data from national studies and strategy documents are usually preferred.
+Useful technology briefs containing such data have been developed by `ETSAP <http://iea-etsap.org/>`_.
+`The World Energy Outlook <http://www.iea.org/weo/>`_ from IEA, IEA Cost of Generating Electricity
+(look for latest publication at `www.iea.org <http://www.iea.org/>`_) and IRENA’s Renewable energy publications can
+further be used to obtain the required data for modelling a country’s energy sector.
+The fossil fuel reserves in every country can be obtained from EIA (U.S. Energy Information Administration) (5).
+The World Bank database is another useful source of data for energy demand.
+Note that these publications provide generic values, and data from national studies and strategy documents
+are usually preferred.
 
-For OSeMOSYS there are 4 units that needs to be chosen in a consistent manner. Bear in mind that certain default constraint levels, e.g., the total max capacity are set to values such as 999999. These limits can be violated if the choice of unit is too small (like kW for a large system, for which GW are recommendable). If a smaller unit is chosen, then the default values for certain parameters need to be increased in the model/data file
+For OSeMOSYS there are 4 units that needs to be chosen in a consistent manner.
+Bear in mind that certain default constraint levels, e.g., the total max capacity are set to values such as 999999.
+These limits can be violated if the choice of unit is too small (like kW for a large system,
+for which GW are recommendable).
+If a smaller unit is chosen, then the default values for certain parameters need to be increased in the model/data file.
 
 +-----------------+--------------------------------------------+
 | Input variables | Possible choice of unit                    |
@@ -190,14 +212,25 @@ For OSeMOSYS there are 4 units that needs to be chosen in a consistent manner. B
 | Emission        | Mton                                       |
 +-----------------+--------------------------------------------+
 
-There is no unit conversion in OSeMOSYS: the modelling system assumes that all units are consistent. For example, the unit for capital costs needs to be coherent with the choice of units from the above table and is applied for all parameters relating to the costs. For example, when choosing GW and $ as power (capacity) and monetary units respectively, the capital cost has to be defined in Million $/GW. Similarly, if the energy unit is PJ, then the activity ratios and variable costs need to calculated with care to avoid errors. This is particularly important for the parameter **CapacityToActivityUnit** (1) (2), which depends on the final energy unit and the unit of capacity.
+There is no unit conversion in OSeMOSYS: the modelling system assumes that all units are consistent.
+For example, the unit for capital costs needs to be coherent with the choice of units from the above table
+and is applied for all parameters relating to the costs. For example, when choosing GW and $ as power (capacity)
+and monetary units respectively, the capital cost has to be defined in Million $/GW.
+Similarly, if the energy unit is PJ, then the activity ratios and variable costs need to calculated with care
+to avoid errors.
+This is particularly important for the parameter **CapacityToActivityUnit** (1) (2),
+which depends on the final energy unit and the unit of capacity.
 
 
-Supportive programmes and documentation
+Supporting programmes and documentation
 ---------------------------------------
-The installation of Notepad ++ is recommended to work with and edit the model and data files. It can be downloaded `here <https://notepad-plus-plus.org/download/v7.5.4.html>`_.
 
-The following three files are recommended for more background documentation on the basics of GNU MathProg and the linear optimization logic applied in OSeMOSYS:
+The installation of a text editor such as  `Notepad++ <https://notepad-plus-plus.org/downloads/>`_ or
+`Visual Studio Code <https://code.visualstudio.com/Download>`_ is recommended to work with and edit the model
+and data files.
+
+The following three files are recommended for more background documentation on the basics of GNU MathProg
+and the linear optimization logic applied in OSeMOSYS:
 
 1.	`The GNU Linear Programming Kit, Part 1: Introduction to linear optimization <http://www.osemosys.org/uploads/1/8/5/0/18504136/ceron_-_2006_-_the_gnu_linear_programming_kit_part_1_-_introduction_to_linear_optimization.pdf>`_;
 
@@ -213,7 +246,8 @@ Further, as mentioned before, the most comprehensive description of how OSeMOSYS
 
 It should be noted that the salvage value as described in `Howells et al. in 2011 <http://www.sciencedirect.com/science/article/pii/S0301421511004897>`_ is not applicable anymore: please see the `Change Log <http://www.osemosys.org/uploads/1/8/5/0/18504136/change_log_2017_11_08.pdf>`_ provided at `www.osemosys.org <http://www.osemosys.org>`_ for latest changes. Further, the description of storage in `Howells et al. in 2011 <http://www.sciencedirect.com/science/article/pii/S0301421511004897>`_ is not applicable any longer. Instead, refer to the current way of modelling storage or variability as described in `Welsch et al. in 2012 <https://www.sciencedirect.com/science/article/pii/S0360544212006299>`_.
 
-
+The Python package `*otoole* <https://otoole.readthedocs.io/en/latest/index.html>`_ has been developed to provide a set
+of useful scripts and data management functions accessible from the command line.
 
 How to run OSeMOSYS using a macOS
 +++++++++++++++++++++++++++++++++
