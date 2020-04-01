@@ -33,7 +33,7 @@ submit an Issue in the relevant repository. Follow the issue template for submit
 
 If you find a more fundamental issue which you think is related with the
 formulation of OSeMOSYS, please submit the issue
-[here](http://github.com/OSeMOSYS/OSeMOSYS/issues/new).
+[here](http://github.com/OSeMOSYS/OSeMOSYS/issues/new/choose).
 
 ## Errors, typos or spelling mistakes in the documentation
 
@@ -47,7 +47,7 @@ You can read about contributing to the documentation
 
 If you have a great idea for how OSeMOSYS could be improved, or to suggest a
 useful addition to the model, please submit a feature request using the Github
-issue tracker at [here](http://github.com/OSeMOSYS/OSeMOSYS/issues/new).
+issue tracker at [here](http://github.com/OSeMOSYS/OSeMOSYS/issues/new/choose).
 
 Please follow the **OSeMOSYS Enhancement Proposal** issue template.
 
