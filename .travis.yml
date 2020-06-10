@@ -8,4 +8,4 @@ install:
 script:
   - glpsol -m OSeMOSYS_GNU_MathProg/src/osemosys.txt -d Training_Case_Studies/utopia.txt -o results.csv
   - glpsol -m OSeMOSYS_GNU_MathProg/src/osemosys_short.txt -d Training_Case_Studies/utopia.txt -o results_short.csv
-  - pyomo solve --solver=glpk OSeMOSYS_Pyomo/OSeMOSYS-Pyomo_2019_05_13.py OSeMOSYS_Pyomo/UTOPIA_2015_08_27.dat
+  - pyomo solve --solver=glpk OSeMOSYS_Pyomo/osemosys.py OSeMOSYS_Pyomo/UTOPIA_2015_08_27.dat
