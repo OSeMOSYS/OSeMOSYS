@@ -1,0 +1,84 @@
+{
+    "license": "MIT",
+    "upload_type": "software",
+    "creators": [
+        {
+            "name": "Mark Howells",
+            "orcid": "0000-0001-6419-4957",
+            "affiliation": 	"Imperial College London; Loughborough University Department of Social Sciences"
+        },
+        {
+            "name": "Manuel Welsch",
+            "affiliation": "International Atomic Energy Agency"
+        },
+        {
+            "name": "Constantinos Taliotis",
+            "orcid": "0000-0003-4022-5506",
+            "affiliation": "The Cyprus Institute"
+        },
+        {
+            "name": "Adrian Lefvert",
+            "orcid": "0000-0001-8587-4054",
+            "affiliation": "KTH Royal Institute of Technology"
+        },
+         {
+            "name": "Igor Tatarewicz",
+            "affiliation": "Institute of Environmental Protection - National Research Institute / National Centre for Emissions Management (KOBiZE)"
+        },
+        {
+            "name": "Tom Alfstad",
+            "affiliation": "United Nations Department of Economic and Social Affairs"
+        },
+        {
+            "name": "Nawfal Saadi",
+            "orcid": "0000-0001-8923-7431",
+            "affiliation": "Enel Green Power"
+        },
+        {
+            "name": "Francesco Gardumi",
+            "affiliation": "KTH Royal Institute of Technology",
+            "orcid": "0000-0001-8371-9325"
+        },
+        {
+            "name": "Vignesh Sridharan",
+            "affiliation": "KTH Royal Institute of Technology",
+            "orcid": "0000-0003-0764-2615"
+        },
+        {
+            "name": "Agnese Beltramo",
+            "affiliation": "KTH Royal Institute of Technology",
+            "orcid": "0000-0001-6591-3028"
+        },
+        {
+            "name": "Nandi Moksnes",
+            "affiliation": "KTH Royal Institute of Technology",
+            "orcid": "0000-0002-8641-564X"
+        },
+        {
+            "name": "Taco Niet",
+            "affiliation": "Simon Fraser University",
+            "orcid": "0000-0003-0266-2705"
+        },
+        {
+            "name": "Abhishek Shivakumar",
+            "affiliation": "United Nations Department of Economic and Social Affairs",
+            "orcid": "0000-0002-2535-4134"
+        },
+        {
+            "name": "Roberto Heredia Fonseca",
+            "affiliation": "KTH Royal Institute of Technology",
+            "orcid": "0000-0003-3947-8725"
+        },
+        {
+            "name": "Will Usher",
+            "affiliation": "KTH Royal Institute of Technology",
+            "orcid": "0000-0001-9367-1791"
+        },
+        {
+            "name": "Christoph Muschner",
+            "affiliation": "KTH Royal Institute of Technology",
+            "orcid": "0000-0001-8144-5260"
+        }
+    ],
+    "access_right": "open"
+}
