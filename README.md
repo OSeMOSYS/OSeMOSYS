@@ -6,6 +6,11 @@
 Welcome to OSeMOSYS - the Open Source energy MOdelling SYStem. This source code
 repository contains the Apache-2.0 licensed source-code for the different
 implementations of OSeMOSYS - GNU MathProg, Pyomo, PuLP and GAMS.
+
+For an in-depth introduction to the underlying model and its structure, you can
+read the [original paper](https://www.sciencedirect.com/science/article/abs/pii/S0301421511004897)
+(needs access to Elsevier ScienceDirect).
+
 The different versions are contained in subfolders, together with readme files
 which provide information of how to install and run the code.
 
