@@ -1,6 +1,5 @@
 # OSeMOSYS - Open Source Energy Modelling System
 
-[![Build Status](https://travis-ci.com/OSeMOSYS/OSeMOSYS.svg?branch=master)](https://travis-ci.com/OSeMOSYS/OSeMOSYS)
 [![Documentation Status](https://readthedocs.org/projects/osemosys/badge/?version=latest)](https://osemosys.readthedocs.io/en/latest/?badge=latest)
 
 Welcome to OSeMOSYS - the Open Source energy MOdelling SYStem. This source code
