@@ -17,9 +17,7 @@ which provide information of how to install and run the code.
 
 ### Modellers
 
-The OSeMOSYS code packages you need for writing your own models are released on the
-[website](http://www.osemosys.org/get-started.html), along with a lot of useful
-information on how to get started.
+The OSeMOSYS code packages you need for writing your own models are available from the [OSeMOSYS GitHub repository](https://github.com/OSeMOSYS/OSeMOSYS), along with a [documentation on how to get started](https://osemosys.readthedocs.io/en/latest/).
 
 ### Developers
 
